@@ -1,5 +1,5 @@
 # EpicCanvas
-WebGL drawArrays Library
+3D WebGL drawArrays Library
 
 # Create a canvas
 Easy.
