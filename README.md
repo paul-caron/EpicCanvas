@@ -106,3 +106,4 @@ A similar script tag must be included:
 # Other Special Considerations
 Values that will be passed on to the GPU are floats. It is best to keep the u,v texture coordinates and colors between 0.0 and 1.0.
 
+Vertices positions are also floats. For best results, it is best to keep the x,y,z absolute values within 0.0 and 1.0, and keep the w value at 1.0.
