@@ -237,6 +237,122 @@ class EpicCanvas{
     }
 }
 
+function drawShape(epicCanvas,programInfo,shape){
+    const {gl,matrices}=epicCanvas
+    const {projectionMatrix,modelViewMatrix}=matrices
+    const {buffers,mode}=shape
+    {
+        const numComponents=4
+        const type=gl.FLOAT
+        const normalize=false
+        const stride=0
+        const offset=0
+        gl.bindBuffer(gl.ARRAY_BUFFER,buffers.position)
+        gl.vertexAttribPointer(
+            programInfo.attribLocations.vertexPosition,
+            numComponents,
+            type,
+            normalize,
+            stride,
+            offset
+        ) 
+        gl.enableVertexAttribArray(
+            programInfo.attribLocations.vertexPosition
+        )
+    }
+    {
+        const numComponents=4
+        const type=gl.FLOAT
+        const normalize=false
+        const stride=0
+        const offset=0
+        gl.bindBuffer(gl.ARRAY_BUFFER,buffers.color)
+        gl.vertexAttribPointer(
+            programInfo.attribLocations.vertexColor,
+            numComponents,
+            type,
+            normalize,
+            stride,
+            offset
+        )
+        gl.enableVertexAttribArray(
+            programInfo.attribLocations.vertexColor
+        )
+    }
+    {
+        const numComponents=2
+        const type=gl.FLOAT
+        const normalize=false
+        const stride=0
+        const offset=0
+        gl.bindBuffer(gl.ARRAY_BUFFER,buffers.textureCoord)
+        gl.vertexAttribPointer(
+            programInfo.attribLocations.textureCoord,
+            numComponents,
+            type,
+            normalize,
+            stride,
+            offset
+        )
+        gl.enableVertexAttribArray(
+            programInfo.attribLocations.textureCoord
+        )
+    }
+    gl.useProgram(programInfo.program)
+    gl.uniformMatrix4fv(
+        programInfo.uniformLocations.projectionMatrix,
+        false,
+        projectionMatrix
+    )
+    gl.uniformMatrix4fv(
+        programInfo.uniformLocations.modelViewMatrix,
+        false,
+        modelViewMatrix
+    )
+    {
+        const offset=0
+        const vertexCount=shape.vertices.length/4
+        gl.drawArrays(
+            mode,
+            offset,
+            vertexCount
+        )
+    }
+}
+
+function getProgramInfo(gl,shaderProgram){
+    return {
+        program:shaderProgram,
+        attribLocations:{
+            vertexPosition:gl.getAttribLocation(
+                shaderProgram,
+                'aVertexPosition'
+            ),
+            vertexColor:gl.getAttribLocation(
+                shaderProgram,
+                'aVertexColor'
+            ),
+            textureCoord:gl.getAttribLocation(
+                shaderProgram,
+                'aTextureCoord'
+            )
+        },
+        uniformLocations:{
+            projectionMatrix:gl.getUniformLocation(
+                shaderProgram,
+                'uProjectionMatrix'
+            ),
+            modelViewMatrix:gl.getUniformLocation(
+                shaderProgram,
+                'uModelViewMatrix'
+            ),
+            sampler:gl.getUniformLocation(
+                shaderProgram,
+                'uSampler'
+            ),
+        },
+    }
+}
 
 function translate(shape,x,y,z){
     for(let i=0;i<shape.vertices.length;i+=4){
