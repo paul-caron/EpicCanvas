@@ -16,9 +16,7 @@ EpicCanvas constructor takes 3 arguments:
 This will create an EpicCanvas object which contains the following important properties:
 * canvas: a canvas
 * gl: a webGL context
-* and more!
-
-*** EPIC ***
+* and more! simply *** EPIC ***
 
 # Loading Textures
 Textures can be loaded into the EpicCanvas with either one of these methods:
