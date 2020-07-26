@@ -2,6 +2,7 @@
 3D WebGL drawArrays Library
 
 Why not focus on drawElements? drawArrays in my humble opinion is easier to use when creating custom shapes on the fly. Unless you use a 3D model software like blender, keeping track of all indices is tedious.
+In addition, most other 3D libraries likely use drawElements, so this one is for those who seek the freedom and advantages of drawArrays.
 
 # Create a canvas
 Easy.
