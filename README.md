@@ -54,7 +54,6 @@ mySuperEpicCanvas.clearScreen()
 Default clearing color is black.
 
 # Custom Shapes
-
 Custom shapes can be made on the fly. An object must be created and must include the following:
 * vertices: An array of 3D coordinates (4D actually including the w value)
 * colors: An array of RGBA values, 4 float values per vertex.
@@ -68,3 +67,7 @@ A similar script tag must be included:
 ```html
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"></script>
 ```
+
+# Other Special Considerations
+Values that will be passed on to tge GPU are floats. It is best to keep the u,v texture coordinates and colors between 0.0 and 1.0.
+
