@@ -52,7 +52,7 @@ mySuperEpicCanvas.clearScreen()
 Default clearing color is black.
 
 # Custom Shapes
-Custom shapes can be made on the fly. An object must be created and must include the following:
+Custom shapes can be made on the fly. A shape object can be created and must include the following:
 * vertices: An array of 3D coordinates (4D actually including the w value)
 * colors: An array of RGBA values, 4 float values per vertex.
 * textureCoordinates: An array of u,v values. 2 float values for each vertex.
