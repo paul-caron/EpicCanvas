@@ -1,6 +1,8 @@
 # EpicCanvas
 3D WebGL drawArrays Library
 
+Why not focus on drawElements? drawArrays in my humble opinion is easier to use when creating custom shapes on the fly. Unless you use a 3D model software like blender, keeping track of all indices is tedious.
+
 # Create a canvas
 Easy.
 ```js
