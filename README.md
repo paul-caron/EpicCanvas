@@ -90,7 +90,7 @@ function square(epicCanvas){
         1.0,1.0,
         0.0,1.0,
     ]
-    const mode=epic.Canvas.gl.TRIANGLE_STRIP
+    const mode=epicCanvas.gl.TRIANGLE_STRIP
     const shape={vertices,colors,textureCoordinates,mode}
     epicCanvas.initBuffers(shape)
     return shape
