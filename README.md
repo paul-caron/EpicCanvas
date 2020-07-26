@@ -95,7 +95,7 @@ function square(epicCanvas){
 }
 ```
 # Drawing Shapes
-To draw a custom shape or a loaded model, simply use the drawShape function (global window function for now). drawShape take 3 arguments:
+To draw a custom shape or a loaded model, simply use the drawShape function (global window function for now). drawShape takes 3 arguments:
 * epicCanvas: The canvas to draw on.
 * programInfo: Program info object. Contains info about the attributes and uniforms locations. see getProgramInfo. 
 * shape: The shape to be drawn.
