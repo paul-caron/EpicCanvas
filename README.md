@@ -31,3 +31,14 @@ Textures can be used even when not fully loaded. A blue pixel will be used durin
 
 
 # Load Model
+3D models can be loaded in the EpicCanvas using this method:
+* loadObj(url): this is an async method that will load the obj model into the EpicCanvas.models array.
+
+Supported models are only .obj files with triangular faces only.
+Also to be noted that the models cannot be used until fully loaded.
+Some code like this can be used to wait for loading phase tobe completed: 
+```js
+const mySuperEpicCanvas=EpicCanvas(640,480,"body")
+await mySuperEpicCanvas.loadObj(url)
+```
+
