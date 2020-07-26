@@ -119,6 +119,8 @@ Examples:
 drawShape(mySuperEpicCanvas,programInfo,customShape)
 drawShape(mySuperEpicCanvas,programInfo,mySuperEpicCanvas.models[0])
 ```
+As you can imagine, different shapes can be drawn using different shader programs.
+
 # Dependencies
 The projection and modelView matrices are computed using gl-matrix.js.
 A similar script tag must be included:
