@@ -43,7 +43,7 @@ await mySuperEpicCanvas.loadObj(url)
 ```
 
 # Dependencies
-The projection and modelView matrices are computed using gl-matrix.js
+The projection and modelView matrices are computed using gl-matrix.js.
 A similar script tag must be included:
 ```html
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"></script>
