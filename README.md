@@ -51,6 +51,7 @@ const mySuperEpicCanvas=new EpicCanvas(640,480,"body")
 mySuperEpicCanvas.clearColor=[1.0,1.0,1.0,1.0]
 mySuperEpicCanvas.clearScreen()
 ```
+Default clearing color is black.
 
 # Dependencies
 The projection and modelView matrices are computed using gl-matrix.js.
