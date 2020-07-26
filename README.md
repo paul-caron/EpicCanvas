@@ -38,7 +38,7 @@ Supported models are only .obj files with triangular faces only.
 Also to be noted that the models cannot be used until fully loaded.
 Some code like this can be used to wait for loading phase to be completed: 
 ```js
-const mySuperEpicCanvas=EpicCanvas(640,480,"body")
+const mySuperEpicCanvas=new EpicCanvas(640,480,"body")
 await mySuperEpicCanvas.loadObj(url)
 ```
 
