@@ -101,7 +101,7 @@ InitShader takes 2 arguments:
 * fragment shader source: A string of the fragment shader source code.
 The initShader method returns a shaderProgram that can be used to get a programInfo object, like follows:
 ```js
-const program=ec.initShaderProgram(vertexSource,fragmentSource)
+const program=mySuperEpicCanvas.initShaderProgram(vertexSource,fragmentSource)
 const programInfo=getProgramInfo(mySuperEpicCanvas.gl,program)
 ```
 The programInfo object is later needed to pass on to the drawShape function.
