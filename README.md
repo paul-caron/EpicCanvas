@@ -42,6 +42,16 @@ const mySuperEpicCanvas=new EpicCanvas(640,480,"body")
 await mySuperEpicCanvas.loadObj(url)
 ```
 
+# Clear Screen method
+clearScreen(): clears the entire screen.
+
+The clearing color can be changed as follows:
+```js
+const mySuperEpicCanvas=new EpicCanvas(640,480,"body")
+mySuperEpicCanvas.clearColor=[1.0,1.0,1.0,1.0]
+mySuperEpicCanvas.clearScreen()
+```
+
 # Dependencies
 The projection and modelView matrices are computed using gl-matrix.js.
 A similar script tag must be included:
