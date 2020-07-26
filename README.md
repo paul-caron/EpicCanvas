@@ -17,3 +17,10 @@ This will create an EpicCanvas object which contains the following important pro
 * canvas: a canvas
 * gl: a webGL context
 * and more!
+
+*** EPIC ***
+
+# Load textures
+
+
+# Load Model
