@@ -99,6 +99,15 @@ Shader programs can be initiated with the EpicCanvas method initShader.
 InitShader takes 2 arguments:
 * vertex shader source: A string of the vertex shader source code.
 * fragment shader source: A string of the fragment shader source code.
+The initShader method returns a shaderProgram that can be used to get a programInfo object, like follows:
+```js
+const program=ec.initShaderProgram(vertexSource,fragmentSource)
+const programInfo=getProgramInfo(mySuperEpicCanvas.gl,program)
+```
+The programInfo object is later needed to pass on to the drawShape function.
+getProgramInfo takes 2 arguments:
+* gl: the webGL context
+* shaderProgram: the shader program
 
 # Drawing Shapes
 To draw a custom shape or a loaded model, simply use the drawShape function (global window function for now). drawShape takes 3 arguments:
