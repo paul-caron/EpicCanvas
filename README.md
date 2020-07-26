@@ -36,7 +36,7 @@ Textures can be used even when not fully loaded. A blue pixel will be used durin
 
 Supported models are only .obj files with triangular faces only.
 Also to be noted that the models cannot be used until fully loaded.
-Some code like this can be used to wait for loading phase tobe completed: 
+Some code like this can be used to wait for loading phase to be completed: 
 ```js
 const mySuperEpicCanvas=EpicCanvas(640,480,"body")
 await mySuperEpicCanvas.loadObj(url)
