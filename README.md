@@ -71,7 +71,7 @@ The shape object can then have gl buffers appended to its properties using the i
 
 Here is an example of a custom shape function:
 ```js
-function square(gl){
+function square(epicCanvas){
     const vertices=[
         1.0,1.0,0.0,1.0,
         -1.0,1.0,0.0,1.0,
@@ -90,9 +90,9 @@ function square(gl){
         1.0,1.0,
         0.0,1.0,
     ]
-    const mode=gl.TRIANGLE_STRIP
+    const mode=epic.Canvas.gl.TRIANGLE_STRIP
     const shape={vertices,colors,textureCoordinates,mode}
-    initBuffers(gl,shape)
+    epicCanvas.initBuffers(shape)
     return shape
 }
 ```
