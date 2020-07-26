@@ -6,7 +6,7 @@ Easy.
 ```js
 const width=640
 const height=480
-const mySuperEpicCanvas=new EpicCanvas(640,480,"body")
+const mySuperEpicCanvas=new EpicCanvas(width,height,"body")
 ```
 EpicCanvas constructor takes 3 arguments:
 width: canvas width
