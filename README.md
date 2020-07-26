@@ -20,7 +20,7 @@ This will create an EpicCanvas object which contains the following important pro
 
 *** EPIC ***
 
-# Load textures
+# Loading Textures
 Textures can be loaded into the EpicCanvas with either one of these methods:
 * loadTexture(url): loads one texture
 * loadTextures([url1,url2,...,urln]): loads many textures
@@ -30,7 +30,7 @@ Textures can be used even when not fully loaded. A blue pixel will be used durin
 
 
 
-# Load Model
+# Loading 3D Model
 3D models can be loaded in the EpicCanvas using this method:
 * loadObj(url): this is an async method that will load the obj model into the EpicCanvas.models array.
 
@@ -52,6 +52,15 @@ mySuperEpicCanvas.clearColor=[1.0,1.0,1.0,1.0]
 mySuperEpicCanvas.clearScreen()
 ```
 Default clearing color is black.
+
+# Custom Shapes
+
+Custom shapes can be made on the fly. An object must be created and must include the following:
+* vertices: An array of 3D coordinates (4D actually including the w value)
+* colors: An array of RGBA values, 4 float values per vertex.
+* textureCoordinates: An array of u,v values. 2 float values for each vertex.
+
+The shape object can then have gl buffers appended to its properties using the initBuffers method of the EpicCanvas.
 
 # Dependencies
 The projection and modelView matrices are computed using gl-matrix.js.
