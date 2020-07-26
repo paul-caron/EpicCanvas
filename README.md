@@ -94,6 +94,16 @@ function square(epicCanvas){
     return shape
 }
 ```
+# Drawing Shapes
+To draw a custom shape or a loaded model, simply use the drawShape function (global window function for now). drawShape take 3 arguments:
+* epicCanvas: The canvas to draw on.
+* programInfo: Program info object. Contains info about the attributes and uniforms locations. see getProgramInfo. 
+* shape: The shape to be drawn.
+Examples:
+```js
+drawShape(mySuperEpicCanvas,programInfo,customShape)
+drawShape(mySuperEpicCanvas,programInfo,mySuperEpicCanvas.models[0])
+```
 # Dependencies
 The projection and modelView matrices are computed using gl-matrix.js.
 A similar script tag must be included:
