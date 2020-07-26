@@ -58,9 +58,44 @@ Custom shapes can be made on the fly. An object must be created and must include
 * vertices: An array of 3D coordinates (4D actually including the w value)
 * colors: An array of RGBA values, 4 float values per vertex.
 * textureCoordinates: An array of u,v values. 2 float values for each vertex.
+* mode: GL drawing mode, anything like:
+  * gl.TRIANGLES
+  * gl.TRIANGLE_FAN
+  * gl.TRIANGLE_STRIP
+  * gl.LINES
+  * gl.LINE_STRIP
+  * gl.POINTS
+
 
 The shape object can then have gl buffers appended to its properties using the initBuffers method of the EpicCanvas.
 
+Here is an example of a custom shape function:
+```js
+function square(gl){
+    const vertices=[
+        1.0,1.0,0.0,1.0,
+        -1.0,1.0,0.0,1.0,
+        1.0,-1.0,0.0,1.0,
+        -1.0,-1.0,0.0,1.0,
+    ]
+    const colors=[
+        1.0,1.0,1.0,1.0,
+        1.0,0.0,0.0,1.0,
+        0.0,1.0,0.0,1.0,
+        0.0,0.0,1.0,1.0,
+    ]
+    const textureCoordinates=[
+        1.0,0.0,
+        0.0,0.0,
+        1.0,1.0,
+        0.0,1.0,
+    ]
+    const mode=gl.TRIANGLE_STRIP
+    const shape={vertices,colors,textureCoordinates,mode}
+    initBuffers(gl,shape)
+    return shape
+}
+```
 # Dependencies
 The projection and modelView matrices are computed using gl-matrix.js.
 A similar script tag must be included:
