@@ -94,6 +94,12 @@ function square(epicCanvas){
     return shape
 }
 ```
+# Shaders
+Shader programs can be initiated with the EpicCanvas method initShader.
+InitShader takes 2 arguments:
+* vertex shader source: A string of the vertex shader source code.
+* fragment shader source: A string of the fragment shader source code.
+
 # Drawing Shapes
 To draw a custom shape or a loaded model, simply use the drawShape function (global window function for now). drawShape takes 3 arguments:
 * epicCanvas: The canvas to draw on.
