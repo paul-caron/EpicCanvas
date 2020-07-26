@@ -25,7 +25,7 @@ Textures can be loaded into the EpicCanvas with either one of these methods:
 * loadTexture(url): loads one texture
 * loadTextures([url1,url2,...,urln]): loads many textures
 
-Textures are push sequentially into the EpicCanvas.textures array.
+Textures are pushed sequentially into the EpicCanvas.textures array.
 Textures can be used even when not fully loaded. A blue pixel will be used during loading time.
 
 
