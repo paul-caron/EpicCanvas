@@ -29,7 +29,8 @@ Textures can be loaded into the EpicCanvas with either one of these methods:
 Textures are pushed sequentially into the EpicCanvas.textures array.
 Textures can be used even when not fully loaded. A blue pixel will be used during loading time.
 
-
+# Set Texture
+It is possible to alternate between textures. The EpicCanvas.setTexture(texture) method is there for that purpose.
 
 # Loading 3D Model
 3D models can be loaded in the EpicCanvas using this method:
