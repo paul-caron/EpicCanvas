@@ -102,6 +102,7 @@ Three types of transformations can be done:
 * translation: slide something in a direction.
 * rotation: turn something around an axis.
 * scaling: enlarge or shrink something.
+
 This library contains functions that transform at the shape level. For transformations on the modelView matrix, please use gl-matrix functions.
 After transforming a shape vertices, it is highly possible to need to reload the buffers data. For this purpose, the EpicCanvas contains a method called reloadBufferData.
 
