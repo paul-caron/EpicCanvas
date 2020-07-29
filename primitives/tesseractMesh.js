@@ -1,4 +1,4 @@
-function tesseractMesh(ec){
+function TesseractMesh(ec){
     const vertices=[
         //outer
         -1,1,1,1,
