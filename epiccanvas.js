@@ -420,6 +420,46 @@ function rotateZ(shape,angle){
     }
 }
 
+
+function rotateXW(shape,angle){
+    for(let i=0;i<shape.vertices.length;i+=4){
+        const x=shape.vertices[i]
+        const w=shape.vertices[i+3]
+        const cosA=Math.cos(angle)
+        const sinA=Math.sin(angle)
+        shape.vertices[i]=x*cosA+w*sinA
+        shape.vertices[i+3]=-x*sinA+w*cosA
+    }
+}
+
+function rotateYW(shape,angle){
+    for(let i=0;i<shape.vertices.length;i+=4){
+        const y=shape.vertices[i+1]
+        const w=shape.vertices[i+3]
+        const cosA=Math.cos(angle)
+        const sinA=Math.sin(angle)
+        shape.vertices[i+1]=y*cosA-w*sinA
+        shape.vertices[i+3]=y*sinA+w*cosA
+    }
+}
+
+function rotateZW(shape,angle){
+    for(let i=0;i<shape.vertices.length;i+=4){
+        const z=shape.vertices[i+2]
+        const w=shape.vertices[i+3]
+        const cosA=Math.cos(angle)
+        const sinA=Math.sin(angle)
+        shape.vertices[i+2]=z*cosA-w*sinA
+        shape.vertices[i+3]=z*sinA+w*cosA
+    }
+}
+
+function translateW(shape,translation){
+    for(let i=0;i<shape.vertices.length;i+=4){
+        shape.vertices[i+3]+=translation
+    }
+}
+
 function scale(shape,scaleX,scaleY,scaleZ){
     for(let i=0;i<shape.vertices.length;i+=4){
         shape.vertices[i]*=scaleX
