@@ -1,4 +1,4 @@
-function Cube(ec){
+function tesseractMesh(ec){
     const vertices=[
         //outer
         -1,1,1,1,
