@@ -16,6 +16,7 @@ class EpicCanvas{
         this.clearColor=[0.0,0.0,0.0,1.0]
         this.matrices=this.getMatrices()
         this.ambientColor=[0.5,0.5,0.5]
+        this.directionalColor=[0.5,0.5,0.5]
     }
     createCanvas(width,height,container){
         this.canvas=document.createElement("canvas")
@@ -327,7 +328,7 @@ function drawShape(epicCanvas,programInfo,shape){
         programInfo.uniformLocations.ambientLight, new Float32Array(epicCanvas.ambientColor)
     )
     gl.uniform3fv(
-        programInfo.uniformLocations.directionalLightColor, new Float32Array([0.59,0.5,0.59])
+        programInfo.uniformLocations.directionalLightColor, new Float32Array(epicCanvas.directionalColoe)
     )
     gl.uniform3fv(
         programInfo.uniformLocations.directionalVector, new Float32Array([0.8,0.8,0.8])
