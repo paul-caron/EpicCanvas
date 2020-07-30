@@ -41,7 +41,8 @@ class EpicCanvas{
             zFar
         )
         const modelViewMatrix=mat4.create()
-        return {projectionMatrix,modelViewMatrix}
+        const normalMatrix=mat4.create()
+        return {projectionMatrix,modelViewMatrix,normalMatrix}
     }
     clearScreen(){
         this.gl.clearColor(...this.clearColor)
