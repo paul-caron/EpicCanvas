@@ -360,27 +360,37 @@ function getProgramInfo(gl,shaderProgram){
                 'aVertexPosition'
             ),
             vertexColor:gl.getAttribLocation(
-                shaderProgram,
-                'aVertexColor'
+                shaderProgram,'aVertexColor'
             ),
             textureCoord:gl.getAttribLocation(
-                shaderProgram,
-                'aTextureCoord'
+                shaderProgram,'aTextureCoord'
+            ),
+            vertexNormal:gl.getAttribLocation(
+                shaderProgram,'aVertexNormal'
             )
         },
         uniformLocations:{
             projectionMatrix:gl.getUniformLocation(
-                shaderProgram,
-                'uProjectionMatrix'
+                shaderProgram,'uProjectionMatrix'
             ),
             modelViewMatrix:gl.getUniformLocation(
-                shaderProgram,
-                'uModelViewMatrix'
+                shaderProgram,'uModelViewMatrix'
+            ),
+            normalMatrix:gl.getUniformLocation(
+                shaderProgram,'uNormalMatrix'
             ),
             sampler:gl.getUniformLocation(
-                shaderProgram,
-                'uSampler'
+                shaderProgram,'uSampler'
             ),
+            ambientLight:gl.getUniformLocation(
+                shaderProgram, 'ambientLight'
+            ),
+            directionalLightColor:gl.getUniformLocation(
+                shaderProgram, 'directionalLightColor'
+            ),
+            directionalVector:gl.getUniformLocation(
+                shaderProgram, 'directionalVector'
+            )
         },
     }
 }
