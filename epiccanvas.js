@@ -160,33 +160,20 @@ class EpicCanvas{
         this.models.push(shape)
     }
     initBuffers(shape){
-        const {vertices,colors,textureCoordinates}=shape
-        const positionBuffer=this.gl.createBuffer()
+        const {vertices,colors,textureCoordinates,normals}=shape
+        const positionBuffer=this.gl.createBuffer() 
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER,positionBuffer)
-        this.gl.bufferData(
-        this.gl.ARRAY_BUFFER,
-        new Float32Array(vertices),
-        this.gl.STATIC_DRAW
-        )
+        this.gl.bufferData(this.gl.ARRAY_BUFFER,new Float32Array(vertices),this.gl.STATIC_DRAW)
         const colorBuffer=this.gl.createBuffer()
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER,colorBuffer)
-        this.gl.bufferData(
-        this.gl.ARRAY_BUFFER,
-        new Float32Array(colors),
-        this.gl.STATIC_DRAW
-        )
-        const textureCoordBuffer=this.gl.createBuffer()
+        this.gl.bufferData(this.gl.ARRAY_BUFFER,new Float32Array(colors),this.gl.STATIC_DRAW)
+        const textureCoordBuffer=this.gl.createBuffer() 
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER,textureCoordBuffer)
-        this.gl.bufferData(
-        this.gl.ARRAY_BUFFER,
-        new Float32Array(textureCoordinates),
-        this.gl.STATIC_DRAW
-        )
-        shape.buffers={
-        position:positionBuffer,
-        color:colorBuffer,
-        textureCoord:textureCoordBuffer,
-        }
+        this.gl.bufferData(this.gl.ARRAY_BUFFER,new Float32Array(textureCoordinates),this.gl.STATIC_DRAW)
+        const normalsBuffer=this.gl.createBuffer() 
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER,normalsBuffer)
+        this.gl.bufferData(this.gl.ARRAY_BUFFER,new Float32Array(normals),this.gl.STATIC_DRAW)
+        shape.buffers={position:positionBuffer,color:colorBuffer, textureCoord:textureCoordBuffer,normals:normalsBuffer}
     }
     reloadBufferData(shape){
         const {vertices,colors,textureCoordinates,buffers}=shape
