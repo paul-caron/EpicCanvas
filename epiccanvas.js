@@ -247,84 +247,107 @@ class EpicCanvas{
 
 function drawShape(epicCanvas,programInfo,shape){
     const {gl,matrices}=epicCanvas
-    const {projectionMatrix,modelViewMatrix}=matrices
+    const {projectionMatrix,modelViewMatrix,normalMatrix}=matrices
     const {buffers,mode}=shape
     {
-        const numComponents=4
-        const type=gl.FLOAT
-        const normalize=false
-        const stride=0
-        const offset=0
-        gl.bindBuffer(gl.ARRAY_BUFFER,buffers.position)
-        gl.vertexAttribPointer(
-            programInfo.attribLocations.vertexPosition,
-            numComponents,
-            type,
-            normalize,
-            stride,
-            offset
-        ) 
-        gl.enableVertexAttribArray(
-            programInfo.attribLocations.vertexPosition
-        )
+    const numComponents=4
+    const type=gl.FLOAT
+    const normalize=false
+    const stride=0
+    const offset=0 
+    gl.bindBuffer(gl.ARRAY_BUFFER,buffers.position) 
+    gl.vertexAttribPointer(
+        programInfo.attribLocations.vertexPosition,
+        numComponents,
+        type,
+        normalize,
+        stride,
+        offset
+    )
+    gl.enableVertexAttribArray(
+        programInfo.attribLocations.vertexPosition
+    )
     }
     {
-        const numComponents=4
-        const type=gl.FLOAT
-        const normalize=false
-        const stride=0
-        const offset=0
-        gl.bindBuffer(gl.ARRAY_BUFFER,buffers.color)
-        gl.vertexAttribPointer(
-            programInfo.attribLocations.vertexColor,
-            numComponents,
-            type,
-            normalize,
-            stride,
-            offset
-        )
-        gl.enableVertexAttribArray(
-            programInfo.attribLocations.vertexColor
-        )
+    const numComponents=4
+    const type=gl.FLOAT
+    const normalize=false
+    const stride=0
+    const offset=0 
+    gl.bindBuffer(gl.ARRAY_BUFFER,buffers.color)
+    gl.vertexAttribPointer(
+        programInfo.attribLocations.vertexColor,
+        numComponents,
+        type,
+        normalize,
+        stride,
+        offset
+    )
+    gl.enableVertexAttribArray(
+        programInfo.attribLocations.vertexColor
+    )
     }
     {
-        const numComponents=2
-        const type=gl.FLOAT
-        const normalize=false
-        const stride=0
-        const offset=0
-        gl.bindBuffer(gl.ARRAY_BUFFER,buffers.textureCoord)
-        gl.vertexAttribPointer(
-            programInfo.attribLocations.textureCoord,
-            numComponents,
-            type,
-            normalize,
-            stride,
-            offset
-        )
-        gl.enableVertexAttribArray(
-            programInfo.attribLocations.textureCoord
-        )
+    const numComponents=2
+    const type=gl.FLOAT
+    const normalize=false
+    const stride=0
+    const offset=0
+    gl.bindBuffer(gl.ARRAY_BUFFER,buffers.textureCoord)
+    gl.vertexAttribPointer(
+        programInfo.attribLocations.textureCoord,
+        numComponents,
+        type,
+        normalize,
+        stride,
+        offset
+    )
+    gl.enableVertexAttribArray(
+        programInfo.attribLocations.textureCoord
+    )
     }
-    gl.useProgram(programInfo.program)
+    {
+    const numComponents=4
+    const type=gl.FLOAT
+    const normalize=false
+    const stride=0
+    const offset=0
+    gl.bindBuffer(gl.ARRAY_BUFFER,buffers.normals)
+    gl.vertexAttribPointer(
+        programInfo.attribLocations.vertexNormal,
+        numComponents,
+        type,
+        normalize,
+        stride,
+        offset
+    )
+    gl.enableVertexAttribArray(
+        programInfo.attribLocations.vertexNormal
+    )
+    }
+    gl.useProgram(programInfo.program)      
     gl.uniformMatrix4fv(
-        programInfo.uniformLocations.projectionMatrix,
-        false,
-        projectionMatrix
+        programInfo.uniformLocations.projectionMatrix, false,projectionMatrix
     )
     gl.uniformMatrix4fv(
-        programInfo.uniformLocations.modelViewMatrix,
-        false,
-        modelViewMatrix
+        programInfo.uniformLocations.modelViewMatrix, false, modelViewMatrix
+    )
+    gl.uniformMatrix4fv(
+        programInfo.uniformLocations.normalMatrix, false, normalMatrix
+    )
+    gl.uniform3fv(
+        programInfo.uniformLocations.ambientLight, new Float32Array([0.5,0.5,0.5])
+    )
+    gl.uniform3fv(
+        programInfo.uniformLocations.directionalLightColor, new Float32Array([0.59,0.5,0.59])
+    )
+    gl.uniform3fv(
+        programInfo.uniformLocations.directionalVector, new Float32Array([0.8,0.8,0.8])
     )
     {
-        const offset=0
-        const vertexCount=shape.vertices.length/4
-        gl.drawArrays(
-            mode,
-            offset,
-            vertexCount
-        )
+    const offset=0
+    const vertexCount=shape.vertices.length/4
+    gl.drawArrays(mode,offset,vertexCount)
     }
 }
 
