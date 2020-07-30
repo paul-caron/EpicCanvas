@@ -74,8 +74,9 @@ function TesseractMesh(ec){
     const colors=new Array(vertices.length)
     colors.fill(1.0)
     const textureCoordinates=[]
+    const normals=[]
     const mode=ec.gl.LINES
-    const shape={vertices,colors,textureCoordinates,mode}
+    const shape={vertices,colors,textureCoordinates,mode,normals}
     ec.initBuffers(shape)
     return shape
 }
