@@ -60,6 +60,7 @@ Custom shapes can be made on the fly. A shape object can be created and must inc
 * vertices: An array of 3D coordinates (4D actually including the w value)
 * colors: An array of RGBA values, 4 float values per vertex.
 * textureCoordinates: An array of u,v values. 2 float values for each vertex.
+* normals: An array of normal vectors, directions perpenticular to the shape's faces
 * mode: GL drawing mode, anything like:
   * gl.TRIANGLES
   * gl.TRIANGLE_FAN
