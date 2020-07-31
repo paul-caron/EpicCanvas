@@ -403,24 +403,36 @@ function translateZ(shape,translation){
 }
 
 function rotateX(shape,angle){
+    const cosA=Math.cos(angle)
+    const sinA=Math.sin(angle)
     for(let i=0;i<shape.vertices.length;i+=4){
         const y=shape.vertices[i+1]
         const z=shape.vertices[i+2]
-        const cosA=Math.cos(angle)
-        const sinA=Math.sin(angle)
         shape.vertices[i+1]=y*cosA-z*sinA
         shape.vertices[i+2]=y*sinA+z*cosA
+    }
+    for(let i=0;i<shape.normals.length;i+=4){
+        const y=shape.normals[i+1]
+        const z=shape.normals[i+2]
+        shape.normals[i+1]=y*cosA-z*sinA
+        shape.normals[i+2]=y*sinA+z*cosA
     }
 }
 
 function rotateY(shape,angle){
+    const cosA=Math.cos(angle)
+    const sinA=Math.sin(angle)
     for(let i=0;i<shape.vertices.length;i+=4){
         const x=shape.vertices[i]
         const z=shape.vertices[i+2]
-        const cosA=Math.cos(angle)
-        const sinA=Math.sin(angle)
         shape.vertices[i]=x*cosA+z*sinA
         shape.vertices[i+2]=-x*sinA+z*cosA
+    }
+    for(let i=0;i<shape.normals.length;i+=4){
+        const x=shape.normals[i]
+        const z=shape.normals[i+2]
+        shape.normals[i]=x*cosA+z*sinA 
+        shape.normals[i+2]=-x*sinA+z*cosA
     }
 }
 
