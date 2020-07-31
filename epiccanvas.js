@@ -437,45 +437,50 @@ function rotateY(shape,angle){
 }
 
 function rotateZ(shape,angle){
+    const cosA=Math.cos(angle)
+    const sinA=Math.sin(angle)
     for(let i=0;i<shape.vertices.length;i+=4){
         const x=shape.vertices[i]
         const y=shape.vertices[i+1]
-        const cosA=Math.cos(angle)
-        const sinA=Math.sin(angle)
         shape.vertices[i]=x*cosA-y*sinA
         shape.vertices[i+1]=x*sinA+y*cosA
     }
+    for(let i=0;i<shape.normals.length;i+=4){
+        const x=shape.normals[i]
+        const y=shape.normals[i+1]
+        shape.normals[i]=x*cosA-y*sinA
+        shape.normals[i+1]=x*sinA+y*cosA
+    }
 }
 
-
 function rotateXW(shape,angle){
+    const cosA=Math.cos(angle)
+    const sinA=Math.sin(angle)
     for(let i=0;i<shape.vertices.length;i+=4){
         const x=shape.vertices[i]
         const w=shape.vertices[i+3]
-        const cosA=Math.cos(angle)
-        const sinA=Math.sin(angle)
         shape.vertices[i]=x*cosA+w*sinA
         shape.vertices[i+3]=-x*sinA+w*cosA
     }
 }
 
 function rotateYW(shape,angle){
+    const cosA=Math.cos(angle)
+    const sinA=Math.sin(angle)
     for(let i=0;i<shape.vertices.length;i+=4){
         const y=shape.vertices[i+1]
         const w=shape.vertices[i+3]
-        const cosA=Math.cos(angle)
-        const sinA=Math.sin(angle)
         shape.vertices[i+1]=y*cosA-w*sinA
         shape.vertices[i+3]=y*sinA+w*cosA
     }
 }
 
 function rotateZW(shape,angle){
+    const cosA=Math.cos(angle)
+    const sinA=Math.sin(angle)
     for(let i=0;i<shape.vertices.length;i+=4){
         const z=shape.vertices[i+2]
         const w=shape.vertices[i+3]
-        const cosA=Math.cos(angle)
-        const sinA=Math.sin(angle)
         shape.vertices[i+2]=z*cosA-w*sinA
         shape.vertices[i+3]=z*sinA+w*cosA
     }
