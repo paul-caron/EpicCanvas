@@ -249,7 +249,8 @@ function drawShape(epicCanvas,programInfo,shape){
         programInfo.attribLocations.vertexPosition
     )
     }
-    {
+    if(programInfo.attribLocations.vertexColor!=-1)
+{
     const numComponents=4
     const type=gl.FLOAT
     const normalize=false
@@ -268,6 +269,7 @@ function drawShape(epicCanvas,programInfo,shape){
         programInfo.attribLocations.vertexColor
     )
     }
+if(programInfo.attribLocations.textureCoord!=-1)
     {
     const numComponents=2
     const type=gl.FLOAT
@@ -287,6 +289,7 @@ function drawShape(epicCanvas,programInfo,shape){
         programInfo.attribLocations.textureCoord
     )
     }
+if(programInfo.attribLocations.vertexNormal!=-1)
     {
     const numComponents=4
     const type=gl.FLOAT
