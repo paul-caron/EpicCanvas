@@ -23,7 +23,7 @@ function RegularPolygon(ec,numberOfCorners){
         const tcs=[]
         //from radius -1 to 1, to 0 to 1 ((v+1)/2)
         for(let i=0;i<vertices.length;i+=4){
-            tcs.push((Math.abs(vertices[i]-1))/2,
+            tcs.push((vertices[i]+1)/2,
                      (Math.abs(vertices[i+1]-1))/2)
         }
         return tcs
@@ -44,3 +44,4 @@ function RegularPolygon(ec,numberOfCorners){
     ec.initBuffers(shape)
     return shape
 }
+
