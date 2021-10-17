@@ -45,4 +45,3 @@ function RegularPolygon(ec,numberOfCorners){
     return shape
 }
 
-
