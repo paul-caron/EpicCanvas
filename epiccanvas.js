@@ -404,44 +404,6 @@ function getProgramInfo(gl,shaderProgram){
         ),
     },
 }
-}getAttribLocation(
-                shaderProgram,
-                'aVertexPosition'
-            ),
-            vertexColor:gl.getAttribLocation(
-                shaderProgram,'aVertexColor'
-            ),
-            textureCoord:gl.getAttribLocation(
-                shaderProgram,'aTextureCoord'
-            ),
-            vertexNormal:gl.getAttribLocation(
-                shaderProgram,'aVertexNormal'
-            )
-        },
-        uniformLocations:{
-            projectionMatrix:gl.getUniformLocation(
-                shaderProgram,'uProjectionMatrix'
-            ),
-            modelViewMatrix:gl.getUniformLocation(
-                shaderProgram,'uModelViewMatrix'
-            ),
-            normalMatrix:gl.getUniformLocation(
-                shaderProgram,'uNormalMatrix'
-            ),
-            sampler:gl.getUniformLocation(
-                shaderProgram,'uSampler'
-            ),
-            ambientLight:gl.getUniformLocation(
-                shaderProgram, 'ambientLight'
-            ),
-            directionalLightColor:gl.getUniformLocation(
-                shaderProgram, 'directionalLightColor'
-            ),
-            directionalVector:gl.getUniformLocation(
-                shaderProgram, 'directionalVector'
-            )
-        },
-    }
 }
 
 function translate(shape,x,y,z){
