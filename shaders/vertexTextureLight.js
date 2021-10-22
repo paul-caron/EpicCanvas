@@ -2,6 +2,7 @@ const vsTextureLight=`
 attribute highp vec4 aVertexNormal;
 attribute highp vec4 aVertexPosition;
 attribute highp vec2 aTextureCoord;
+
 uniform highp mat4 uNormalMatrix;
 uniform highp mat4 uModelViewMatrix;
 uniform highp mat4 uProjectionMatrix;
