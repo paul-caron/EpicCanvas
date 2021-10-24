@@ -120,6 +120,7 @@ Shader programs can be initiated with the EpicCanvas method initShader.
 InitShader takes 2 arguments:
 * vertex shader source: A string of the vertex shader source code.
 * fragment shader source: A string of the fragment shader source code.
+
 The initShader method returns a shaderProgram that can be used to get a programInfo object, like follows:
 ```js
 const program=mySuperEpicCanvas.initShaderProgram(vertexSource,fragmentSource)
@@ -129,6 +130,7 @@ The programInfo object is later needed to pass on to the drawShape function.
 getProgramInfo takes 2 arguments:
 * gl: the webGL context
 * shaderProgram: the shader program
+
 The EpicCanvas repository contains vertex and fragment shaders, ready to be used. Some use vertex colors, others use texture coordinates, with and without basic lighting.
 
 # Drawing Shapes
