@@ -157,6 +157,13 @@ const y = 0
 const z = 1
 epicCanvas.directionalVector = [x, y, z]
 ```
+
+To set the point light, give it arrays of 3 for the color and for the position
+```
+epicCanvas.pointLightColor = [red, green, blue]
+epicCanvas.pointLightPosition = [x, y, z]
+```
+
 # Shaders
 Shader programs can be initiated with the EpicCanvas method initShader.
 InitShader takes 2 arguments:
