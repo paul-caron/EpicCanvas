@@ -29,9 +29,22 @@ Textures can be loaded into the EpicCanvas with either one of these methods:
 Textures are pushed sequentially into the EpicCanvas.textures array.
 Textures can be used even when not fully loaded. A blue pixel will be used during loading time.
 
+EpicCanvas.loadTexture(url) returns a handle to that texture, which can be used later when setting the texture being drawing a shape.
+
 # Set Texture
 It is possible to alternate between textures. The EpicCanvas.setTexture(texture) method is there for that purpose.
 
+Set the texture before calling drawShape:
+```
+const texture1 = epicCanvas.loadTexure(url1)
+const texture2 = epicCanvas.loadTexture(url2)
+
+epicCanvas.setTexture(texture1)
+drawShape(epicCanvas, programInfo, shape1)
+
+epicCanvas.setTexture(texture2)
+drawShape(epicCanvas, programInfo, shape2)
+```
 # Loading 3D Model
 3D models can be loaded in the EpicCanvas using this method:
 * loadObj(url): this is an async method that will load the obj model into the EpicCanvas.models array.
