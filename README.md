@@ -143,6 +143,20 @@ const blue = 1.0
 epicCanvas.ambientColor = [red, green, blue]
 ```
 
+To set the directional light, you can adjust its color and direction by passing it arrays of 3 values.
+```
+//set color
+const red = 1.0
+const green = 1.0
+const blue = 1.0
+epicCanvas.directionalColor = [red, green, blue]
+
+//set direction
+const x = 0
+const y = 0
+const z = 1
+epicCanvas.directionalVector = [x, y, z]
+```
 # Shaders
 Shader programs can be initiated with the EpicCanvas method initShader.
 InitShader takes 2 arguments:
