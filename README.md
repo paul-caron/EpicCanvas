@@ -105,6 +105,8 @@ function square(epicCanvas){
     return shape
 }
 ```
+
+The EpicCanvas repo also contains some primitive shapes ready to use.
 # Transformations
 Three types of transformations can be done:
 * translation: slide something in a direction.
