@@ -129,6 +129,7 @@ The programInfo object is later needed to pass on to the drawShape function.
 getProgramInfo takes 2 arguments:
 * gl: the webGL context
 * shaderProgram: the shader program
+The EpicCanvas repository contains vertex and fragment shaders, ready to be used. Some use vertex colors, others use texture coordinates, with and without basic lighting.
 
 # Drawing Shapes
 To draw a custom shape or a loaded model, simply use the drawShape function (global window function for now). drawShape takes 3 arguments:
