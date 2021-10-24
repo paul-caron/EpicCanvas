@@ -129,6 +129,19 @@ Three types of transformations can be done:
 This library contains functions that transform at the shape level. For transformations on the modelView matrix, please use gl-matrix functions.
 After transforming a shape vertices, it is highly possible to need to reload the buffers data. For this purpose, the EpicCanvas contains a method called reloadBufferData.
 
+# Lighting
+Basic lighting is provided through three different ways:
+* ambient lighting
+* directional lighting
+* point lighting (single point light available)
+
+To set the ambient lighting color, pass it an array of 3 colors, from 0 to 1.0.
+```
+const red = 0.0
+const green = 0.5
+const blue = 1.0
+epicCanvas.ambientColor = [red, green, blue]
+```
 
 # Shaders
 Shader programs can be initiated with the EpicCanvas method initShader.
