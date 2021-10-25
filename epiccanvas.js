@@ -62,6 +62,33 @@ set fieldOfView(angle){
         this.zNear,
         this.zFar)
 }
+set zNear(newZNear){
+    this.zNear = newZNear
+    mat4.perspective(
+        this.matrices.projectionMatrix,
+        this.fieldOfView,
+        this.aspectRatio,
+        this.zNear,
+        this.zFar)
+}
+set zFar(newZFar){
+    this.zFar = newZFar
+    mat4.perspective(
+        this.matrices.projectionMatrix,
+        this.fieldOfView,
+        this.aspectRatio,
+        this.zNear,
+        this.zFar)
+}
+set aspectRatio(newAspectRatio){
+    this.aspectRatio = newAspectRatio
+    mat4.perspective(
+        this.matrices.projectionMatrix,
+        this.fieldOfView,
+        this.aspectRatio,
+        this.zNear,
+        this.zFar)
+}
 clearScreen(){
     this.gl.clearColor(...this.clearColor)
     this.gl.clearDepth(1.0)
