@@ -53,6 +53,15 @@ getMatrices(){
     const normalMatrix=mat4.create()
     return {projectionMatrix,modelViewMatrix,normalMatrix}
 }
+set fieldOfView(angle){
+    this.fieldOfView = angle
+    mat4.perspective(
+        this.matrices.projectionMatrix,
+        this.fieldOfView,
+        this.aspectRatio,
+        this.zNear,
+        this.zFar)
+}
 clearScreen(){
     this.gl.clearColor(...this.clearColor)
     this.gl.clearDepth(1.0)
