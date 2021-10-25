@@ -21,8 +21,8 @@ constructor(width,height,container){
     this.pointLightPosition=[0,0,0]
     this.pointLightColor=[0,0,0]
     this.fieldOfView=60*Math.PI/180
-    this.aspect=this.gl.canvas.clientWidth/
-                this.gl.canvas.clientHeight
+    this.aspectRatio=this.gl.canvas.clientWidth/
+                     this.gl.canvas.clientHeight
     this.zNear=0.1
     this.zFar=100.0
     this.matrices=this.getMatrices()
@@ -45,7 +45,7 @@ getMatrices(){
     mat4.perspective(
         projectionMatrix,
         this.fieldOfView,
-        this.aspect,
+        this.aspectRatio,
         this.zNear,
         this.zFar)
         
