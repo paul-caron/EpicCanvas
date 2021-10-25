@@ -15,12 +15,17 @@ constructor(width,height,container){
     this.matrices
     this.createCanvas(width,height,container)
     this.clearColor=[0.0,0.0,0.0,1.0]
-    this.matrices=this.getMatrices()
     this.ambientColor=[0,0,0]
     this.directionalColor=[0,0,0]
     this.directionalVector=[0,0,1]
     this.pointLightPosition=[0,0,0]
     this.pointLightColor=[0,0,0]
+    this.fieldOfView=60*Math.PI/180
+    this.aspect=this.gl.canvas.clientWidth/
+                this.gl.canvas.clientHeight
+    this.zNear=0.1
+    this.zFar=100.0
+    this.matrices=this.getMatrices()
 }
 createCanvas(width,height,container){
     this.canvas=document.createElement("canvas")
@@ -35,18 +40,14 @@ createCanvas(width,height,container){
             .appendChild(this.canvas)
 }
 getMatrices(){
-    const fieldOfView=60*Math.PI/180
-    const aspect=this.gl.canvas.clientWidth/
-                 this.gl.canvas.clientHeight
-    const zNear=0.1
-    const zFar=100.0
+    
     const projectionMatrix=mat4.create()
     mat4.perspective(
         projectionMatrix,
-        fieldOfView,
-        aspect,
-        zNear,
-        zFar)
+        this.fieldOfView,
+        this.aspect,
+        this.zNear,
+        this.zFar)
         
     const modelViewMatrix=mat4.create()
     const normalMatrix=mat4.create()
