@@ -164,6 +164,16 @@ epicCanvas.pointLightColor = [red, green, blue]
 epicCanvas.pointLightPosition = [x, y, z]
 ```
 
+# Dynamic Perspective
+It is possible to adjust the perspective parameters on the fly.
+Simply change them through assignment like this.
+```
+epicCanvas.fieldOfView = Math.PI / 3
+epicCanvas.zNear = 0.1
+epicCanvas.zFar = 100.0
+epicCanvas.aspectRatio = width / height
+```
+
 # Shaders
 Shader programs can be initiated with the EpicCanvas method initShader.
 InitShader takes 2 arguments:
