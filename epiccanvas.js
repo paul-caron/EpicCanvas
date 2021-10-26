@@ -20,11 +20,11 @@ constructor(width,height,container){
     this.directionalVector=[0,0,1]
     this.pointLightPosition=[0,0,0]
     this.pointLightColor=[0,0,0]
-    this.fieldOfView=60*Math.PI/180
-    this.aspectRatio=this.gl.canvas.clientWidth/
-                     this.gl.canvas.clientHeight
-    this.zNear=0.1
-    this.zFar=100.0
+    this._fieldOfView=60*Math.PI/180
+    this._aspectRatio=this.gl.canvas.clientWidth/
+                      this.gl.canvas.clientHeight
+    this._zNear=0.1
+    this._zFar=100.0
     this.matrices=this.getMatrices()
 }
 createCanvas(width,height,container){
@@ -44,50 +44,50 @@ getMatrices(){
     const projectionMatrix=mat4.create()
     mat4.perspective(
         projectionMatrix,
-        this.fieldOfView,
-        this.aspectRatio,
-        this.zNear,
-        this.zFar)
+        this._fieldOfView,
+        this._aspectRatio,
+        this._zNear,
+        this._zFar)
         
     const modelViewMatrix=mat4.create()
     const normalMatrix=mat4.create()
     return {projectionMatrix,modelViewMatrix,normalMatrix}
 }
 set fieldOfView(angle){
-    this.fieldOfView = angle
+    this._fieldOfView = angle
     mat4.perspective(
         this.matrices.projectionMatrix,
-        this.fieldOfView,
-        this.aspectRatio,
-        this.zNear,
-        this.zFar)
+        this._fieldOfView,
+        this._aspectRatio,
+        this._zNear,
+        this._zFar)
 }
 set zNear(newZNear){
-    this.zNear = newZNear
+    this._zNear = newZNear
     mat4.perspective(
         this.matrices.projectionMatrix,
-        this.fieldOfView,
-        this.aspectRatio,
-        this.zNear,
-        this.zFar)
+        this._fieldOfView,
+        this._aspectRatio,
+        this._zNear,
+        this._zFar)
 }
 set zFar(newZFar){
-    this.zFar = newZFar
+    this._zFar = newZFar
     mat4.perspective(
         this.matrices.projectionMatrix,
-        this.fieldOfView,
-        this.aspectRatio,
-        this.zNear,
-        this.zFar)
+        this._fieldOfView,
+        this._aspectRatio,
+        this._zNear,
+        this._zFar)
 }
 set aspectRatio(newAspectRatio){
-    this.aspectRatio = newAspectRatio
+    this._aspectRatio = newAspectRatio
     mat4.perspective(
         this.matrices.projectionMatrix,
-        this.fieldOfView,
-        this.aspectRatio,
-        this.zNear,
-        this.zFar)
+        this._fieldOfView,
+        this._aspectRatio,
+        this._zNear,
+        this._zFar)
 }
 clearScreen(){
     this.gl.clearColor(...this.clearColor)
