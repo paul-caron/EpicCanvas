@@ -165,6 +165,35 @@ loadTexture(url){
     }
     return texture
 }
+updateTexture(texture, url){
+    function powerOfTwo(value){
+        return (value&(value-1))==0;
+    }
+    const img = new Image()
+    img.crossOrigin=""
+    img.onload = (()=>{
+        this.gl.bindTexture(this.gl.TEXTURE_2D, texture)
+        this.gl.texSubImage2D(
+            this.gl.TEXTURE_2D, 0, 0, 0, this.gl.RGBA,
+            this.gl.UNSIGNED_BYTE, img
+        )
+        if(powerOfTwo(img.width)&&powerOfTwo(img.height)){
+            this.gl.generateMipmap(this.gl.TEXTURE_2D)
+        }
+        else{
+            this.gl.texParameteri(this.gl.TEXTURE_2D,
+                                this.gl.TEXTURE_WRAP_S,
+                                this.gl.CLAMP_TO_EDGE )
+            this.gl.texParameteri(this.gl.TEXTURE_2D,
+                                this.gl.TEXTURE_WRAP_T,
+                                this.gl.CLAMP_TO_EDGE )
+            this.gl.texParameteri(this.gl.TEXTURE_2D,
+                                this.gl.TEXTURE_MIN_FILTER,
+                                this.gl.LINEAR )
+        }
+    })
+    img.src = url
+}
 async loadObj(url){
     const response=await fetch(url)
     const text=await response.text()
