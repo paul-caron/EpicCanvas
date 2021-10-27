@@ -45,7 +45,9 @@ drawShape(epicCanvas, programInfo, shape1)
 epicCanvas.setTexture(texture2)
 drawShape(epicCanvas, programInfo, shape2)
 ```
+
 #Update Texture
+
 A texture that has already been loaded can be updated with the updateTexture method.
 Pass it the texture handle you would like to update and a URL.
 ```
