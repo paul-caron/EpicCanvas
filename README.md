@@ -45,6 +45,13 @@ drawShape(epicCanvas, programInfo, shape1)
 epicCanvas.setTexture(texture2)
 drawShape(epicCanvas, programInfo, shape2)
 ```
+#Update Texture
+A texture that has already been loaded can be updated with the updateTexture method.
+Pass it the texture handle you would like to update and a URL.
+```
+epicCanvas.updateTexture(texture, url)
+```
+
 # Loading 3D Model
 3D models can be loaded in the EpicCanvas using this method:
 * loadObj(url): this is an async method that will load the obj model into the EpicCanvas.models array.
