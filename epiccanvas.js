@@ -104,7 +104,8 @@ loadTextures(URLs){
         this.loadTexture(u)
     }
 }
-loadTexture(url){
+loadTexture(url, options = {}){
+    const {minFilter, magFilter, mipmapFilter, anisotropy} = options
     const texture=this.gl.createTexture()
     this.gl.bindTexture(this.gl.TEXTURE_2D,texture)
     const level=0
@@ -140,6 +141,56 @@ loadTexture(url){
         )
         if(isPowerOf2(image.width)&&isPowerOf2(image.height)){
             this.gl.generateMipmap(this.gl.TEXTURE_2D)
+            if(mipmapFilter != "nearest"){
+                if(minFilter != "nearest"){
+                    this.gl.texParameteri(
+                        this.gl.TEXTURE_2D,
+                        this.gl.TEXTURE_MIN_FILTER,
+                        this.gl.LINEAR_MIPMAP_LINEAR
+                    )
+                }else{
+                    this.gl.texParameteri(
+                        this.gl.TEXTURE_2D,
+                        this.gl.TEXTURE_MIN_FILTER,
+                        this.gl.NEAREST_MIPMAP_LINEAR
+                    )
+                }
+            }else{
+                if(minFilter != "nearest"){
+                    this.gl.texParameteri(
+                        this.gl.TEXTURE_2D,
+                        this.gl.TEXTURE_MIN_FILTER,
+                        this.gl.LINEAR_MIPMAP_NEAREST
+                    )
+                }else{
+                    this.gl.texParameteri(
+                        this.gl.TEXTURE_2D,
+                        this.gl.TEXTURE_MIN_FILTER,
+                        this.gl.NEAREST_MIPMAP_NEAREST
+                    )
+                }
+            }
+            if(magFilter != "nearest"){
+                this.gl.texParameteri(
+                    this.gl.TEXTURE_2D,
+                    this.gl.TEXTURE_MAG_FILTER,
+                    this.gl.LINEAR
+                )
+            }else{
+                this.gl.texParameteri(
+                    this.gl.TEXTURE_2D,
+                    this.gl.TEXTURE_MAG_FILTER,
+                    this.gl.NEAREST
+                )
+            }
+            if(anisotropy){
+                const ext = (this.gl.getExtension('EXT_texture_filter_anisotropic') || this.gl.getExtension('MOZ_EXT_texture_filter_anisotropic') || this.gl.getExtension('WEBKIT_EXT_texture_filter_anisotropic') );
+                if (ext){
+                    const max = this.gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT)
+                    const anisotropyValue = max * anisotropy
+                    this.gl.texParameterf(this.gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, anisotropyValue)
+                }
+            }
         }else{
             this.gl.texParameteri(
                 this.gl.TEXTURE_2D,
@@ -151,11 +202,32 @@ loadTexture(url){
                 this.gl.TEXTURE_WRAP_T,
                 this.gl.CLAMP_TO_EDGE
             )
-            this.gl.texParameteri(
-                this.gl.TEXTURE_2D,
-                this.gl.TEXTURE_MIN_FILTER,
-                this.gl.LINEAR
-            )
+            if(minFilter != "nearest"){
+                this.gl.texParameteri(
+                    this.gl.TEXTURE_2D,
+                    this.gl.TEXTURE_MIN_FILTER,
+                    this.gl.LINEAR
+                )
+            }else{
+                this.gl.texParameteri(
+                    this.gl.TEXTURE_2D,
+                    this.gl.TEXTURE_MIN_FILTER,
+                    this.gl.NEAREST
+                )
+            }
+            if(magFilter != "nearest"){
+                this.gl.texParameteri(
+                    this.gl.TEXTURE_2D,
+                    this.gl.TEXTURE_MAG_FILTER,
+                    this.gl.LINEAR
+                )
+            }else{
+                this.gl.texParameteri(
+                    this.gl.TEXTURE_2D,
+                    this.gl.TEXTURE_MAG_FILTER,
+                    this.gl.NEAREST
+                )
+            }
         }
     }
     image.src=url
