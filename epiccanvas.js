@@ -141,6 +141,35 @@ loadTexture(url, options = {}){
         )
         if(isPowerOf2(image.width)&&isPowerOf2(image.height)){
             this.gl.generateMipmap(this.gl.TEXTURE_2D)
+            if(mipmapFilter != "nearest"){
+                if(minFilter != "nearest"){
+                    this.gl.texParameteri(
+                        this.gl.TEXTURE_2D,
+                        this.gl.TEXTURE_MIN_FILTER,
+                        this.gl.LINEAR_MIPMAP_LINEAR
+                    )
+                }else{
+                    this.gl.texParameteri(
+                        this.gl.TEXTURE_2D,
+                        this.gl.TEXTURE_MIN_FILTER,
+                        this.gl.NEAREST_MIPMAP_LINEAR
+                    )
+                }
+            }else{
+                if(minFilter != "nearest"){
+                    this.gl.texParameteri(
+                        this.gl.TEXTURE_2D,
+                        this.gl.TEXTURE_MIN_FILTER,
+                        this.gl.LINEAR_MIPMAP_NEAREST
+                    )
+                }else{
+                    this.gl.texParameteri(
+                        this.gl.TEXTURE_2D,
+                        this.gl.TEXTURE_MIN_FILTER,
+                        this.gl.NEAREST_MIPMAP_NEAREST
+                    )
+                }
+            }
         }else{
             this.gl.texParameteri(
                 this.gl.TEXTURE_2D,
