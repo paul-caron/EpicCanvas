@@ -104,7 +104,8 @@ loadTextures(URLs){
         this.loadTexture(u)
     }
 }
-loadTexture(url){
+loadTexture(url, options = {}){
+    const {minFilter, magFilter, mipmapFilter, anisotropy} = options
     const texture=this.gl.createTexture()
     this.gl.bindTexture(this.gl.TEXTURE_2D,texture)
     const level=0
@@ -151,11 +152,32 @@ loadTexture(url){
                 this.gl.TEXTURE_WRAP_T,
                 this.gl.CLAMP_TO_EDGE
             )
+            if(minFilter != "nearest"){
             this.gl.texParameteri(
                 this.gl.TEXTURE_2D,
                 this.gl.TEXTURE_MIN_FILTER,
                 this.gl.LINEAR
             )
+            }else{
+            this.gl.texParameteri(
+                this.gl.TEXTURE_2D,
+                this.gl.TEXTURE_MIN_FILTER,
+                this.gl.NEAREST
+            )
+            }
+            if(magFilter != "nearest"){
+            this.gl.texParameteri(
+                this.gl.TEXTURE_2D,
+                this.gl.TEXTURE_MAG_FILTER,
+                this.gl.LINEAR
+            )
+            }else{
+            this.gl.texParameteri(
+                this.gl.TEXTURE_2D,
+                this.gl.TEXTURE_MAG_FILTER,
+                this.gl.NEAREST
+            )
+            }
         }
     }
     image.src=url
