@@ -183,6 +183,14 @@ loadTexture(url, options = {}){
                     this.gl.NEAREST
                 )
             }
+            if(anisotropy){
+                const ext = ( ec.gl.getExtension('EXT_texture_filter_anisotropic') || ec.gl.getExtension('MOZ_EXT_texture_filter_anisotropic') || ec.gl.getExtension('WEBKIT_EXT_texture_filter_anisotropic') );
+                if (ext){
+                    const max = ec.gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT)
+                    const anisotropyValue = max * anisotropy
+                    ec.gl.texParameterf(ec.gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, anisotropyValue)
+                }
+            }
         }else{
             this.gl.texParameteri(
                 this.gl.TEXTURE_2D,
