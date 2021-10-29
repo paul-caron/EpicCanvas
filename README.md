@@ -32,7 +32,7 @@ Textures can be used even when not fully loaded. A blue pixel will be used durin
 EpicCanvas.loadTexture(url, options) returns a handle to that texture, which can be used later when setting the texture being drawn on a shape.
 
 The filtering options object may be omitted (optional) for default filtering settings, or can be adjusted as such:
-```
+```js
 const options = {
     minFilter: "nearest", //or "linear"
     magFilter: "nearest", //or "linear"
@@ -47,7 +47,7 @@ epicCanvas.loadTexture(url, options)
 It is possible to alternate between textures. The EpicCanvas.setTexture(texture) method is there for that purpose.
 
 Set the texture before calling drawShape:
-```
+```js
 const texture1 = epicCanvas.loadTexure(url1)
 const texture2 = epicCanvas.loadTexture(url2)
 
@@ -62,7 +62,7 @@ drawShape(epicCanvas, programInfo, shape2)
 
 A texture that has already been loaded can be updated with the updateTexture method.
 Pass it the texture handle you would like to update and a URL.
-```
+```js
 epicCanvas.updateTexture(texture, url)
 ```
 
@@ -157,7 +157,7 @@ Basic lighting is provided through three different ways:
 * point lighting (single point light available)
 
 To set the ambient lighting color, pass it an array of 3 colors, from 0 to 1.0.
-```
+```js
 const red = 0.0
 const green = 0.5
 const blue = 1.0
@@ -165,7 +165,7 @@ epicCanvas.ambientColor = [red, green, blue]
 ```
 
 To set the directional light, you can adjust its color and direction by passing it arrays of 3 values.
-```
+```js
 //set color
 const red = 1.0
 const green = 1.0
@@ -180,7 +180,7 @@ epicCanvas.directionalVector = [x, y, z]
 ```
 
 To set the point light, give it arrays of 3 for the color and for the position
-```
+```js
 epicCanvas.pointLightColor = [red, green, blue]
 epicCanvas.pointLightPosition = [x, y, z]
 ```
@@ -188,7 +188,7 @@ epicCanvas.pointLightPosition = [x, y, z]
 # Dynamic Perspective
 It is possible to adjust the perspective parameters on the fly.
 Simply change them through assignment like this.
-```
+```js
 epicCanvas.fieldOfView = Math.PI / 3
 epicCanvas.zNear = 0.1
 epicCanvas.zFar = 100.0
