@@ -39,6 +39,8 @@ const options = {
     mipmapFilter: "nearest", //or "linear"
     anisotropy: 1.0 , // anisotropic filtering range factor from 0.00 to 1.0
 }
+
+epicCanvas.loadTexture(url, options)
 ```
 
 # Set Texture
