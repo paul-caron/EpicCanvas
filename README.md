@@ -23,13 +23,23 @@ This will create an EpicCanvas object which contains the following important pro
 
 # Loading Textures
 Textures can be loaded into the EpicCanvas with either one of these methods:
-* loadTexture(url): loads one texture
+* loadTexture(url, options): loads one texture
 * loadTextures([url1,url2,...,urln]): loads many textures
 
 Textures are pushed sequentially into the EpicCanvas.textures array.
 Textures can be used even when not fully loaded. A blue pixel will be used during loading time.
 
-EpicCanvas.loadTexture(url) returns a handle to that texture, which can be used later when setting the texture being drawn on a shape.
+EpicCanvas.loadTexture(url, options) returns a handle to that texture, which can be used later when setting the texture being drawn on a shape.
+
+The filtering options object may be omitted (optional) for default filtering settings, or can be adjusted as such:
+```
+const options = {
+    minFilter: "nearest", //or "linear"
+    magFilter: "nearest", //or "linear"
+    mipmapFilter: "nearest", //or "linear"
+    anisotropy: 1.0 , // anisotropic filtering range factor from 0.00 to 1.0
+}
+```
 
 # Set Texture
 It is possible to alternate between textures. The EpicCanvas.setTexture(texture) method is there for that purpose.
