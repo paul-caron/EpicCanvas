@@ -266,6 +266,18 @@ updateTexture(texture, url){
     })
     img.src = url
 }
+
+setTexture(texture){
+    this.gl.activeTexture(this.gl.TEXTURE0)
+    this.gl.bindTexture(
+        this.gl.TEXTURE_2D,
+        texture
+    )
+}
+
+
+
+
 async loadObj(url){
     const response=await fetch(url)
     const text=await response.text()
@@ -336,9 +348,10 @@ reloadBufferData(shape){
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER,normalsBuffer)
     this.gl.bufferData(this.gl.ARRAY_BUFFER,new Float32Array(normals),this.gl.STATIC_DRAW)
 }
-initShaderProgram(vsSource,fsSource){
-    const vertexShader=this.loadShader(this.gl.VERTEX_SHADER,vsSource)
-    const fragmentShader=this.loadShader(this.gl.FRAGMENT_SHADER,fsSource)
+
+_initShaderProgram(vsSource,fsSource){
+    const vertexShader=this._loadShader(this.gl.VERTEX_SHADER,vsSource)
+    const fragmentShader=this._loadShader(this.gl.FRAGMENT_SHADER,fsSource)
     const shaderProgram=this.gl.createProgram()
     this.gl.attachShader(shaderProgram,vertexShader) 
     this.gl.attachShader(shaderProgram,fragmentShader)
@@ -349,7 +362,7 @@ initShaderProgram(vsSource,fsSource){
     }
     return shaderProgram;
 }
-loadShader(type,source){
+_loadShader(type,source){
     const shader=this.gl.createShader(type)
     this.gl.shaderSource(shader,source)
     this.gl.compileShader(shader);
@@ -360,13 +373,66 @@ loadShader(type,source){
     }
     return shader
 }
-setTexture(texture){
-    this.gl.activeTexture(this.gl.TEXTURE0)
-    this.gl.bindTexture(
-        this.gl.TEXTURE_2D,
-        texture
-    )
+
+
+
+getProgramInfo(vsSource, fsSource){
+    const shaderProgram = this._initShaderProgram(vsSource,fsSource)
+    const gl = this.gl
+    return {
+    program:shaderProgram,
+    attribLocations:{
+        vertexPosition:gl.getAttribLocation(
+            shaderProgram,
+            'aVertexPosition'
+        ),
+        vertexColor:gl.getAttribLocation(
+            shaderProgram,'aVertexColor'
+        ),
+        textureCoord:gl.getAttribLocation(
+            shaderProgram,'aTextureCoord'
+        ),
+        vertexNormal:gl.getAttribLocation(
+            shaderProgram,'aVertexNormal'
+        )
+    },
+    uniformLocations:{
+        projectionMatrix:gl.getUniformLocation(
+            shaderProgram,'uProjectionMatrix'
+        ),
+        modelViewMatrix:gl.getUniformLocation(
+            shaderProgram,'uModelViewMatrix'
+        ),
+        normalMatrix:gl.getUniformLocation(
+            shaderProgram,'uNormalMatrix'
+        ),
+        sampler:gl.getUniformLocation(
+            shaderProgram,'uSampler'
+        ),
+        ambientLight:gl.getUniformLocation(
+            shaderProgram, 'ambientLight'
+        ),
+        directionalLightColor:gl.getUniformLocation(
+            shaderProgram, 'directionalLightColor'
+        ),
+        directionalVector:gl.getUniformLocation(
+            shaderProgram, 'directionalVector'
+        ),
+        pointLightPosition:gl.getUniformLocation(
+            shaderProgram, 'pointLightPosition'),
+        pointLightColor:gl.getUniformLocation(
+            shaderProgram, 'pointLightColor'
+        ),
+    },
 }
+}
+
+
+
+
+
+
+
 }
 
 function drawShape(epicCanvas,programInfo,shape){
@@ -495,54 +561,7 @@ function drawShape(epicCanvas,programInfo,shape){
     }
 }
 
-function getProgramInfo(gl,shaderProgram){
-    return {
-    program:shaderProgram,
-    attribLocations:{
-        vertexPosition:gl.getAttribLocation(
-            shaderProgram,
-            'aVertexPosition'
-        ),
-        vertexColor:gl.getAttribLocation(
-            shaderProgram,'aVertexColor'
-        ),
-        textureCoord:gl.getAttribLocation(
-            shaderProgram,'aTextureCoord'
-        ),
-        vertexNormal:gl.getAttribLocation(
-            shaderProgram,'aVertexNormal'
-        )
-    },
-    uniformLocations:{
-        projectionMatrix:gl.getUniformLocation(
-            shaderProgram,'uProjectionMatrix'
-        ),
-        modelViewMatrix:gl.getUniformLocation(
-            shaderProgram,'uModelViewMatrix'
-        ),
-        normalMatrix:gl.getUniformLocation(
-            shaderProgram,'uNormalMatrix'
-        ),
-        sampler:gl.getUniformLocation(
-            shaderProgram,'uSampler'
-        ),
-        ambientLight:gl.getUniformLocation(
-            shaderProgram, 'ambientLight'
-        ),
-        directionalLightColor:gl.getUniformLocation(
-            shaderProgram, 'directionalLightColor'
-        ),
-        directionalVector:gl.getUniformLocation(
-            shaderProgram, 'directionalVector'
-        ),
-        pointLightPosition:gl.getUniformLocation(
-            shaderProgram, 'pointLightPosition'),
-        pointLightColor:gl.getUniformLocation(
-            shaderProgram, 'pointLightColor'
-        ),
-    },
-}
-}
+
 
 function translate(shape,x,y,z){
     for(let i=0;i<shape.vertices.length;i+=4){
