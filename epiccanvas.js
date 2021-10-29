@@ -266,6 +266,18 @@ updateTexture(texture, url){
     })
     img.src = url
 }
+
+setTexture(texture){
+    this.gl.activeTexture(this.gl.TEXTURE0)
+    this.gl.bindTexture(
+        this.gl.TEXTURE_2D,
+        texture
+    )
+}
+
+
+
+
 async loadObj(url){
     const response=await fetch(url)
     const text=await response.text()
@@ -360,13 +372,7 @@ loadShader(type,source){
     }
     return shader
 }
-setTexture(texture){
-    this.gl.activeTexture(this.gl.TEXTURE0)
-    this.gl.bindTexture(
-        this.gl.TEXTURE_2D,
-        texture
-    )
-}
+
 
 
 getProgramInfo(shaderProgram){
