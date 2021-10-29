@@ -348,9 +348,10 @@ reloadBufferData(shape){
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER,normalsBuffer)
     this.gl.bufferData(this.gl.ARRAY_BUFFER,new Float32Array(normals),this.gl.STATIC_DRAW)
 }
-initShaderProgram(vsSource,fsSource){
-    const vertexShader=this.loadShader(this.gl.VERTEX_SHADER,vsSource)
-    const fragmentShader=this.loadShader(this.gl.FRAGMENT_SHADER,fsSource)
+
+_initShaderProgram(vsSource,fsSource){
+    const vertexShader=this._loadShader(this.gl.VERTEX_SHADER,vsSource)
+    const fragmentShader=this._loadShader(this.gl.FRAGMENT_SHADER,fsSource)
     const shaderProgram=this.gl.createProgram()
     this.gl.attachShader(shaderProgram,vertexShader) 
     this.gl.attachShader(shaderProgram,fragmentShader)
@@ -361,7 +362,7 @@ initShaderProgram(vsSource,fsSource){
     }
     return shaderProgram;
 }
-loadShader(type,source){
+_loadShader(type,source){
     const shader=this.gl.createShader(type)
     this.gl.shaderSource(shader,source)
     this.gl.compileShader(shader);
@@ -375,7 +376,9 @@ loadShader(type,source){
 
 
 
-getProgramInfo(shaderProgram){
+getProgramInfo(vsSource, fsSource){
+    const shaderProgram = this._initShaderProgram(vsSource,fsSource)
+    const gl = this.gl
     return {
     program:shaderProgram,
     attribLocations:{
