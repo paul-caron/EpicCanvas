@@ -49,10 +49,10 @@ getMatrices(){
         this._zFar)
         
     const modelViewMatrix=mat4.create()
-    const model = mat4.create()
-    const view = mat4.create()
+    const modelMatrix = mat4.create()
+    const viewMatrix = mat4.create()
     const normalMatrix=mat4.create()
-    return {projectionMatrix, modelViewMatrix, model, view, normalMatrix}
+    return {projectionMatrix, modelViewMatrix, modelMatrix, viewMatrix, normalMatrix}
 }
 set fieldOfView(angle){
     this._fieldOfView = angle
