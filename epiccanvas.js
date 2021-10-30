@@ -64,6 +64,14 @@ lookAt(eyePositionVec3, centerVec3, upVec3){
     mat4.lookAt(this.matrices.viewMatrix, eyePositionVec3, centerVec3, upVec3)
     this.updateModelViewMatrix()
 }
+lookFront(eyePositionVec3, yawAngle){
+    const directionVec3 = vec3.create()
+    directionVec3[0] = Math.cos(yawAngle)
+    directionVec3[1] = 0
+    directionVec3[2] = Math.sin(yawAngle)
+    vec3.add(directionVec3,directionVec3,eyePositionVec3)
+    this.lookAt(eyePositionVec3,directionVec3,[0,1,0])
+}
 rotateMatrix(m,angle,vec3){
     let update = false
     if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
