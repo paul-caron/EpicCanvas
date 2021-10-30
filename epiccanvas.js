@@ -40,7 +40,6 @@ createCanvas(width,height,container){
             .appendChild(this.canvas)
 }
 getMatrices(){
-    
     const projectionMatrix=mat4.create()
     mat4.perspective(
         projectionMatrix,
@@ -50,8 +49,52 @@ getMatrices(){
         this._zFar)
         
     const modelViewMatrix=mat4.create()
+    const modelMatrix = mat4.create()
+    const viewMatrix = mat4.create()
     const normalMatrix=mat4.create()
-    return {projectionMatrix,modelViewMatrix,normalMatrix}
+    return {projectionMatrix, modelViewMatrix, modelMatrix, viewMatrix, normalMatrix}
+}
+updateModelViewMatrix(){
+    mat4.multiply(
+        this.matrices.modelViewMatrix,
+        this.matrices.viewMatrix,
+        this.matrices.modelMatrix)
+}
+lookAt(eyePositionVec3, centerVec3, upVec3){
+    mat4.lookAt(this.matrices.viewMatrix, eyePositionVec3, centerVec3, upVec3)
+    this.updateModelViewMatrix()
+}
+lookFront(eyePositionVec3, yawAngle){
+    const directionVec3 = vec3.create()
+    directionVec3[0] = Math.cos(yawAngle)
+    directionVec3[1] = 0
+    directionVec3[2] = Math.sin(yawAngle)
+    vec3.add(directionVec3,directionVec3,eyePositionVec3)
+    this.lookAt(eyePositionVec3,directionVec3,[0,1,0])
+}
+rotateMatrix(m,angle,vec3){
+    let update = false
+    if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
+        update = true
+    }
+    mat4.rotate(m,m,angle,vec3)
+    if(update) this.updateModelViewMatrix()
+}
+translateMatrix(m,vec3){
+    let update = false
+    if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
+        update = true
+    }
+    mat4.translate(m,m,vec3)
+    if(update) this.updateModelViewMatrix()
+}
+scaleMatrix(m,vec3){
+    let update = false
+    if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
+        update = true
+    }
+    mat4.scale(m,m,vec3)
+    if(update) this.updateModelViewMatrix()
 }
 set fieldOfView(angle){
     this._fieldOfView = angle
