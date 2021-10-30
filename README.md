@@ -265,4 +265,4 @@ Values that will be passed on to the GPU are floats. It is best to keep the u,v 
 Vertices positions are also floats.
 
 
-This library is in early development and more changes are coming.
+This library is in early development and more changes are coming. No warranty given. Using this library is at your own risk.
