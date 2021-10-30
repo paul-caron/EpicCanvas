@@ -245,6 +245,13 @@ drawShape(epicCanvas, programInfo, epicCanvas.models[0])
 ```
 As you can imagine, different shapes can be drawn using different shader programs.
 
+# Coordinates
+EpicCanvas has a coordinate system setup so that when you look in the negative Z direction, from a (0,0,0) position:
+* positive X is at the right of the screen
+* negative X is at the left of the screen
+* positive Y is at the top of the screen
+* negative Y is at the bottom of the screen
+
 # Dependencies
 The projection and modelView matrices are computed using gl-matrix.js.
 A similar script tag must be included:
@@ -256,5 +263,6 @@ A similar script tag must be included:
 Values that will be passed on to the GPU are floats. It is best to keep the u,v texture coordinates and colors between 0.0 and 1.0.
 
 Vertices positions are also floats.
+
 
 This library is in early development and more changes are coming.
