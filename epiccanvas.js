@@ -66,7 +66,7 @@ rotateMatrix(m,angle,vec3){
         update = true
     }
     mat4.rotate(m,m,angle,vec3)
-    if(update) updateModelViewMatrix()
+    if(update) this.updateModelViewMatrix()
 }
 translateMatrix(m,vec3){
     let update = false
@@ -74,7 +74,7 @@ translateMatrix(m,vec3){
         update = true
     }
     mat4.translate(m,m,vec3)
-    if(update) updateModelViewMatrix()
+    if(update) this.updateModelViewMatrix()
 }
 scaleMatrix(m,vec3){
     let update = false
@@ -82,7 +82,7 @@ scaleMatrix(m,vec3){
         update = true
     }
     mat4.scale(m,m,vec3)
-    if(update) updateModelViewMatrix()
+    if(update) this.updateModelViewMatrix()
 }
 set fieldOfView(angle){
     this._fieldOfView = angle
