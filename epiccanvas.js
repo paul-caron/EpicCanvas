@@ -40,7 +40,6 @@ createCanvas(width,height,container){
             .appendChild(this.canvas)
 }
 getMatrices(){
-    
     const projectionMatrix=mat4.create()
     mat4.perspective(
         projectionMatrix,
@@ -50,10 +49,10 @@ getMatrices(){
         this._zFar)
         
     const modelViewMatrix=mat4.create()
-    const _model = mat4.create()
-    const _view = mat4.create()
+    const model = mat4.create()
+    const view = mat4.create()
     const normalMatrix=mat4.create()
-    return {projectionMatrix, modelViewMatrix, _model, _view, normalMatrix}
+    return {projectionMatrix, modelViewMatrix, model, view, normalMatrix}
 }
 set fieldOfView(angle){
     this._fieldOfView = angle
