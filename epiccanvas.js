@@ -68,11 +68,12 @@ translateMatrix(m,vec3){
     }
     mat4.translate(m,m,vec3)
 }
-scaleMatrix(m){
+scaleMatrix(m,vec3){
     let update = false
     if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
         update = true
     }
+    mat4.scale(m,m,vec3)
 }
 set fieldOfView(angle){
     this._fieldOfView = angle
