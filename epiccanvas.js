@@ -54,12 +54,16 @@ getMatrices(){
     const normalMatrix=mat4.create()
     return {projectionMatrix, modelViewMatrix, modelMatrix, viewMatrix, normalMatrix}
 }
+updateModelViewMatrix(){
+
+}
 rotateMatrix(m,angle,vec3){
     let update = false
     if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
         update = true
     }
     mat4.rotate(m,m,angle,vec3)
+    if(update) updateModelViewMatrix()
 }
 translateMatrix(m,vec3){
     let update = false
@@ -67,6 +71,7 @@ translateMatrix(m,vec3){
         update = true
     }
     mat4.translate(m,m,vec3)
+    if(update) updateModelViewMatrix()
 }
 scaleMatrix(m,vec3){
     let update = false
@@ -74,6 +79,7 @@ scaleMatrix(m,vec3){
         update = true
     }
     mat4.scale(m,m,vec3)
+    if(update) updateModelViewMatrix()
 }
 set fieldOfView(angle){
     this._fieldOfView = angle
