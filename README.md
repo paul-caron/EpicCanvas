@@ -7,9 +7,9 @@ In addition, most other 3D libraries likely use drawElements, so this one is for
 # Create a canvas
 Easy.
 ```js
-const width=640
-const height=480
-const mySuperEpicCanvas=new EpicCanvas(width,height,"body")
+const width = 640
+const height = 480
+const epicCanvas = new EpicCanvas(width,height,"body")
 ```
 EpicCanvas constructor takes 3 arguments:
 * width: canvas width
@@ -74,8 +74,8 @@ Supported models are only .obj files with triangular faces only.
 Also to be noted that the models cannot be used until fully loaded.
 Some code like this can be used to wait for loading phase to be completed: 
 ```js
-const mySuperEpicCanvas=new EpicCanvas(640,480,"body")
-await mySuperEpicCanvas.loadObj(url)
+const epicCanvas = new EpicCanvas(640,480,"body")
+await epicCanvas.loadObj(url)
 ```
 
 # Clear Screen method
@@ -84,8 +84,8 @@ clearScreen(): clears the entire screen.
 The clearing color can be changed as follows:
 ```js
 const mySuperEpicCanvas=new EpicCanvas(640,480,"body")
-mySuperEpicCanvas.clearColor=[1.0,1.0,1.0,1.0]
-mySuperEpicCanvas.clearScreen()
+epicCanvas.clearColor = [1.0,1.0,1.0,1.0]
+epicCanvas.clearScreen()
 ```
 Default clearing color is black.
 
@@ -219,7 +219,7 @@ getProgramInfo takes 2 arguments:
 * fragment shader source: A string of the fragment shader source code.
 
 ```js
-const programInfo=epicCanvas.getProgramInfo(vertexSource, fragmentSource)
+const programInfo = epicCanvas.getProgramInfo(vertexSource, fragmentSource)
 ```
 The programInfo object is later needed to pass on to the drawShape function. It contains the program and all the variables (atttributes and uniforms) locations.
 
@@ -232,8 +232,8 @@ To draw a custom shape or a loaded model, simply use the drawShape function (glo
 * shape: The shape to be drawn.
 Examples:
 ```js
-drawShape(mySuperEpicCanvas,programInfo,customShape)
-drawShape(mySuperEpicCanvas,programInfo,mySuperEpicCanvas.models[0])
+drawShape(mySuperEpicCanvas, programInfo, customShape)
+drawShape(mySuperEpicCanvas, programInfo, epicCanvas.models[0])
 ```
 As you can imagine, different shapes can be drawn using different shader programs.
 
