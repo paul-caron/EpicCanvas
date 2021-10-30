@@ -54,6 +54,15 @@ getMatrices(){
     const normalMatrix=mat4.create()
     return {projectionMatrix, modelViewMatrix, modelMatrix, viewMatrix, normalMatrix}
 }
+rotateMatrix(m){
+
+}
+translateMatrix(m){
+
+}
+scaleMatrix(m){
+
+}
 set fieldOfView(angle){
     this._fieldOfView = angle
     mat4.perspective(
