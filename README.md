@@ -245,7 +245,7 @@ drawShape(epicCanvas, programInfo, epicCanvas.models[0])
 ```
 As you can imagine, different shapes can be drawn using different shader programs.
 
-# Coordinates
+# Coordinates System
 EpicCanvas has a coordinate system setup so that when you look in the negative Z direction, from a (0,0,0) position:
 * positive X is at the right of the screen
 * negative X is at the left of the screen
