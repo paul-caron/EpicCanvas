@@ -161,7 +161,7 @@ Transformations on the shapes:
 * rotateZ(shape, angle)
 * scale(shape, x, y, z)
 
-After transforming a shape vertices, it is highly possible to need to reload the buffers data. For this purpose, the EpicCanvas contains a method called reloadBufferData.
+After transforming a shape, it is highly recommended to reload the buffers data. For this purpose, the EpicCanvas contains a method called reloadBufferData.
 ```js
 epicCanvas.reloadBufferData(shape)
 ```
