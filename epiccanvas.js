@@ -54,18 +54,19 @@ getMatrices(){
     const normalMatrix=mat4.create()
     return {projectionMatrix, modelViewMatrix, modelMatrix, viewMatrix, normalMatrix}
 }
-rotateMatrix(m,angle,axis){
+rotateMatrix(m,angle,vec3){
     let update = false
     if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
         update = true
     }
-    mat4.rotate(m,m,angle,axis)
+    mat4.rotate(m,m,angle,vec3)
 }
-translateMatrix(m){
+translateMatrix(m,vec3){
     let update = false
     if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
         update = true
     }
+    mat4.translate(m,m,vec3)
 }
 scaleMatrix(m){
     let update = false
