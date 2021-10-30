@@ -83,7 +83,7 @@ clearScreen(): clears the entire screen.
 
 The clearing color can be changed as follows:
 ```js
-const mySuperEpicCanvas=new EpicCanvas(640,480,"body")
+const epicCanvas=new EpicCanvas(640,480,"body")
 epicCanvas.clearColor = [1.0,1.0,1.0,1.0]
 epicCanvas.clearScreen()
 ```
@@ -232,8 +232,8 @@ To draw a custom shape or a loaded model, simply use the drawShape function (glo
 * shape: The shape to be drawn.
 Examples:
 ```js
-drawShape(mySuperEpicCanvas, programInfo, customShape)
-drawShape(mySuperEpicCanvas, programInfo, epicCanvas.models[0])
+drawShape(epicCanvas, programInfo, customShape)
+drawShape(epicCanvas, programInfo, epicCanvas.models[0])
 ```
 As you can imagine, different shapes can be drawn using different shader programs.
 
