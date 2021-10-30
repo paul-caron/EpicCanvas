@@ -55,7 +55,10 @@ getMatrices(){
     return {projectionMatrix, modelViewMatrix, modelMatrix, viewMatrix, normalMatrix}
 }
 updateModelViewMatrix(){
-
+    mat4.multiply(
+        this.matrices.modelViewMatrix,
+        this.matrices.viewMatrix,
+        this.matrices.modelMatrix)
 }
 rotateMatrix(m,angle,vec3){
     let update = false
