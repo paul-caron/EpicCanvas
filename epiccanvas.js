@@ -55,13 +55,23 @@ getMatrices(){
     return {projectionMatrix, modelViewMatrix, modelMatrix, viewMatrix, normalMatrix}
 }
 rotateMatrix(m){
-
+    let update = false
+    if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
+        update = true
+    }
+    
 }
 translateMatrix(m){
-
+    let update = false
+    if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
+        update = true
+    }
 }
 scaleMatrix(m){
-
+    let update = false
+    if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
+        update = true
+    }
 }
 set fieldOfView(angle){
     this._fieldOfView = angle
