@@ -147,8 +147,24 @@ Three types of transformations can be done:
 * rotation: turn something around an axis.
 * scaling: enlarge or shrink something.
 
-This library contains functions that transform at the shape level. For transformations on the modelView matrix, please use gl-matrix functions.
+Transformations on the model or view matrix:
+* EpicCanvas.translateMatrix(mat4)
+* EpicCanvas.rotateMatrix(mat4)
+* EpicCanvas.scaleMatrix(mat4)
+
+Transformations on the shapes:
+* translateX(shape, dx)
+* translateY(shape, dy)
+* translateZ(shape, dz)
+* rotateX(shape, angle)
+* rotateY(shape, angle)
+* rotateZ(shape, angle)
+* scale(shape, x, y, z)
+
 After transforming a shape vertices, it is highly possible to need to reload the buffers data. For this purpose, the EpicCanvas contains a method called reloadBufferData.
+```js
+epicCanvas.reloadBufferData(shape)
+```
 
 # Lighting
 Basic lighting is provided through three different ways:
