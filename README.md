@@ -166,7 +166,7 @@ After transforming a shape, it is highly recommended to reload the buffers data.
 epicCanvas.reloadBufferData(shape)
 ```
 # Camera
-Two cameras are available:
+Two cameras methods are available:
 * EpicCanvas.lookAt(eyePosistionVec3, centerVec3, upVec3)
 * EpicCanvas.lookFront(eyePositionVec3, yawAngle)
 
