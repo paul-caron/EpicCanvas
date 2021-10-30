@@ -60,6 +60,10 @@ updateModelViewMatrix(){
         this.matrices.viewMatrix,
         this.matrices.modelMatrix)
 }
+lookAt(eyePositionVec3, centerVec3, upVec3){
+    mat4.lookAt(this.matrices.viewMatrix, eyePositionVec3, centerVec3, upVec3)
+    this.updateModelViewMatrix()
+}
 rotateMatrix(m,angle,vec3){
     let update = false
     if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
