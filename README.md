@@ -165,6 +165,14 @@ After transforming a shape, it is highly recommended to reload the buffers data.
 ```js
 epicCanvas.reloadBufferData(shape)
 ```
+# Camera
+Two cameras are available:
+* EpicCanvas.lookAt(eyePosistionVec3, centerVec3, upVec3)
+* EpicCanvas.lookFront(eyePositionVec3, yawAngle)
+
+Calling these camera methods will modify the view matrix.
+
+Keep in mind, yawAngle for lookFront should most often be at -Math.PI/2 if you want to look in the negative Z direction.
 
 # Lighting
 Basic lighting is provided through three different ways:
