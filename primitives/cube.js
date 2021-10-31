@@ -1,4 +1,4 @@
-function Cube(ec){
+function Cube(ec, initBuffers = true){
     const vertices=[
         -1,-1,1,1,
         -1,1,1,1,
@@ -158,6 +158,7 @@ function Cube(ec){
     ]
     const mode=ec.gl.TRIANGLES
     const shape={vertices,colors,textureCoordinates,mode,normals}
-    ec.initBuffers(shape)
+    if(initBuffers)
+        ec.initBuffers(shape)
     return shape
 }
