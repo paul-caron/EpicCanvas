@@ -91,7 +91,7 @@ Default clearing color is black.
 
 # Custom Shapes
 Custom shapes can be made on the fly. A shape object can be created and must include the following:
-* vertices: An array of 3D coordinates (4D actually including the w value)
+* vertices: An array of 4D coordinates (simply set w to 1.0 for 3D)
 * colors: An array of RGBA values, 4 float values per vertex.
 * textureCoordinates: An array of u,v values. 2 float values for each vertex.
 * normals: An array of normal vectors, directions perpenticular to the shape's faces
@@ -141,6 +141,10 @@ function square(epicCanvas){
 ```
 
 The EpicCanvas repo also contains some primitive shapes ready to use.
+
+# EpicShape
+The EpicShape class constructs a drawable shape object for you, from one or more othershape objects. This has the power to increase performance by having only one call to drawShape rather than multiple calls.
+
 # Transformations
 Three types of transformations can be done:
 * translation: slide something in a direction.
