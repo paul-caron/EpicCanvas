@@ -157,6 +157,8 @@ const sq2 = Square(epicCanvas)
 const epicShape = new EpicShape(epicCanvas, ec.gl.TRIANGLES, sq1, sq2)
 ```
 
+You also may want to not initialise any buffers for your smaller shapes before passing then to EpicShape constructor, again to improve performance.
+
 # Transformations
 Three types of transformations can be done:
 * translation: slide something in a direction.
