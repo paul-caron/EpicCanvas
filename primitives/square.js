@@ -1,5 +1,5 @@
 
-function Square(epicCanvas){
+function Square(epicCanvas, initBuffers = true){
     const vertices=[
         1.0,1.0,0.0,1.0,
         -1.0,1.0,0.0,1.0,
@@ -26,6 +26,7 @@ function Square(epicCanvas){
     ]
     const mode=epicCanvas.gl.TRIANGLE_STRIP
     const shape={vertices,colors,textureCoordinates,mode,normals}
-    epicCanvas.initBuffers(shape)
+    if(initBuffers)
+        epicCanvas.initBuffers(shape)
     return shape
 }
