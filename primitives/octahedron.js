@@ -1,4 +1,4 @@
-const Octahedron = (ec) => {
+const Octahedron = (ec, initBuffers = true) => {
 const vertices = [
 //top
 
@@ -87,7 +87,8 @@ const normals = (()=>{
 })()
 const mode = ec.gl.TRIANGLES
 const shape = {mode,vertices,colors,textureCoordinates,normals}
-ec.initBuffers(shape)
+if(initBuffers)
+    ec.initBuffers(shape)
 return shape
 }
 
