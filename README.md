@@ -15,6 +15,7 @@ Awesome features:
 - loading .obj models (experimental at this point)
 - several primitive shapes (more coming)
 - 3D and 4D shape transforms
+- variety of different shaders available for color, texture and lighting
 
 # Create a canvas
 Easy.
