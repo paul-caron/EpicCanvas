@@ -4,6 +4,18 @@
 Why focus on drawArrays? drawArrays in my humble opinion is easier to use when creating custom shapes on the fly. Unless you use a 3D model software like blender, keeping track of all indices is tedious.
 In addition, most other 3D libraries likely use drawElements, so this one is for those who seek the freedom and advantages of drawArrays.
 
+New first true release: Ancho Chipotle
+
+Awesome features:
+- basic camera
+- texture rendering with whole set of 2D texture filtering options, and super sexy smooth anisotropic filtering as well.
+- dynamic perspective (trademark)
+- lighting capabilities
+- 4D is a minimum for any shape vertex
+- loading .obj models (experimental at this point)
+- several primitive shapes (more coming)
+- 3D and 4D shape transforms
+
 # Create a canvas
 Easy.
 ```js
