@@ -151,7 +151,6 @@ The EpicShape class constructs an object given three or more parameters:
 * The shape(s)
 
 ```js
-const initBuffets = false
 const sq1 = Square(epicCanvas)
 const sq2 = Square(epicCanvas)
 
