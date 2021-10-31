@@ -1,4 +1,4 @@
-const Cylinder = (ec, nDivisions) => {
+const Cylinder = (ec, nDivisions, initBuffers = true) => {
     const vertices = (() => {
         const verts = []
         const yTop = 1
@@ -148,6 +148,7 @@ const Cylinder = (ec, nDivisions) => {
                  textureCoordinates,
                  mode,
                  normals}
-    ec.initBuffers(shape)
+    if(initBuffers)
+        ec.initBuffers(shape)
     return shape
 }
