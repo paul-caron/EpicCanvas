@@ -145,6 +145,19 @@ The EpicCanvas repo also contains some primitive shapes ready to use.
 # EpicShape
 The EpicShape class constructs a drawable shape object for you, from one or more other shape objects. This is like bundling many objects into one and this has the power to increase performance by having only one call to drawShape rather than multiple calls.
 
+The EpicShape class constructs an object given three or more parameters:
+* The EpicCanvas
+* The drawing mode (eg: gl.TRIANGLES, gl.LINES, etc)
+* The shape(s)
+
+```js
+const initBuffets = false
+const sq1 = Square(epicCanvas)
+const sq2 = Square(epicCanvas)
+
+const epicShape = new EpicShape(epicCanvas, ec.gl.TRIANGLES, sq1, sq2)
+```
+
 # Transformations
 Three types of transformations can be done:
 * translation: slide something in a direction.
