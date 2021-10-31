@@ -1,4 +1,4 @@
-function TesseractMesh(ec){
+function TesseractMesh(ec, initBuffers = true){
     const vertices=[
         //outer
         -1,1,1,1,
@@ -77,6 +77,7 @@ function TesseractMesh(ec){
     const normals=[]
     const mode=ec.gl.LINES
     const shape={vertices,colors,textureCoordinates,mode,normals}
-    ec.initBuffers(shape)
+    if(initBuffers)
+        ec.initBuffers(shape)
     return shape
 }

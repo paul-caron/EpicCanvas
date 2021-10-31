@@ -1,10 +1,33 @@
 
 /*
 Author: Paul Caron
-Date: July 24th 2020
+Date: July 24th 2020 to now....
 Special thanks to mozilla docs for the webgl tutorial
 https://developer.mozilla.org/fr/docs/Web/API/WebGL_API
 */
+
+class EpicShape{
+    constructor(ec, mode, ...shapes){
+        this.vertices = []
+        for(let shape of shapes){
+            this.vertices.push(...shape.vertices)
+        }
+        this.textureCoordinates = []
+        for(let shape of shapes){
+            this.textureCoordinates.push(...shape.textureCoordinates)
+        }
+        this.colors = []
+        for(let shape of shapes){
+            this.colors.push(...shape.colors)
+        }
+        this.normals = []
+        for(let shape of shapes){
+            this.normals.push(...shape.normals)
+        }
+        this.mode = mode
+        ec.initBuffers(this)
+    }
+}
 
 class EpicCanvas{
 constructor(width,height,container){

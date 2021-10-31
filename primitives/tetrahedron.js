@@ -1,4 +1,4 @@
-function Tetrahedron(ec){
+function Tetrahedron(ec, initBuffers = true){
     const vertices = [
     -1,-1,-1,1,
     1,1,-1,1,
@@ -70,6 +70,7 @@ function Tetrahedron(ec){
                    textureCoordinates,
                    normals,
                    mode}
-    ec.initBuffers(shape)
+    if(initBuffers)
+        ec.initBuffers(shape)
     return shape
 }

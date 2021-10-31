@@ -1,4 +1,4 @@
-function RegularPolygon(ec,numberOfCorners){
+function RegularPolygon(ec,numberOfCorners, initBuffers = true){
     const vertices=(()=>{
         const verts=[0,0,0,1.0]
         const z=0
@@ -41,7 +41,8 @@ function RegularPolygon(ec,numberOfCorners){
                  textureCoordinates,
                  mode,
                  normals}
-    ec.initBuffers(shape)
+    if(initBuffers)
+        ec.initBuffers(shape)
     return shape
 }
 
