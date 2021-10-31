@@ -143,7 +143,7 @@ function square(epicCanvas){
 The EpicCanvas repo also contains some primitive shapes ready to use.
 
 # EpicShape
-The EpicShape class constructs a drawable shape object for you, from one or more othershape objects. This has the power to increase performance by having only one call to drawShape rather than multiple calls.
+The EpicShape class constructs a drawable shape object for you, from one or more other shape objects. This is like bundling many objects into one and this has the power to increase performance by having only one call to drawShape rather than multiple calls.
 
 # Transformations
 Three types of transformations can be done:
