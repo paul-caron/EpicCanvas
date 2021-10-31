@@ -157,7 +157,7 @@ const sq2 = Square(epicCanvas)
 const epicShape = new EpicShape(epicCanvas, ec.gl.TRIANGLES, sq1, sq2)
 ```
 
-You also may want to not initialise any buffers for your smaller shapes before passing then to EpicShape constructor, again to improve performance.
+You also may want to not initialise any buffers (dont call epicCanvas.initBuffers) for your smaller shapes before passing then to EpicShape constructor, again to improve performance. That way, buffers only exist in the EpicShape object and not in every smaller objects.
 
 # Transformations
 Three types of transformations can be done:
