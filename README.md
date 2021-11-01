@@ -11,7 +11,7 @@ Awesome features:
 - texture rendering with whole set of 2D texture filtering options, and super sexy smooth anisotropic filtering as well.
 - dynamic perspective (trademark)
 - lighting capabilities
-- 4D is a minimum for any shape vertex
+- 4D is the standard for any shape vertex
 - loading .obj models (experimental at this point)
 - several primitive shapes (more coming)
 - 3D and 4D shape transforms
