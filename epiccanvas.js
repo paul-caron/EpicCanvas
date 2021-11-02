@@ -95,6 +95,24 @@ lookFront(eyePositionVec3, yawAngle){
     vec3.add(directionVec3,directionVec3,eyePositionVec3)
     this.lookAt(eyePositionVec3,directionVec3,[0,1,0])
 }
+lookPitchYaw(eyePositionVec3, pitch, yaw){
+    const center = [...eyePositionVec3]
+    const xzRadius = Math.cos(pitch)
+    center[1] += Math.sin(pitch)
+    center[0] += Math.cos(yaw)*xzRadius
+    center[2] += Math.sin(yaw)*xzRadius
+    
+    const up = [0,0,0]
+    const upPitch = pitch + Math.PI/2
+    const xzUpRadius = Math.cos(upPitch)
+    
+    up[1] = Math.sin(upPitch)
+    up[0] = Math.cos(yaw)*xzUpRadius
+    up[2] = Math.sin(yaw)*xzUpRadius
+    this.lookAt(eyePositionVec3,center,up)
+    
+    return [center, up]
+}
 rotateMatrix(m,angle,vec3){
     let update = false
     if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
