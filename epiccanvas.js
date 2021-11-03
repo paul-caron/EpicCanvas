@@ -359,7 +359,45 @@ setTexture(texture){
     )
 }
 
-
+loadCubeMap (urls) {
+    if(urls.length != 6) return
+    const gl = this.gl
+    
+    const texture = gl.createTexture()
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP,texture)
+    
+    let nImagesLoaded = 0
+    
+    const images = urls.map(url => new Image())
+    
+    const faces = [
+        gl.TEXTURE_CUBE_MAP_POSITIVE_X,
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+        gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+        gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,
+    ]
+    
+    for(let i=0;i<6;++i){
+        images[i].crossOrigin = ""
+        images[i].onload = () => {
+            const img = images[i]
+            const level = 0;
+            const internalFormat = gl.RGBA;
+            const format = gl.RGBA;
+            const type = gl.UNSIGNED_BYTE;
+            const face = faces[i]
+            gl.texImage2D (face, level, internalFormat, format, type, img);
+            nImagesLoaded += 1
+            if(nImagesLoaded == 6){
+                gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+            }
+        }
+        images[i].src = urls[i]
+    }
+    return texture
+}
 
 
 async loadObj(url){
