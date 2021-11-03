@@ -359,7 +359,7 @@ setTexture(texture){
     )
 }
 
-loadCubeMap (urls) => {
+loadCubeMap (urls) {
     if(urls.length != 6) return
     const gl = this.gl
     
