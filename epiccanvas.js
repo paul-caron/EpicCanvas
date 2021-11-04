@@ -362,35 +362,41 @@ setTexture(texture){
 loadCubeMap (urls) {
     if(urls.length != 6) return
     const gl = this.gl
-    
-    const texture = gl.createTexture()
+    const texture = gl.createTexture() 
     gl.bindTexture(gl.TEXTURE_CUBE_MAP,texture)
-    
     let nImagesLoaded = 0
-    
     const images = urls.map(url => new Image())
-    
     const faces = [
-        gl.TEXTURE_CUBE_MAP_POSITIVE_X,
-        gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
-        gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
-        gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
-        gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
-        gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,
-    ]
-    
+        gl.TEXTURE_CUBE_MAP_POSITIVE_X, 
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 
+        gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 
+        gl.TEXTURE_CUBE_MAP_POSITIVE_Z,    
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, ]
+    faces.forEach((face)=>{
+        const level = 0;
+        const internalFormat = gl.RGBA;
+        const width = 512;
+        const height = 512;
+        const format = gl.RGBA;
+        const type = gl.UNSIGNED_BYTE;
+        // setup each face with null, so it s renderable
+        gl.texImage2D(face, level, internalFormat, width, height, 0, format, type, null);
+    })
+    gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
     for(let i=0;i<6;++i){
         images[i].crossOrigin = ""
         images[i].onload = () => {
             const img = images[i]
-            const level = 0;
-            const internalFormat = gl.RGBA;
-            const format = gl.RGBA;
-            const type = gl.UNSIGNED_BYTE;
+            const level = 0
+            const internalFormat = gl.RGBA
+            const format = gl.RGBA
+            const type = gl.UNSIGNED_BYTE
             const face = faces[i]
             gl.texImage2D (face, level, internalFormat, format, type, img);
             nImagesLoaded += 1
             if(nImagesLoaded == 6){
+                gl.bindTexture(gl.TEXTURE_CUBE_MAP,texture)
                 gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
             }
         }
@@ -398,6 +404,7 @@ loadCubeMap (urls) {
     }
     return texture
 }
+
 
 
 async loadObj(url){
