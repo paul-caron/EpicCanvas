@@ -393,6 +393,7 @@ loadCubeMap (urls) {
             const format = gl.RGBA
             const type = gl.UNSIGNED_BYTE
             const face = faces[i]
+            gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture)
             gl.texImage2D (face, level, internalFormat, format, type, img);
             nImagesLoaded += 1
             if(nImagesLoaded == 6){
