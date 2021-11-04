@@ -8,7 +8,7 @@ New first true release: Ancho Chipotle
 
 Awesome features:
 - basic camera
-- texture rendering with whole set of 2D texture filtering options, and super sexy smooth anisotropic filtering as well.
+- textures with whole set of 2D texture filtering options, and super sexy smooth anisotropic filtering as well.
 - dynamic perspective (trademark)
 - lighting capabilities
 - 4D is the standard for any shape vertex
@@ -16,6 +16,7 @@ Awesome features:
 - several primitive shapes (more coming)
 - 3D and 4D shape transforms
 - variety of different shaders available for color, texture and lighting
+- cubemaps
 
 # Create a canvas
 Easy.
@@ -89,6 +90,17 @@ Some code like this can be used to wait for loading phase to be completed:
 ```js
 const epicCanvas = new EpicCanvas(640,480,"body")
 await epicCanvas.loadObj(url)
+```
+
+# Loading a Cubemap
+Loading a cubemap is easy provided you have exactly six urls of images that are square and power of two (2,4,8,16,32,64,...512,..etc)
+Put all the urls in an array of six, as such:
+```js
+const cubemapsURLs = [url1,url2,url3,url4,url5,url6]
+```
+Then load the cubemap like this
+```js
+const cubemap = epicCanvas.loadCubeMap(cubemapURLs)
 ```
 
 # Clear Screen method
