@@ -102,6 +102,13 @@ Then load the cubemap like this
 ```js
 const cubemap = epicCanvas.loadCubeMap(cubemapURLs)
 ```
+The cubemap images with be assigned in this order:
+* gl.TEXTURE_CUBE_MAP_POSITIVE_X
+* gl.TEXTURE_CUBE_MAP_NEGATIVE_X
+* gl.TEXTURE_CUBE_MAP_POSITIVE_Y
+* gl.TEXTURE_CUBE_MAP_NEGATIVE_Y
+* gl.TEXTURE_CUBE_MAP_POSITIVE_Z
+* gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
 
 # Clear Screen method
 clearScreen(): clears the entire screen.
