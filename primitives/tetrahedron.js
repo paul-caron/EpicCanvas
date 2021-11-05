@@ -49,18 +49,19 @@ function Tetrahedron(ec, initBuffers = true){
         return tcs
     })()
     const normals = (() => {
+        const h = 1/Math.sqrt(3)
         const norms = []
         for(let i=0;i<3;++i){
-            norms.push(1,-1,-1,1)
+            norms.push(h,-h,-h,1)
         }
         for(let i=0;i<3;++i){
-            norms.push(1,1,1,1)
+            norms.push(h,h,h,1)
         }
         for(let i=0;i<3;++i){
-            norms.push(-1,1,-1,1)
+            norms.push(-h,h,-h,1)
         }
         for(let i=0;i<3;++i){
-            norms.push(-1,-1,1,1)
+            norms.push(-h,-h,h,1)
         }
         return norms
     })()
