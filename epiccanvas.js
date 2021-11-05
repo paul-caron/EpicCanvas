@@ -533,6 +533,12 @@ getProgramInfo(vsSource, fsSource){
         modelViewMatrix:gl.getUniformLocation(
             shaderProgram,'uModelViewMatrix'
         ),
+        modelMatrix:gl.getUniformLocation(
+            shaderProgram,'uModelMatrix'
+        ),
+        viewMatrix:gl.getUniformLocation(
+            shaderProgram,'uViewMatrix'
+        ),
         normalMatrix:gl.getUniformLocation(
             shaderProgram,'uNormalMatrix'
         ),
@@ -567,7 +573,7 @@ getProgramInfo(vsSource, fsSource){
 
 function drawShape(epicCanvas,programInfo,shape){
     const {gl,matrices}=epicCanvas
-    const {projectionMatrix,modelViewMatrix,normalMatrix}=matrices
+    const {projectionMatrix,modelViewMatrix,modelMatrix,viewMatrix,normalMatrix}=matrices
     const {buffers,mode}=shape
     {
         const numComponents=4
@@ -658,6 +664,16 @@ function drawShape(epicCanvas,programInfo,shape){
         programInfo.uniformLocations.modelViewMatrix, 
         false,
         modelViewMatrix
+    )
+    gl.uniformMatrix4fv(
+        programInfo.uniformLocations.modelMatrix, 
+        false,
+        modelMatrix
+    )
+    gl.uniformMatrix4fv(
+        programInfo.uniformLocations.viewMatrix, 
+        false,
+        viewMatrix
     )
     gl.uniformMatrix4fv(
         programInfo.uniformLocations.normalMatrix,
