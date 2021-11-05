@@ -36,6 +36,7 @@ constructor(width,height,container){
     this.canvas
     this.gl
     this.matrices
+    this.cameraPosition = [0,0,0]
     this.createCanvas(width,height,container)
     this.clearColor=[0.0,0.0,0.0,1.0]
     this.ambientColor=[0,0,0]
@@ -84,10 +85,12 @@ updateModelViewMatrix(){
         this.matrices.modelMatrix)
 }
 lookAt(eyePositionVec3, centerVec3, upVec3){
+    this.cameraPosition = [...eyePositionVec3]
     mat4.lookAt(this.matrices.viewMatrix, eyePositionVec3, centerVec3, upVec3)
     this.updateModelViewMatrix()
 }
 lookFront(eyePositionVec3, yawAngle){
+    this.cameraPosition = [...eyePositionVec3]
     const directionVec3 = vec3.create()
     directionVec3[0] = Math.cos(yawAngle)
     directionVec3[1] = 0
@@ -96,6 +99,7 @@ lookFront(eyePositionVec3, yawAngle){
     this.lookAt(eyePositionVec3,directionVec3,[0,1,0])
 }
 lookPitchYaw(eyePositionVec3, pitch, yaw){
+    this.cameraPosition = [...eyePositionVec3]
     const center = [...eyePositionVec3]
     const xzRadius = Math.cos(pitch)
     center[1] += Math.sin(pitch)
@@ -542,6 +546,9 @@ getProgramInfo(vsSource, fsSource){
         normalMatrix:gl.getUniformLocation(
             shaderProgram,'uNormalMatrix'
         ),
+        cameraPosition:gl.getUniformLocation(
+            shaderProgram,'uCameraPosition'
+        ),
         sampler:gl.getUniformLocation(
             shaderProgram,'uSampler'
         ),
@@ -679,6 +686,10 @@ function drawShape(epicCanvas,programInfo,shape){
         programInfo.uniformLocations.normalMatrix,
         false,
         normalMatrix
+    )
+    gl.uniform3fv(
+        programInfo.uniformLocations.cameraPosition,
+        new Float32Array(epicCanvas.cameraPosition)
     )
     gl.uniform3fv(
         programInfo.uniformLocations.ambientLight,
