@@ -110,6 +110,12 @@ The cubemap images with be assigned in this order:
 * gl.TEXTURE_CUBE_MAP_POSITIVE_Z
 * gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
 
+# Set a Cubemap
+To set the active cubemap, use setCubeMap method. That way you can alternate between different cubemap.
+```js
+epicCanvas.setCubeMap(cubemap)
+```
+
 # Clear Screen method
 clearScreen(): clears the entire screen.
 
