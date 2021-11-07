@@ -410,7 +410,10 @@ loadCubeMap (urls) {
     return texture
 }
 
-
+setCubeMap(cubemap){
+    this.gl.activeTexture(this.gl.TEXTURE0)
+    this.gl.bindTexture(this.gl.TEXTURE_CUBE_MAP, cubemap)
+}
 
 async loadObj(url){
     const response=await fetch(url)
