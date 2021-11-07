@@ -9,7 +9,7 @@ New first true release: Ancho Chipotle
 Awesome features:
 - basic camera
 - textures with whole set of 2D texture filtering options, and super sexy smooth anisotropic filtering as well.
-- dynamic perspective (trademark)
+- dynamic perspective
 - lighting capabilities
 - 4D is the standard for any shape vertex
 - loading .obj models (experimental at this point)
