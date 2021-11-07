@@ -111,7 +111,7 @@ The cubemap images with be assigned in this order:
 * gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
 
 # Set a Cubemap
-To set the active cubemap, use setCubeMap method. That way you can alternate between different cubemap.
+To set the active cubemap, use setCubeMap method. That way you can alternate between different cubemaps.
 ```js
 epicCanvas.setCubeMap(cubemap)
 ```
