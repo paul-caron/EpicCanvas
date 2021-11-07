@@ -410,6 +410,20 @@ loadCubeMap (urls) {
     return texture
 }
 
+updateCubeMapFace (cubemap, face, url){
+    const gl = this.gl
+    const img = new Image()
+    img.crossOrigin = ""
+    img.onload = () => {
+        const format = gl.RGBA
+        const type = gl.UNSIGNED_BYTE
+        gl.bindTexture(gl.TEXTURE_CUBE_MAP, cubemap)
+        gl.texSubImage2D (face, 0,0,0,format, type, img)
+        gl.generateMipmap(gl.TEXTURE_CUBE_MAP)
+    }
+    img.src = url
+}
+
 setCubeMap(cubemap){
     this.gl.activeTexture(this.gl.TEXTURE0)
     this.gl.bindTexture(this.gl.TEXTURE_CUBE_MAP, cubemap)
