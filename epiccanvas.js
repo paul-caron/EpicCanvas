@@ -424,6 +424,18 @@ updateCubeMapFace (cubemap, face, url){
     img.src = url
 }
 
+renderToCubeMapFace(cubemap, face, drawFunction, ...drawFunctionParameters){
+    const fb = this.gl.createFramebuffer()
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, fb)
+    const attachmentPoint = this.gl.COLOR_ATTACHMENT0;
+    this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, attachmentPoint, face, cubemap, 0)
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, fb)
+    drawFunction(...drawFunctionParameters)
+    this.gl.bindTexture(this.gl.TEXTURE_CUBE_MAP, cubemap)
+    this.gl.generateMipmap(this.gl.TEXTURE_CUBE_MAP)
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null)
+}
+
 setCubeMap(cubemap){
     this.gl.activeTexture(this.gl.TEXTURE0)
     this.gl.bindTexture(this.gl.TEXTURE_CUBE_MAP, cubemap)
