@@ -399,6 +399,36 @@ setTexture(texture){
     )
 }
 
+copyTexture(from, to, from_type, to_type, width, height){
+    const fb = this.gl.createFramebuffer()
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, fb)
+    const attachmentPoint = this.gl.COLOR_ATTACHMENT0
+    this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, attachmentPoint, from_type, from, 0)
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, fb)
+    
+    const target = to_type
+    const level = 0
+    const internalFormat = this.gl.RGBA
+    const x = 0
+    const y = 0
+    const border = 0
+    
+    this.gl.bindTexture(to_type, to)
+    this.gl.copyTexImage2D(target, level, internalFormat, x, y, width, height, border)
+    
+    function isPowerOf2(value){
+        return (value&(value-1)) == 0
+    }
+    
+    if(isPowerOf2(width)&&isPowerOf2(height)){
+        this.gl.generateMipmap(to_type)
+    }
+    
+    this.gl.bindTexture(to_type, null)
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null)
+    this.gl.deleteFramebuffer(fb)
+}
+
 loadCubeMap (urls) {
     if(urls.length != 6) return
     const gl = this.gl
