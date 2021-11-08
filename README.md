@@ -110,6 +110,32 @@ The cubemap images with be assigned in this order:
 * gl.TEXTURE_CUBE_MAP_POSITIVE_Z
 * gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
 
+# Render Drawing Onto Cubemap Face
+Sometimes you would like to modify a cubemap, like for adding shadows perhaps.
+The renderToCubeMapFace method is there to help.
+The parameters:
+* cubemap: The cubemap to modify
+* face: The cubemap face to modify
+* rendering function: The function to render stuff onto the cubemap face
+* ... all the rendering function parameters.
+
+Example
+```js
+const cubeMap = epicCanvas.loadCubeMap(urls)
+const renderingFunction = () => {
+    epicCanvas.clearScreen()
+    drawShape(epicCanvas, program, shape)
+}
+
+//adjust viewport to size of cubemap texture
+epicCanvas.gl.viewport(0,0,textureWidth,textureHeight)
+//render
+epicCanvas.renderToCubeMapFace(cubeMap, epicCanvas.gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, renderingFunction)
+//adjust the viewport to original size
+epicCanvas.gl.viewport(0,0,epicCanvas.canvas.width, epicCanvas.canvas.height)
+```
+
+
 # Set a Cubemap
 To set the active cubemap, use setCubeMap method. That way you can alternate between different cubemaps.
 ```js
