@@ -460,16 +460,35 @@ updateCubeMapFace (cubemap, face, url){
     img.src = url
 }
 
-renderToCubeMapFace(cubemap, face, drawFunction, ...drawFunctionParameters){
+renderToCubeMapFace(cubemap, face, faceWidth, faceHeight, drawFunction, ...drawFunctionParameters){
+    //framebuffer
     const fb = this.gl.createFramebuffer()
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, fb)
-    const attachmentPoint = this.gl.COLOR_ATTACHMENT0;
+    const attachmentPoint = this.gl.COLOR_ATTACHMENT0
     this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, attachmentPoint, face, cubemap, 0)
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, fb)
+    
+    //depth buffer
+    const depthBuffer = this.gl.createRenderbuffer()
+    this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, depthBuffer);
+    this.gl.renderbufferStorage(this.gl.RENDERBUFFER, this.gl.DEPTH_COMPONENT16, faceWidth, faceHeight)
+    this.gl.framebufferRenderbuffer(this.gl.FRAMEBUFFER, this.gl.DEPTH_ATTACHMENT, this.gl.RENDERBUFFER, depthBuffer)
+    
+    //render
+    this.gl.viewport(0,0,faceWidth,faceHeight)
     drawFunction(...drawFunctionParameters)
+    this.gl.viewport(0,0, this.canvas.width, this.canvas.height)
+    
+    //clean
+    this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, null)
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null)
+    this.gl.deleteRenderbuffer(depthBuffer)
+    this.gl.deleteFramebuffer(fb)
+    
+    //regenerate mips
     this.gl.bindTexture(this.gl.TEXTURE_CUBE_MAP, cubemap)
     this.gl.generateMipmap(this.gl.TEXTURE_CUBE_MAP)
-    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null)
+    
 }
 
 setCubeMap(cubemap){
