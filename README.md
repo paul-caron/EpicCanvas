@@ -89,6 +89,16 @@ Sometimes you would like to modify a texture, like for adding shadows perhaps. T
 * rendering function: The function to render stuff onto the texture
 * ... all the rendering function parameters.
 
+Example
+```js
+const renderingFunction = () => {
+    epicCanvas.clearScreen()
+    drawShape(epicCanvas, program, shape)
+}
+
+epicCanvas.renderToCubeMapFace(texture, textureWidth, textureHeight, renderingFunction)
+```
+
 # Copy A Texture
 The content of one 2D texture can be written over the content of another, using copyTexture method.
 The parameters are:
