@@ -335,6 +335,14 @@ EpicCanvas has a coordinate system setup so that when you look in the negative Z
 * positive Y is at the top of the screen
 * negative Y is at the bottom of the screen
 
+# Automatic Normals
+To find and set the normals of triangle vertices, we can use the setNormals function
+Works only for gl.TRIANGLES mode and assuming the vertices order follow the right hand rule.
+```js
+setNormals(shape)
+// now shape has normals set based on its vertices
+```
+
 # Dependencies
 The projection and modelView matrices are computed using gl-matrix.js.
 A similar script tag must be included:
