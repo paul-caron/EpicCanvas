@@ -80,6 +80,29 @@ Pass it the texture handle you would like to update and a URL.
 epicCanvas.updateTexture(texture, url)
 ```
 
+# Copy A Texture
+The content of one 2D texture can be written over the content of another, using copyTexture method.
+The parameters are:
+* from: The texture to copy from
+* to: The texture to copy to
+* from_type: The texture type that is copied from
+* to_type: The texture type that is copied to
+* width: Texture width
+* height: Texture height
+
+```js
+epicCanvas.copyTexture(from, to, from_type, to_type, width, height)
+```
+
+The texture types can be any of the following:
+* gl.TEXTURE_2D
+* gl.TEXTURE_CUBE_MAP_POSITIVE_X
+* gl.TEXTURE_CUBE_MAP_NEGATIVE_X
+* gl.TEXTURE_CUBE_MAP_POSITIVE_Y
+* gl.TEXTURE_CUBE_MAP_NEGATIVE_Y
+* gl.TEXTURE_CUBE_MAP_POSITIVE_Z
+* gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
+
 # Loading 3D Model
 3D models can be loaded in the EpicCanvas using this method:
 * loadObj(url): this is an async method that will load the obj model into the EpicCanvas.models array.
