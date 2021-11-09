@@ -96,7 +96,7 @@ const renderingFunction = () => {
     drawShape(epicCanvas, program, shape)
 }
 
-epicCanvas.renderToCubeMapFace(texture, textureWidth, textureHeight, renderingFunction)
+epicCanvas.renderToTexture(texture, textureWidth, textureHeight, renderingFunction)
 ```
 
 # Copy A Texture
