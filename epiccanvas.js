@@ -959,7 +959,30 @@ function scale(shape,scaleX,scaleY,scaleZ){
 }
 
 
-
+function setNormals(shape){
+    // to find and set normals based on triangle vertices
+    // works only for gl.TRIANGLES mode
+    shape.normals = []    
+    for(let i= 0;i<shape.vertices.length;i+=4*3){
+        const pointA = [...shape.vertices.slice(i,i+4)]
+        const pointB = [...shape.vertices.slice(i+4,i+8)]
+        const pointC = [...shape.vertices.slice(i+8,i+12)]
+        const AB = [pointB[0]-pointA[0], pointB[1]-pointA[1],pointB[2]-pointA[2]]
+        const AC = [pointC[0]-pointA[0], pointC[1]-pointA[1],pointC[2]-pointA[2]]
+        //cross product
+        const N = [0,0,0,1]
+        N[0] = ((AB[1]*AC[2]) - (AB[2]*AC[1]))
+        N[1] = ((AB[2]*AC[0]) - (AB[0]*AC[2]))
+        N[2] = ((AB[0]*AC[1]) - (AB[1]*AC[0]))
+        //normalize
+        const d = Math.sqrt(N[0]**2+N[1]**2+N[2]**2)
+        N[0] /= d
+        N[1] /= d
+        N[2] /= d
+        for(let j=0;j<3;++j)
+            shape.normals.push(...N)
+    }
+}
 
 
 
