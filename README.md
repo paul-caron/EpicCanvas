@@ -83,11 +83,11 @@ epicCanvas.updateTexture(texture, url)
 # Render Onto A 2D Texture
 Sometimes you would like to modify a texture, like for adding shadows perhaps. The renderToTexture method is there to help. The parameters:
 
-texture: The texture to modify
-width: Width of the texture
-height: Height of the texture
-rendering function: The function to render stuff onto the texture
-... all the rendering function parameters.
+* texture: The texture to modify
+* width: Width of the texture
+* height: Height of the texture
+* rendering function: The function to render stuff onto the texture
+* ... all the rendering function parameters.
 
 # Copy A Texture
 The content of one 2D texture can be written over the content of another, using copyTexture method.
