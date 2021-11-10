@@ -137,7 +137,7 @@ await epicCanvas.loadObj(url)
 # Loading STL 3D Model
 STL 3D models can be loaded with loadSTL method. It returns a promise that resolves into a drawable shape.
 Simply call it with a URL as parameter.
-```
+```js
 const model = epicCanvas.loadSTL(url)
 model.then(shape => {
     drawShape(epicCanvas, program, shape)
