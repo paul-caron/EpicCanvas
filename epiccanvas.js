@@ -526,6 +526,105 @@ setCubeMap(cubemap){
     this.gl.bindTexture(this.gl.TEXTURE_CUBE_MAP, cubemap)
 }
 
+loadSTL(url){
+    return new Promise((resolve, reject)=>{
+    fetch(url)
+    .then(response => response.blob())
+    .then(blob => blob.arrayBuffer())
+    .then(array => {
+        const shape = {
+            vertices : [],
+            colors : [],
+            textureCoordinates : [],
+            normals : [],
+            mode : this.gl.TRIANGLES,
+        }
+        const text = new TextDecoder().decode(array)
+        const magic = text.slice(0,6)
+        //ascii stl
+        if(magic.trim() == "solid"){
+            const splitted = text.split(" ")
+            const nums = splitted.filter(a=>!isNaN(parseFloat(a)))
+            const values = nums.map(parseFloat)
+            for(let i=0;i<values.length;i+=12){
+                let normal = values.slice(i,i+3)
+                let a = values.slice(i+3,i+6)
+                let b = values.slice(i+6,i+9)
+                let c = values.slice(i+9,i+12)
+                shape.normals.push(...normal,1,...normal,1,...normal,1)
+                shape.vertices.push(...a,1,...b,1,...c,1)
+            }
+            shape.colors = shape.normals.map(v=>1.0)
+            this.initBuffers(shape)
+        }
+        //binary stl
+        else{
+            const u8ToU32bits = (arr4)=>{
+                const a = arr4[0]
+                const b = arr4[1]
+                const c = arr4[2]
+                const d = arr4[3]
+                return a+(b<<8)+(c<<16)+(d<<24)
+            }
+            const bytes = new Uint8Array(array)
+            
+            const header = text.slice(0,80)
+            shape.header = header
+            
+            const nTriangles = u8ToU32bits(bytes.slice(80,84))
+            shape.nTriangles = nTriangles
+            
+            const data = bytes.slice(84)
+            //4 bytes per value, 12 values per facet, 2 bytes attributes
+            const values = []
+            for(let i=0;i<nTriangles*50;i+=50){
+                const facetBytes = data.slice(i,i+48)
+                const dv = new DataView(facetBytes.buffer,
+                    facetBytes.byteOffset,
+                    facetBytes.byteLength
+                )
+                const facetFloats = [
+                    dv.getFloat32(0,true),
+                    dv.getFloat32(4,true),
+                    dv.getFloat32(8,true),
+                    
+                    dv.getFloat32(12,true),
+                    dv.getFloat32(16,true),
+                    dv.getFloat32(20,true),
+                    
+                    dv.getFloat32(24,true),
+                    dv.getFloat32(28,true),
+                    dv.getFloat32(32,true),
+                    
+                    dv.getFloat32(36, true),
+                    dv.getFloat32(40,true),
+                    dv.getFloat32(44,true),
+                    
+                ]
+                
+                values.push(...facetFloats)
+            }
+            
+            for(let i=0;i<values.length;i+=12){
+                let normal = values.slice(i,i+3)
+                let a = values.slice(i+3,i+6)
+                let b = values.slice(i+6,i+9)
+                let c = values.slice(i+9,i+12)
+                shape.normals.push(...normal,1,...normal,1,...normal,1)
+                shape.vertices.push(...a,1,...b,1,...c,1)
+            }
+            shape.colors = shape.normals.map(v=>1.0)
+            this.initBuffers(shape)
+        }
+        resolve(shape)
+    })
+    .catch(e=>{
+        console.log(e)
+        reject(e)
+    })
+    })
+}
+
 async loadObj(url){
     const response=await fetch(url)
     const text=await response.text()
