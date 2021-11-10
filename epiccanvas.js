@@ -1055,8 +1055,20 @@ function scale(shape,scaleX,scaleY,scaleZ){
         shape.vertices[i+1]*=scaleY
         shape.vertices[i+2]*=scaleZ
     }
+    for(let i=0;i<shape.normals.length;i+=4){
+        shape.normals[i]/=scaleX
+        shape.normals[i+1]/=scaleY
+        shape.normals[i+2]/=scaleZ
+        const h = Math.sqrt(
+            shape.normals[i]**2 +
+            shape.normals[i+1]**2 +
+            shape.normals[i+2]**2
+        )
+        shape.normals[i]/=h
+        shape.normals[i+1]/=h
+        shape.normals[i+2]/=h
+    }
 }
-
 
 function setNormals(shape){
     // to find and set normals based on triangle vertices
