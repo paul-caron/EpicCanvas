@@ -122,8 +122,8 @@ The texture types can be any of the following:
 * gl.TEXTURE_CUBE_MAP_POSITIVE_Z
 * gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
 
-# Loading 3D Model
-3D models can be loaded in the EpicCanvas using this method:
+# Loading OBJ 3D Model
+OBJ 3D models can be loaded in the EpicCanvas using this method:
 * loadObj(url): this is an async method that will load the obj model into the EpicCanvas.models array.
 
 Supported models are only .obj files with triangular faces only.
@@ -133,6 +133,17 @@ Some code like this can be used to wait for loading phase to be completed:
 const epicCanvas = new EpicCanvas(640,480,"body")
 await epicCanvas.loadObj(url)
 ```
+
+# Loading STL 3D Model
+STL 3D models can be loaded with loadSTL method. It returns a promise that resolves into a drawable shape.
+Simply call it with a URL as parameter.
+```
+const model = epicCanvas.loadSTL(url)
+model.then(shape => {
+    drawShape(epicCanvas, program, shape)
+})
+```
+
 
 # Loading a Cubemap
 Loading a cubemap is easy provided you have exactly six urls of images that are square and power of two (2,4,8,16,32,64,...512,..etc)
