@@ -1095,6 +1095,36 @@ function setNormals(shape){
     }
 }
 
+function center(shape){
+    let [xMax,yMax,zMax] = shape.vertices.slice(0,3)
+    let [xMin,yMin,zMin] = shape.vertices.slice(0,3)
+    for(let i=0;i<shape.vertices.length;i+=4){
+        const [x,y,z] = shape.vertices.slice(i,i+3)
+        if(x<xMin) xMin = x
+        if(y<yMin) yMin = y
+        if(z<zMin) zMin = z
+        if(x>xMax) xMax = x
+        if(y>yMax) yMax = y
+        if(z>zMax) zMax = z
+    }
+    const xCenter = (xMax + xMin)/2
+    translateX(shape, -xCenter)
+    const yCenter = (yMax + yMin)/2
+    translateY(shape, -yCenter)
+    const zCenter = (zMax + zMin)/2
+    translateZ(shape, -zCenter)
+}
 
+function scaleToUnitSize(shape){
+    let max = 0
+    for(let i=0;i<shape.vertices.length;i+=4){
+        const slice = shape.vertices.slice(i,i+3)
+        let h =0
+        for(let v of slice) h+=v**2
+        h=Math.sqrt(h)
+        if(h>max) max = h
+    }
+    scale(shape, 1/max, 1/max, 1/max)
+}
 
 
