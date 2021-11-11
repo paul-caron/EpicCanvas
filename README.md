@@ -394,6 +394,31 @@ setNormals(shape)
 // now shape has normals set based on its vertices
 ```
 
+# Window
+Webgl viewports are bit confusing for some. EpicCanvas wishes to help remedy this with the window method.
+
+The window method creates a function that when called will call for a "scissored viewport", which means that the viewport area only will be cleared and written over.
+
+The method functions a bit different than gl.viewports method.
+* The window method takes in ratios of the width and height of the canvas.
+* The window method has origin in left upper corner (not left lower corner)
+
+The method takes in the following arguments:
+* startWidthRatio: a number from 0.0-1.0
+* startHeightRatio: a number from 0.0-1.0
+* widthRatio: a number from 0.0-1.0
+* heightRatio: a number from 0.0-1.0
+
+Example
+```js
+//for x=0,y=0, width=0.5*canvas.width, height=0.5*canvas.height
+const leftUpper = window(0,0,0.5,0.5)
+leftUpper() //changes the active window to left upper quadrant
+
+const fullscreen = window(0,0,1,1)
+fullscreen() //changes the active window to fullscreen
+```
+
 # Dependencies
 The projection and modelView matrices are computed using gl-matrix.js.
 A similar script tag must be included:
