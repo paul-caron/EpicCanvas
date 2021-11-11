@@ -785,6 +785,18 @@ getProgramInfo(vsSource, fsSource){
 
 
 
+window(startWidthRatio, startHeightRatio, widthRatio, heightRatio){
+    const x = this.canvas.width * startWidthRatio 
+    const y = this.canvas.height - (this.canvas.height * startHeightRatio  + heightRatio * this.canvas.height)
+    const dx = this.canvas.width * widthRatio
+    const dy = this.canvas.height * heightRatio
+    this.gl.enable(this.gl.SCISSOR_TEST)
+    const viewportFunc = () => {
+        this.gl.viewport(x, y, dx, dy)
+        this.gl.scissor(x, y, dx, dy)
+    }
+    return viewportFunc
+}
 
 
 
