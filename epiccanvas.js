@@ -555,7 +555,6 @@ loadSTL(url){
                 shape.vertices.push(...a,1,...b,1,...c,1)
             }
             shape.colors = shape.normals.map(v=>1.0)
-            this.initBuffers(shape)
         }
         //binary stl
         else{
@@ -614,8 +613,35 @@ loadSTL(url){
                 shape.vertices.push(...a,1,...b,1,...c,1)
             }
             shape.colors = shape.normals.map(v=>1.0)
-            this.initBuffers(shape)
         }
+        //calculate normals for all zero blank normals
+        for(let i=0;i<shape.normals.length;i+=12){
+            const [x,y,z] = shape.normals.slice(i,i+3)
+            if(x==0&&y==0&&z==0){
+                const pointA = [...shape.vertices.slice(i,i+4)]
+                const pointB = [...shape.vertices.slice(i+4,i+8)]
+                const pointC = [...shape.vertices.slice(i+8,i+12)]
+                const AB = [pointB[0]-pointA[0], pointB[1]-pointA[1],pointB[2]-pointA[2]]
+                const AC = [pointC[0]-pointA[0], pointC[1]-pointA[1],pointC[2]-pointA[2]]
+                //cross product
+                const N = [0,0,0,1]
+                N[0] = ((AB[1]*AC[2]) - (AB[2]*AC[1]))
+                N[1] = ((AB[2]*AC[0]) - (AB[0]*AC[2]))
+                N[2] = ((AB[0]*AC[1]) - (AB[1]*AC[0]))
+                //normalize
+                const d = Math.sqrt(N[0]**2+N[1]**2+N[2]**2)
+                N[0] /= d
+                N[1] /= d
+                N[2] /= d
+                for(let j=0;j<3;++j){
+                    shape.normals[i+j*4] = N[0]
+                    shape.normals[i+1+j*4] = N[1]
+                    shape.normals[i+2+j*4] = N[2]
+                }
+            }
+        }
+        this.initBuffers(shape)
+        ///
         resolve(shape)
     })
     .catch(e=>{
@@ -624,6 +650,7 @@ loadSTL(url){
     })
     })
 }
+
 
 async loadObj(url){
     const response=await fetch(url)
