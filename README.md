@@ -12,7 +12,8 @@ Awesome features:
 - dynamic perspective
 - lighting capabilities
 - 4D is the standard for any shape vertex
-- loading .stl or .obj models (experimental at this point)
+- loading .stl models
+- loading .obj models (experimental at this point)
 - several primitive shapes (more coming)
 - 3D and 4D shape transforms
 - variety of different shaders available for color, texture and lighting
