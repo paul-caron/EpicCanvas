@@ -29,6 +29,129 @@ class EpicShape{
     }
 }
 
+class PLYProperties{
+    constructor(){
+        //properties of elements pushed in order
+        this.vertex = {}
+        this.face = {}
+        this.edge = {}
+        this.vertex.order = []
+        this.face.order = []
+        this.edge.order = []
+        this.vertex.types = []
+        this.face.types = []
+        this.edge.types = []
+        this.vertex.values = []
+        this.face.values = []
+        this.edge.values = []
+    }
+}
+
+class PLYElements{
+    constructor(){
+        //number of elements
+        this.vertex = 0
+        this.face = 0
+        this.edge = 0
+        this.material = 0
+        //parsing order of elements, usually vertex first than faces
+        this.order = []
+    }
+}
+
+class PLY {
+    constructor(){
+        this.format
+        this.comment = []
+        this.element = new PLYElements()
+        this.property = new PLYProperties()
+    }
+    parseHeaderLine(line){
+        const words = line.split(" ")
+        if(words[0] == "format"){
+            this.format = (words.slice(1)).join(" ")
+        }
+        else if(words[0] == "comment"){
+            this.comment.push((words.slice(1)).join(" "))
+        }
+        else if(words[0] == "element"){
+            this[words[0]][words[1]] = parseInt(words[2])
+            this.currentlyParsedElement = words[1]
+            this[words[0]].order.push(words[1])
+        }
+        else if(words[0] == "property"){
+            
+            this.property[this.currentlyParsedElement].order.push(words[words.length-1])
+            this.property[this.currentlyParsedElement].types.push(...words.slice(1,words.length-1))
+        }
+    }
+    parseDataASCII(dataLines){
+        let dataLinesIndex = 0
+        for(let element of this.element.order){
+            for(let i=0;i<this.element[element];++i){
+                const data = dataLines[dataLinesIndex].split(" ")
+                this.property[element].values.push({})
+                const value = this.property[element].values[i]
+                for(let j=0;j<data.length;++j){
+                    //if type not list
+                    const type = this.property[element].types[j]
+                    if(type!="list")
+                    value[this.property[element].order[j]] = parseFloat(data[j])
+                    //if type is list
+                    else{
+                        value[this.property[element].order[j]] = data.slice(j).map(v=>parseInt(v))
+                        break
+                    }
+                }
+                dataLinesIndex++
+            }
+        }
+    }
+    parse(text){
+        let lines = text.split("\n")
+        
+        lines = lines.map(line=>line.trim())
+        if(!lines[0].toLowerCase().startsWith("ply")){
+            alert("PLY file not valid")
+            throw("PLY file not valid")
+        }
+        
+        let i=1;
+        for(;!lines[i].startsWith("end_header")&&i<lines.length;++i){
+            const line = lines[i]
+            this.parseHeaderLine(line)
+        }
+        this.parseDataASCII(lines.slice(i+1))
+        const shape = {
+            vertices : [],
+            colors : [],
+            textureCoordinates : [],
+            normals : [],
+        }
+        
+        
+        for(let face of this.property.face.values){
+            const [n,...vertex_indices] = face.vertex_indices
+            //triangle point abc
+            let A = vertex_indices[0]
+            let B = vertex_indices[1]
+            for(let i=2;i<=n-1;++i){
+                const vertexA = this.property.vertex.values[A]
+                const vertexB = this.property.vertex.values[B]
+                const vertexC = this.property.vertex.values[vertex_indices[i]]
+                shape.vertices.push(vertexA.x,vertexA.y,vertexA.z,1)
+                shape.vertices.push(vertexB.x,vertexB.y,vertexB.z,1)
+                shape.vertices.push(vertexC.x,vertexC.y,vertexC.z,1)
+                B = vertex_indices[i]
+                
+            }
+            shape.colors = shape.vertices.map(v=>1.0)
+        }
+        return shape
+    }
+}
+
+
 class EpicCanvas{
 constructor(width,height,container){
     this.models=[]
@@ -648,6 +771,22 @@ loadSTL(url){
         console.log(e)
         reject(e)
     })
+    })
+}
+
+loadPLY(url){
+    return new Promise((resolve, reject) => {
+        fetch(url)
+        .then(response => response.text())
+        .then(text => {
+            const ply = new PLY()
+            return ply.parse(text)
+        })
+        .then(shape=>{
+            shape.mode = this.gl.TRIANGLES
+            this.initBuffers(shape)
+            resolve(shape)
+        })
     })
 }
 
