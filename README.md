@@ -146,6 +146,17 @@ model.then(shape => {
 ```
 
 
+# Loading PLY 3D Model
+PLY (ascii) 3D models can be loaded with loadPLY method. It returns a promise that resolves into a drawable shape.
+Simply call it with a URL as parameter.
+```js
+const model = epicCanvas.loadPLY(url)
+model.then(shape => {
+    drawShape(epicCanvas, program, shape)
+})
+```
+
+
 # Loading a Cubemap
 Loading a cubemap is easy provided you have exactly six urls of images that are square and power of two (2,4,8,16,32,64,...512,..etc)
 Put all the urls in an array of six, as such:
