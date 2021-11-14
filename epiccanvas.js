@@ -133,7 +133,7 @@ class PLY {
         for(let face of this.property.face.values){
             const [n,...vertex_indices] = face.vertex_indices
             //triangle point abc
-            let A = vertex_indices[0]
+            const A = vertex_indices[0]
             let B = vertex_indices[1]
             for(let i=2;i<=n-1;++i){
                 const vertexA = this.property.vertex.values[A]
@@ -142,10 +142,40 @@ class PLY {
                 shape.vertices.push(vertexA.x,vertexA.y,vertexA.z,1)
                 shape.vertices.push(vertexB.x,vertexB.y,vertexB.z,1)
                 shape.vertices.push(vertexC.x,vertexC.y,vertexC.z,1)
+                
+                
+                if(vertexA.red != undefined){
+                    shape.colors.push(
+                        vertexA.red/255,
+                        vertexA.green/255,
+                        vertexA.blue/255)
+                    shape.colors.push(vertexA.alpha?
+                                      vertexA.alpha/255:
+                                      1.0)
+                    shape.colors.push(
+                        vertexB.red/255,
+                        vertexB.green/255,
+                        vertexB.blue/255)
+                    shape.colors.push(vertexB.alpha?
+                                      vertexB.alpha/255:
+                                      1.0)
+                    shape.colors.push(
+                        vertexC.red/255,
+                        vertexC.green/255,
+                        vertexC.blue/255)
+                    shape.colors.push(vertexC.alpha?
+                                      vertexC.alpha/255:
+                                      1.0)
+                }
+                else{
+                    shape.colors.push(1,1,1,1,
+                                      1,1,1,1,
+                                      1,1,1,1)
+                }
+                
                 B = vertex_indices[i]
                 
             }
-            shape.colors = shape.vertices.map(v=>1.0)
         }
         return shape
     }
