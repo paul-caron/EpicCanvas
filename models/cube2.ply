@@ -5,11 +5,14 @@ element vertex 8
 property float32 x 
 property float32 y 
 property float32 z 
+element face 6 
+property list uint8 int32 vertex_indices 
 property uchar red 
 property uchar green 
 property uchar blue 
-element face 6 
-property list uint8 int32 vertex_indices 
+property float32 nx 
+property float32 ny 
+property float32 nz 
 end_header 
 -1 -1 -1 255 0 0 
 1 -1 -1 0 255 0 
