@@ -1,4 +1,4 @@
-Some of the models (bunny and dragon) are taken from the stanford 3d scanning repository
+Some of the models (bunny, happy buddha and dragon) are taken from the stanford 3d scanning repository
  https://graphics.stanford.edu/data/3Dscanrep/
 
 Below is taken from website and applies only to those stanford models:
