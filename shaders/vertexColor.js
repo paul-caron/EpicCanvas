@@ -3,7 +3,7 @@ attribute vec4 aVertexPosition;
 attribute vec4 aVertexColor;
 uniform mat4 uModelViewMatrix;
 uniform mat4 uProjectionMatrix;
-uniform float uPoinSize;
+uniform float uPointSize;
 
 varying mediump vec4 vColor;
 void main(){
