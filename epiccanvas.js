@@ -1136,6 +1136,11 @@ function drawShape(epicCanvas,programInfo,shape){
         programInfo.uniformLocations.pointLightColor,
         new Float32Array(epicCanvas.pointLightColor)
     )
+    gl.uniform1f(
+        programInfo.uniformLocations.pointSize,
+        epicCanvas.pointSize
+    )
+    
     {
         const offset=0
         const vertexCount=shape.vertices.length/4
