@@ -197,6 +197,7 @@ constructor(width,height,container){
     this.directionalVector=[0,0,1]
     this.pointLightPosition=[0,0,0]
     this.pointLightColor=[0,0,0]
+    this.pointSize = 1
     this._fieldOfView=60*Math.PI/180
     this._aspectRatio=this.gl.canvas.clientWidth/
                       this.gl.canvas.clientHeight
@@ -975,6 +976,9 @@ getProgramInfo(vsSource, fsSource){
         pointLightColor:gl.getUniformLocation(
             shaderProgram, 'pointLightColor'
         ),
+        pointSize: gl.getUniformLocation(
+            shaderProgram, 'uPointSize'
+        ),
     },
 }
 }
@@ -1132,6 +1136,11 @@ function drawShape(epicCanvas,programInfo,shape){
         programInfo.uniformLocations.pointLightColor,
         new Float32Array(epicCanvas.pointLightColor)
     )
+    gl.uniform1f(
+        programInfo.uniformLocations.pointSize,
+        epicCanvas.pointSize
+    )
+    
     {
         const offset=0
         const vertexCount=shape.vertices.length/4
