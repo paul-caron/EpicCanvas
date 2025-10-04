@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+ </head>
+<body>
+    <!-- dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.3/epiccanvas.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.3/primitives/cube.js" crossorigin='anonymous'></script>
+
+<script>
+const vsSource = `
+    attribute vec4 aVertexPosition;
+    attribute vec2 aTextureCoord;
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+    varying highp vec2 vTextureCoord;
+    void main() {
+        gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
+        vTextureCoord = aTextureCoord;
+    }
+`;
+
+const fsSource = `
+    varying highp vec2 vTextureCoord;
+    uniform sampler2D uSampler;
+    void main() {
+        gl_FragColor = texture2D(uSampler, vTextureCoord);
+    }
+`;
+
+// Globals
+let s, w, h, epicCanvas, program, texture, texture2;
+
+const textureRenderingFunction = () => {
+    epicCanvas.clearColor = [0.5, 0.7, 0.8, 1]; // Green clear color
+    epicCanvas.clearScreen();
+    epicCanvas.setTexture(texture2);
+    epicCanvas.drawShape(program, s);
+};
+
+const loop = (t) => {
+    rotateY(s, 0.01);
+    rotateX(s, 0.005);
+    rotateZ(s, 0.001);
+    epicCanvas.reloadBufferData(s);
+    epicCanvas.clearColor = [0.7, 0.5, 0.8, 1.0];
+    epicCanvas.clearScreen();
+    epicCanvas.setTexture(texture);
+    epicCanvas.drawShape(program, s);
+    epicCanvas.renderToTexture(texture, w, h, textureRenderingFunction);
+    const error = epicCanvas.gl.getError();
+    if (error !== epicCanvas.gl.NO_ERROR) {
+        console.error("WebGL error in loop:", error);
+    }
+    requestAnimationFrame(loop);
+};
+
+const main = () => {
+    try {
+        // Create canvas
+        const size = Math.min(innerWidth, innerHeight);
+        const width = w = size;
+        const height = h = size;
+        epicCanvas = new EpicCanvas(width, height, "body");
+
+        // Set up camera
+        epicCanvas.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0]);
+
+        // Create shader program
+        program = epicCanvas.makeProgram(vsSource, fsSource);
+
+        // Create a cube
+        s = Cube(epicCanvas);
+
+        // Create and initialize texture
+        texture = epicCanvas.loadTexture(null);
+        texture2 = epicCanvas.loadTexture(null)
+
+        // Check for WebGL errors
+        const error = epicCanvas.gl.getError();
+        if (error !== epicCanvas.gl.NO_ERROR) {
+            console.error("WebGL error after initial render:", error);
+        }
+
+        // Start the loop
+        requestAnimationFrame(loop);
+    } catch (e) {
+        console.error("Error in main:", e);
+    }
+};
+
+onload = main;
+</script>
+</body>
+</html>
