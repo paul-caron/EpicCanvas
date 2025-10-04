@@ -800,6 +800,7 @@ loadSTL(url) {
                             if (currentNormal.length !== 3 || currentNormal.some(isNaN)) {
                                 throw new Error(`Invalid normal at line ${i + 1}: ${lines[i]}`);
                             }
+                            currentNormal.push(0); // Extend to 4D with w=0
                         } else if (lines[i].startsWith("vertex")) {
                             const coords = lines[i].split(" ").slice(1).map(parseFloat);
                             if (coords.length !== 3 || coords.some(isNaN)) {
@@ -828,6 +829,7 @@ loadSTL(url) {
                             dataView.getFloat32(offset, true),
                             dataView.getFloat32(offset + 4, true),
                             dataView.getFloat32(offset + 8, true),
+                            0 // Extend to 4D with w=0
                         ];
                         const vertex1 = [
                             dataView.getFloat32(offset + 12, true),
