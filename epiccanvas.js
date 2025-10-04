@@ -472,6 +472,9 @@ loadTexture(url, options = {}){
             }
         }
     }
+    if (url && typeof url === "string") {
+        image.src = url;
+    }
     image.src=url
     this.textures.push(texture)
     function isPowerOf2(value){
