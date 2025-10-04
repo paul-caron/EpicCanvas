@@ -768,7 +768,106 @@ setCubeMap(cubemap){
     this.gl.activeTexture(this.gl.TEXTURE0)
     this.gl.bindTexture(this.gl.TEXTURE_CUBE_MAP, cubemap)
 }
+loadSTL(url) {
+    return new Promise((resolve, reject) => {
+        fetch(url)
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+                return response.blob();
+            })
+            .then(blob => blob.arrayBuffer())
+            .then(array => {
+                const shape = {
+                    vertices: [],
+                    colors: [],
+                    textureCoordinates: [],
+                    normals: [],
+                    mode: this.gl.TRIANGLES,
+                };
+                const bytes = new Uint8Array(array);
+                const dataView = new DataView(array);
 
+                // Check for ASCII vs. binary
+                const firstFive = new TextDecoder().decode(bytes.slice(0, 5)).trim().toLowerCase();
+                if (firstFive === "solid" && array.byteLength > 84) {
+                    // ASCII STL
+                    const text = new TextDecoder().decode(array);
+                    const lines = text.split("\n").map(line => line.trim());
+                    let currentNormal = [];
+                    for (let i = 0; i < lines.length; i++) {
+                        if (lines[i].startsWith("facet normal")) {
+                            currentNormal = lines[i].split(" ").slice(2).map(parseFloat);
+                            if (currentNormal.length !== 3 || currentNormal.some(isNaN)) {
+                                throw new Error(`Invalid normal at line ${i + 1}: ${lines[i]}`);
+                            }
+                        } else if (lines[i].startsWith("vertex")) {
+                            const coords = lines[i].split(" ").slice(1).map(parseFloat);
+                            if (coords.length !== 3 || coords.some(isNaN)) {
+                                throw new Error(`Invalid vertex at line ${i + 1}: ${lines[i]}`);
+                            }
+                            shape.vertices.push(...coords, 1);
+                            shape.normals.push(...currentNormal);
+                        }
+                    }
+                    shape.colors = new Array(shape.vertices.length).fill(1.0);
+                } else {
+                    // Binary STL
+                    const nTriangles = dataView.getUint32(80, true); // Little-endian
+                    shape.nTriangles = nTriangles;
+
+                    // Validate file size
+                    const expectedSize = nTriangles * 50 + 84;
+                    if (expectedSize !== bytes.length) {
+                        console.warn(`Expected ${expectedSize} bytes, got ${bytes.length}`);
+                    }
+
+                    // Parse triangles (50 bytes each)
+                    for (let i = 0; i < nTriangles; i++) {
+                        const offset = 84 + i * 50;
+                        const normal = [
+                            dataView.getFloat32(offset, true),
+                            dataView.getFloat32(offset + 4, true),
+                            dataView.getFloat32(offset + 8, true),
+                        ];
+                        const vertex1 = [
+                            dataView.getFloat32(offset + 12, true),
+                            dataView.getFloat32(offset + 16, true),
+                            dataView.getFloat32(offset + 20, true),
+                        ];
+                        const vertex2 = [
+                            dataView.getFloat32(offset + 24, true),
+                            dataView.getFloat32(offset + 28, true),
+                            dataView.getFloat32(offset + 32, true),
+                        ];
+                        const vertex3 = [
+                            dataView.getFloat32(offset + 36, true),
+                            dataView.getFloat32(offset + 40, true),
+                            dataView.getFloat32(offset + 44, true),
+                        ];
+                        shape.vertices.push(...vertex1, 1, ...vertex2, 1, ...vertex3, 1);
+                        shape.normals.push(...normal, ...normal, ...normal); // 3D normals
+                    }
+                    shape.colors = new Array(shape.vertices.length).fill(1.0);
+                }
+
+                // Validate output
+                if (shape.vertices.length === 0) {
+                    throw new Error("No vertices parsed");
+                }
+                if (shape.vertices.length / 4 !== shape.normals.length / 3) {
+                    throw new Error("Vertex and normal count mismatch");
+                }
+
+                this.initBuffers(shape);
+                resolve(shape);
+            })
+            .catch(e => {
+                console.error("STL Load Error:", e);
+                reject(e);
+            });
+    });
+}
+/*
 loadSTL(url){
     return new Promise((resolve, reject)=>{
     fetch(url)
@@ -893,7 +992,8 @@ loadSTL(url){
     })
     })
 }
-
+*/
+    
 loadPLY(url){
     return new Promise((resolve, reject) => {
         fetch(url)
