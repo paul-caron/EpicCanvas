@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+ </head>
+<body>
+    <!-- dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.5/epiccanvas.js" crossorigin='anonymous'></script>
+ 
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.4/primitives/cube.js" crossorigin='anonymous'></script>
+  
+ <script>
+ 
+  //simple color shader code strings
+const vsSource =`
+attribute highp vec4 aVertexNormal;
+attribute highp vec4 aVertexPosition;
+attribute highp vec4 aVertexColor;
+
+uniform highp mat4 uNormalMatrix;
+uniform highp mat4 uModelViewMatrix;
+uniform highp mat4 uProjectionMatrix;
+
+uniform highp vec3 pointLightColor;
+uniform highp vec3 pointLightPosition;
+uniform highp vec3 ambientLight;
+uniform highp vec3 directionalLightColor;
+uniform highp vec3 directionalVector;
+
+varying highp vec4 vColor;
+varying highp vec3 vLighting;
+
+void main(void){
+
+    vec4 vertexPosition = uModelViewMatrix * aVertexPosition;
+    gl_Position = uProjectionMatrix * vertexPosition;
+    vColor = aVertexColor;
+
+    highp vec4 transformedNormal=uNormalMatrix*aVertexNormal;
+    highp float directionalLightIntensity=max(dot(transformedNormal.xyz, directionalVector),0.0);
+
+    vec3 pointLightDirection = normalize(pointLightPosition - vertexPosition.xyz);
+    highp float pointLightIntensity=max(dot(transformedNormal.xyz, pointLightDirection),0.0);
+
+    vLighting=ambientLight+(directionalLightColor*directionalLightIntensity)+(pointLightColor*pointLightIntensity);
+}`;
+
+const fsSource = `
+varying highp vec3 vLighting;
+varying highp vec4 vColor;
+void main(void){
+gl_FragColor=vec4(vColor.rgb*vLighting,vColor.a);
+}
+`
+
+//globals
+let s, model, epicCanvas, program;
+
+//draw loop
+const loop = (t) => {
+  //rotate model along Y axis
+  rotateZ(model, 0.01);
+  //update the buffered data
+  epicCanvas.reloadBufferData(model);
+  //clear screen
+  epicCanvas.clearScreen();
+  //draw
+  epicCanvas.drawShape(program, model);
+  
+  //loop
+ requestAnimationFrame(loop)
+}
+
+
+const main = () => {
+  // create canvas
+  const width = innerWidth;
+  const height = innerHeight;
+  epicCanvas = new EpicCanvas(width,height,"body");
+
+  // set clear color 
+  epicCanvas.clearColor = [0.0,0,0,1.0];
+
+  // setup the camera position, lookat center point, up vector.
+  epicCanvas.lookAt([2.5,0,2.5], [0,0,0], [0,1,0]);
+
+  // create shader program
+  program = epicCanvas.makeProgram(vsSource, fsSource);
+
+//setup some lighting of 3 types
+epicCanvas.ambientColor = [0.25,0.25,0.25];
+epicCanvas.directionalColor = [0.25,0.25,0.25]
+epicCanvas.directionalVector = [0,0,1] //direction the light comes from
+epicCanvas.pointLightColor = [0.75,0.75,0.75]
+epicCanvas.pointLightPosition = [0,5,0]
+
+epicCanvas.loadSTL("https://raw.githubusercontent.com/reprappro/Extruder-drive/master/Print-extruder-drive/Individual-STLs/small-gear-1off.stl")
+    .then((shape) => {
+        model = shape;
+        scaleToUnitSize(shape);
+        center(shape);
+        epicCanvas.reloadBufferData(shape);
+        requestAnimationFrame(loop);
+    })
+    .catch(e => alert("Load failed: " + e.message));
+}
+
+
+onload = main;
+
+  </script>
+</body>
+</html>
