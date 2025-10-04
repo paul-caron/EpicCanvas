@@ -96,7 +96,9 @@ const renderingFunction = () => {
     epicCanvas.clearScreen()
     epicCanvas.drawShape(program, shape)
 }
-
+//create empty texture
+let texture = epicCanvas.loadTexture(null)
+//render onto the previously empty texture
 epicCanvas.renderToTexture(texture, textureWidth, textureHeight, renderingFunction)
 ```
 
