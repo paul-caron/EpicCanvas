@@ -67,10 +67,10 @@ const texture1 = epicCanvas.loadTexure(url1)
 const texture2 = epicCanvas.loadTexture(url2)
 
 epicCanvas.setTexture(texture1)
-drawShape(epicCanvas, programInfo, shape1)
+epicCanvas.drawShape(programInfo, shape1)
 
 epicCanvas.setTexture(texture2)
-drawShape(epicCanvas, programInfo, shape2)
+epicCanvas.drawShape(programInfo, shape2)
 ```
 
 # Update Texture
@@ -94,7 +94,7 @@ Example
 ```js
 const renderingFunction = () => {
     epicCanvas.clearScreen()
-    drawShape(epicCanvas, program, shape)
+    epicCanvas.drawShape(program, shape)
 }
 
 epicCanvas.renderToTexture(texture, textureWidth, textureHeight, renderingFunction)
@@ -141,7 +141,7 @@ Simply call it with a URL as parameter.
 ```js
 const model = epicCanvas.loadSTL(url)
 model.then(shape => {
-    drawShape(epicCanvas, program, shape)
+    epicCanvas.drawShape(program, shape)
 })
 ```
 
@@ -152,7 +152,7 @@ Simply call it with a URL as parameter.
 ```js
 const model = epicCanvas.loadPLY(url)
 model.then(shape => {
-    drawShape(epicCanvas, program, shape)
+    epicCanvas.drawShape(program, shape)
 })
 ```
 
@@ -191,7 +191,7 @@ Example
 const cubeMap = epicCanvas.loadCubeMap(urls)
 const renderingFunction = () => {
     epicCanvas.clearScreen()
-    drawShape(epicCanvas, program, shape)
+    epicCanvas.drawShape(program, shape)
 }
 
 epicCanvas.renderToCubeMapFace(cubeMap, epicCanvas.gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, textureWidth, textureHeight, renderingFunction)
