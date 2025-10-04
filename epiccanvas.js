@@ -527,6 +527,77 @@ updateTexture(texture, url){
     img.src = url
 }
 
+renderToTexture(texture, textureWidth, textureHeight, drawFunction, ...drawFunctionParameters) {
+    if (textureWidth <= 0 || textureHeight <= 0) {
+        throw new Error("Texture dimensions must be positive");
+    }
+    const maxSize = this.gl.getParameter(this.gl.MAX_TEXTURE_SIZE);
+    if (textureWidth > maxSize || textureHeight > maxSize) {
+        throw new Error(`Texture dimensions (${textureWidth}x${textureHeight}) exceed maximum size (${maxSize})`);
+    }
+
+    // Resize the texture
+    this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+    this.gl.texImage2D(
+        this.gl.TEXTURE_2D,
+        0, // level
+        this.gl.RGBA, // internalFormat
+        textureWidth,
+        textureHeight,
+        0, // border
+        this.gl.RGBA, // srcFormat
+        this.gl.UNSIGNED_BYTE, // srcType
+        null // No initial data
+    );
+
+    // Set texture parameters
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+
+    // Create and set up framebuffer
+    const fb = this.gl.createFramebuffer();
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, fb);
+    const attachmentPoint = this.gl.COLOR_ATTACHMENT0;
+    this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, attachmentPoint, this.gl.TEXTURE_2D, texture, 0);
+
+    // Check framebuffer status
+    const status = this.gl.checkFramebufferStatus(this.gl.FRAMEBUFFER);
+    if (status !== this.gl.FRAMEBUFFER_COMPLETE) {
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+        throw new Error(`Framebuffer is not complete: ${status}`);
+    }
+
+    // Set up depth buffer
+    const depthBuffer = this.gl.createRenderbuffer();
+    this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, depthBuffer);
+    this.gl.renderbufferStorage(this.gl.RENDERBUFFER, this.gl.DEPTH_COMPONENT16, textureWidth, textureHeight);
+    this.gl.framebufferRenderbuffer(this.gl.FRAMEBUFFER, this.gl.DEPTH_ATTACHMENT, this.gl.RENDERBUFFER, depthBuffer);
+
+    // Render to the texture
+    this.gl.viewport(0, 0, textureWidth, textureHeight);
+    drawFunction(...drawFunctionParameters);
+    this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+
+    // Clean up
+    this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, null);
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+    this.gl.deleteFramebuffer(fb);
+    this.gl.deleteRenderbuffer(depthBuffer);
+
+    // Generate mipmaps if power-of-2
+    function isPowerOf2(value) {
+        return (value & (value - 1)) == 0;
+    }
+    if (isPowerOf2(textureWidth) && isPowerOf2(textureHeight)) {
+        this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+        this.gl.generateMipmap(this.gl.TEXTURE_2D);
+    }
+}
+
+/*
+
 renderToTexture(texture, textureWidth, textureHeight, drawFunction, ...drawFunctionParameters){
     //framebuffer
     const fb = this.gl.createFramebuffer()
@@ -560,7 +631,7 @@ renderToTexture(texture, textureWidth, textureHeight, drawFunction, ...drawFunct
         this.gl.bindTexture(this.gl.TEXTURE_2D, texture)
         this.gl.generateMipmap(this.gl.TEXTURE_2D)
     }
-}
+}*/
 
 
 setTexture(texture){
