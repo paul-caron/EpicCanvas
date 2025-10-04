@@ -367,23 +367,23 @@ epicCanvas.aspectRatio = width / height
 ```
 
 # Shaders
-Shaders need be compiled via getProgramInfo method of the EpicCanvas.
+Shaders need be compiled via makeProgram method of the EpicCanvas.
 
-getProgramInfo takes 2 arguments:
+makeProgram takes 2 arguments:
 * vertex shader source: A string of the vertex shader source code.
 * fragment shader source: A string of the fragment shader source code.
 
 ```js
-const programInfo = epicCanvas.getProgramInfo(vertexSource, fragmentSource)
+const programInfo = epicCanvas.makeProgram(vertexSource, fragmentSource)
 ```
-The programInfo object is later needed to pass on to the drawShape function. It contains the program and all the variables (atttributes and uniforms) locations.
+The program object is later needed to pass on to the drawShape function. It contains the program and all the variables (attributes and uniforms) locations.
 
 The EpicCanvas repository contains vertex and fragment shaders, ready to be used. Some use vertex colors, others use texture coordinates, with and without basic lighting.
 
 # Drawing Shapes
 To draw a custom shape or a loaded model, simply use the drawShape function (global window function for now). drawShape takes 3 arguments:
 * epicCanvas: The canvas to draw on.
-* programInfo: Program info object. Contains info about the attributes and uniforms locations. see getProgramInfo. 
+* program: Program object. Contains info about the attributes and uniforms locations. see getProgramInfo. 
 * shape: The shape to be drawn.
 Examples:
 ```js
