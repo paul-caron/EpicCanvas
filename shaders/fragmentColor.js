@@ -1,5 +1,5 @@
 const fsColor=`
-varying lowp vec4 vColor;
+varying highp vec4 vColor;
 void main(){
     gl_FragColor=vColor;
 }`
