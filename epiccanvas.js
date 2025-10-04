@@ -1001,9 +1001,8 @@ window(startWidthRatio, startHeightRatio, widthRatio, heightRatio){
 
 
 
-}
-
-function drawShape(epicCanvas,programInfo,shape){
+drawShape(programInfo,shape){
+    const epicCanvas = this
     const {gl,matrices}=epicCanvas
     const {projectionMatrix,modelViewMatrix,modelMatrix,viewMatrix,normalMatrix}=matrices
     const {buffers,mode}=shape
@@ -1148,7 +1147,7 @@ function drawShape(epicCanvas,programInfo,shape){
     }
 }
 
-
+}
 
 function translate(shape,x,y,z){
     for(let i=0;i<shape.vertices.length;i+=4){
