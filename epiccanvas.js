@@ -1009,7 +1009,7 @@ _loadShader(type,source){
 
 
 
-getProgramInfo(vsSource, fsSource){
+makeProgram(vsSource, fsSource){
     const shaderProgram = this._initShaderProgram(vsSource,fsSource)
     const gl = this.gl
     return {
