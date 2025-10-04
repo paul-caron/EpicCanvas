@@ -346,18 +346,21 @@ loadTextures(URLs){
         this.loadTexture(u)
     }
 }
-loadTexture(url, options = {}){
-    const {minFilter, magFilter, mipmapFilter, anisotropy} = options
-    const texture=this.gl.createTexture()
-    this.gl.bindTexture(this.gl.TEXTURE_2D,texture)
-    const level=0
-    const internalFormat=this.gl.RGBA
-    const width=1
-    const height=1
-    const border=0
-    const srcFormat=this.gl.RGBA
-    const srcType=this.gl.UNSIGNED_BYTE
-    const pixel=new Uint8Array([0,0,255,255])
+
+
+
+loadTexture(url, options = {}) {
+    const {minFilter = "linear", magFilter = "linear", mipmapFilter, anisotropy} = options;
+    const texture = this.gl.createTexture();
+    this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+    const level = 0;
+    const internalFormat = this.gl.RGBA;
+    const width = 1;
+    const height = 1;
+    const border = 0;
+    const srcFormat = this.gl.RGBA;
+    const srcType = this.gl.UNSIGNED_BYTE;
+    const pixel = new Uint8Array([0, 0, 255, 255]);
     this.gl.texImage2D(
         this.gl.TEXTURE_2D,
         level,
@@ -368,119 +371,132 @@ loadTexture(url, options = {}){
         srcFormat,
         srcType,
         pixel
-    )
-    const image=new Image()
-    image.crossOrigin=""
-    image.onload=()=>{
-        this.gl.bindTexture(this.gl.TEXTURE_2D,texture)
-        this.gl.texImage2D(
-            this.gl.TEXTURE_2D,
-            level,
-            internalFormat,
-            srcFormat,
-            srcType,
-            image
-        )
-        if(isPowerOf2(image.width)&&isPowerOf2(image.height)){
-            this.gl.generateMipmap(this.gl.TEXTURE_2D)
-            if(mipmapFilter != "nearest"){
-                if(minFilter != "nearest"){
-                    this.gl.texParameteri(
-                        this.gl.TEXTURE_2D,
-                        this.gl.TEXTURE_MIN_FILTER,
-                        this.gl.LINEAR_MIPMAP_LINEAR
-                    )
-                }else{
-                    this.gl.texParameteri(
-                        this.gl.TEXTURE_2D,
-                        this.gl.TEXTURE_MIN_FILTER,
-                        this.gl.NEAREST_MIPMAP_LINEAR
-                    )
-                }
-            }else{
-                if(minFilter != "nearest"){
-                    this.gl.texParameteri(
-                        this.gl.TEXTURE_2D,
-                        this.gl.TEXTURE_MIN_FILTER,
-                        this.gl.LINEAR_MIPMAP_NEAREST
-                    )
-                }else{
-                    this.gl.texParameteri(
-                        this.gl.TEXTURE_2D,
-                        this.gl.TEXTURE_MIN_FILTER,
-                        this.gl.NEAREST_MIPMAP_NEAREST
-                    )
-                }
-            }
-            if(magFilter != "nearest"){
-                this.gl.texParameteri(
-                    this.gl.TEXTURE_2D,
-                    this.gl.TEXTURE_MAG_FILTER,
-                    this.gl.LINEAR
-                )
-            }else{
-                this.gl.texParameteri(
-                    this.gl.TEXTURE_2D,
-                    this.gl.TEXTURE_MAG_FILTER,
-                    this.gl.NEAREST
-                )
-            }
-            if(anisotropy){
-                const ext = (this.gl.getExtension('EXT_texture_filter_anisotropic') || this.gl.getExtension('MOZ_EXT_texture_filter_anisotropic') || this.gl.getExtension('WEBKIT_EXT_texture_filter_anisotropic') );
-                if (ext){
-                    const max = this.gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT)
-                    const anisotropyValue = max * anisotropy
-                    this.gl.texParameterf(this.gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, anisotropyValue)
-                }
-            }
-        }else{
-            this.gl.texParameteri(
-                this.gl.TEXTURE_2D,
-                this.gl.TEXTURE_WRAP_S,
-                this.gl.CLAMP_TO_EDGE
-            )
-            this.gl.texParameteri(
-                this.gl.TEXTURE_2D,
-                this.gl.TEXTURE_WRAP_T,
-                this.gl.CLAMP_TO_EDGE
-            )
-            if(minFilter != "nearest"){
-                this.gl.texParameteri(
-                    this.gl.TEXTURE_2D,
-                    this.gl.TEXTURE_MIN_FILTER,
-                    this.gl.LINEAR
-                )
-            }else{
-                this.gl.texParameteri(
-                    this.gl.TEXTURE_2D,
-                    this.gl.TEXTURE_MIN_FILTER,
-                    this.gl.NEAREST
-                )
-            }
-            if(magFilter != "nearest"){
-                this.gl.texParameteri(
-                    this.gl.TEXTURE_2D,
-                    this.gl.TEXTURE_MAG_FILTER,
-                    this.gl.LINEAR
-                )
-            }else{
-                this.gl.texParameteri(
-                    this.gl.TEXTURE_2D,
-                    this.gl.TEXTURE_MAG_FILTER,
-                    this.gl.NEAREST
-                )
-            }
-        }
-    }
+    );
+    // Set default texture parameters
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl[minFilter.toUpperCase()]);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl[magFilter.toUpperCase()]);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+
     if (url && typeof url === "string") {
+        const image = new Image();
+        image.crossOrigin = "";
+        image.onload = () => {
+            this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+            this.gl.texImage2D(
+                this.gl.TEXTURE_2D,
+                level,
+                internalFormat,
+                srcFormat,
+                srcType,
+                image
+            );
+            if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
+                this.gl.generateMipmap(this.gl.TEXTURE_2D);
+                if (mipmapFilter != "nearest") {
+                    if (minFilter != "nearest") {
+                        this.gl.texParameteri(
+                            this.gl.TEXTURE_2D,
+                            this.gl.TEXTURE_MIN_FILTER,
+                            this.gl.LINEAR_MIPMAP_LINEAR
+                        );
+                    } else {
+                        this.gl.texParameteri(
+                            this.gl.TEXTURE_2D,
+                            this.gl.TEXTURE_MIN_FILTER,
+                            this.gl.NEAREST_MIPMAP_LINEAR
+                        );
+                    }
+                } else {
+                    if (minFilter != "nearest") {
+                        this.gl.texParameteri(
+                            this.gl.TEXTURE_2D,
+                            this.gl.TEXTURE_MIN_FILTER,
+                            this.gl.LINEAR_MIPMAP_NEAREST
+                        );
+                    } else {
+                        this.gl.texParameteri(
+                            this.gl.TEXTURE_2D,
+                            this.gl.TEXTURE_MIN_FILTER,
+                            this.gl.NEAREST_MIPMAP_NEAREST
+                        );
+                    }
+                }
+                if (magFilter != "nearest") {
+                    this.gl.texParameteri(
+                        this.gl.TEXTURE_2D,
+                        this.gl.TEXTURE_MAG_FILTER,
+                        this.gl.LINEAR
+                    );
+                } else {
+                    this.gl.texParameteri(
+                        this.gl.TEXTURE_2D,
+                        this.gl.TEXTURE_MAG_FILTER,
+                        this.gl.NEAREST
+                    );
+                }
+                if (anisotropy) {
+                    const ext = (this.gl.getExtension('EXT_texture_filter_anisotropic') || 
+                                 this.gl.getExtension('MOZ_EXT_texture_filter_anisotropic') || 
+                                 this.gl.getExtension('WEBKIT_EXT_texture_filter_anisotropic'));
+                    if (ext) {
+                        const max = this.gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+                        const anisotropyValue = max * anisotropy;
+                        this.gl.texParameterf(this.gl.TEXTURE_2D, ext.TEXTURE_MAX_ANISOTROPY_EXT, anisotropyValue);
+                    }
+                }
+            } else {
+                this.gl.texParameteri(
+                    this.gl.TEXTURE_2D,
+                    this.gl.TEXTURE_WRAP_S,
+                    this.gl.CLAMP_TO_EDGE
+                );
+                this.gl.texParameteri(
+                    this.gl.TEXTURE_2D,
+                    this.gl.TEXTURE_WRAP_T,
+                    this.gl.CLAMP_TO_EDGE
+                );
+                if (minFilter != "nearest") {
+                    this.gl.texParameteri(
+                        this.gl.TEXTURE_2D,
+                        this.gl.TEXTURE_MIN_FILTER,
+                        this.gl.LINEAR
+                    );
+                } else {
+                    this.gl.texParameteri(
+                        this.gl.TEXTURE_2D,
+                        this.gl.TEXTURE_MIN_FILTER,
+                        this.gl.NEAREST
+                    );
+                }
+                if (magFilter != "nearest") {
+                    this.gl.texParameteri(
+                        this.gl.TEXTURE_2D,
+                        this.gl.TEXTURE_MAG_FILTER,
+                        this.gl.LINEAR
+                    );
+                } else {
+                    this.gl.texParameteri(
+                        this.gl.TEXTURE_2D,
+                        this.gl.TEXTURE_MAG_FILTER,
+                        this.gl.NEAREST
+                    );
+                }
+            }
+        };
+        image.onerror = () => {
+            console.error(`Failed to load image from URL: ${url}`);
+        };
         image.src = url;
     }
-    this.textures.push(texture)
-    function isPowerOf2(value){
-        return (value&(value-1))==0;
+    this.textures.push(texture);
+    function isPowerOf2(value) {
+        return (value & (value - 1)) == 0;
     }
-    return texture
+    return texture;
 }
+
+
 updateTexture(texture, url){
     function powerOfTwo(value){
         return (value&(value-1))==0;
