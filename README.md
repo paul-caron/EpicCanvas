@@ -374,7 +374,7 @@ makeProgram takes 2 arguments:
 * fragment shader source: A string of the fragment shader source code.
 
 ```js
-const programInfo = epicCanvas.makeProgram(vertexSource, fragmentSource)
+const program = epicCanvas.makeProgram(vertexSource, fragmentSource)
 ```
 The program object is later needed to pass on to the drawShape function. It contains the program and all the variables (attributes and uniforms) locations.
 
@@ -383,12 +383,12 @@ The EpicCanvas repository contains vertex and fragment shaders, ready to be used
 # Drawing Shapes
 To draw a custom shape or a loaded model, simply use the drawShape function (global window function for now). drawShape takes 3 arguments:
 * epicCanvas: The canvas to draw on.
-* program: Program object. Contains info about the attributes and uniforms locations. see getProgramInfo. 
+* program: Program object. Contains info about the attributes and uniforms locations. see makeProgram. 
 * shape: The shape to be drawn.
 Examples:
 ```js
-epicCanvas.drawShape(programInfo, customShape)
-epicCanvas.drawShape(programInfo, epicCanvas.models[0])
+epicCanvas.drawShape(program, customShape)
+epicCanvas.drawShape(program, epicCanvas.models[0])
 ```
 As you can imagine, different shapes can be drawn using different shader programs.
 
