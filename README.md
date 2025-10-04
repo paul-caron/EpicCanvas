@@ -385,8 +385,8 @@ To draw a custom shape or a loaded model, simply use the drawShape function (glo
 * shape: The shape to be drawn.
 Examples:
 ```js
-drawShape(epicCanvas, programInfo, customShape)
-drawShape(epicCanvas, programInfo, epicCanvas.models[0])
+epicCanvas.drawShape(programInfo, customShape)
+epicCanvas.drawShape(programInfo, epicCanvas.models[0])
 ```
 As you can imagine, different shapes can be drawn using different shader programs.
 
