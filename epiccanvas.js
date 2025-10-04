@@ -856,7 +856,7 @@ loadSTL(url) {
                 if (shape.vertices.length === 0) {
                     throw new Error("No vertices parsed");
                 }
-                if (shape.vertices.length / 4 !== shape.normals.length / 3) {
+                if (shape.vertices.length / 4 !== shape.normals.length / 4) {
                     throw new Error("Vertex and normal count mismatch");
                 }
 
