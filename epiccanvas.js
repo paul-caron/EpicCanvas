@@ -635,7 +635,7 @@ copyTexture(from, to, from_type, to_type, width, height){
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null)
     this.gl.deleteFramebuffer(fb)
 }
-
+/*
 loadCubeMap (urls) {
     if(urls.length != 6) return
     const gl = this.gl
@@ -681,8 +681,146 @@ loadCubeMap (urls) {
         images[i].src = urls[i]
     }
     return texture
+}*/
+
+loadCubeMap(urls, options = {}) {
+    if (urls.length !== 6) {
+        console.error("loadCubeMap requires exactly 6 URLs for cube map faces");
+        return null;
+    }
+
+    const { minFilter = "linear", magFilter = "linear", mipmapFilter, anisotropy } = options;
+    const gl = this.gl;
+    const texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+
+    const faces = [
+        gl.TEXTURE_CUBE_MAP_POSITIVE_X,
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+        gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+        gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,
+    ];
+
+    // Initialize each face with a 1x1 placeholder pixel
+    const level = 0;
+    const internalFormat = gl.RGBA;
+    const width = 1;
+    const height = 1;
+    const format = gl.RGBA;
+    const type = gl.UNSIGNED_BYTE;
+    const pixel = new Uint8Array([0, 0, 255, 255]); // Blue placeholder
+
+    faces.forEach((face) => {
+        gl.texImage2D(face, level, internalFormat, width, height, 0, format, type, pixel);
+    });
+
+    // Set default texture parameters
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl[minFilter.toUpperCase()]);
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl[magFilter.toUpperCase()]);
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+    // Handle anisotropic filtering if requested
+    if (anisotropy) {
+        const ext = (
+            gl.getExtension('EXT_texture_filter_anisotropic') ||
+            gl.getExtension('MOZ_EXT_texture_filter_anisotropic') ||
+            gl.getExtension('WEBKIT_EXT_texture_filter_anisotropic')
+        );
+        if (ext) {
+            const max = gl.getParameter(ext.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+            const anisotropyValue = Math.min(max, anisotropy);
+            gl.texParameterf(gl.TEXTURE_CUBE_MAP, ext.TEXTURE_MAX_ANISOTROPY_EXT, anisotropyValue);
+        }
+    }
+
+    let nImagesLoaded = 0;
+    let isPowerOfTwo = true; // Track if all images are power-of-two
+    const images = urls.map((url) => new Image());
+
+    images.forEach((img, i) => {
+        img.crossOrigin = "";
+        img.onload = () => {
+            gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+            gl.texImage2D(
+                faces[i],
+                level,
+                internalFormat,
+                format,
+                type,
+                img
+            );
+
+            // Check if image is power-of-two
+            if (!isPowerOf2(img.width) || !isPowerOf2(img.height) || img.width !== img.height) {
+                isPowerOfTwo = false;
+            }
+
+            nImagesLoaded += 1;
+            if (nImagesLoaded === 6) {
+                gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+
+                // Update texture parameters based on final image properties
+                if (isPowerOfTwo) {
+                    gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
+                    if (mipmapFilter !== "nearest") {
+                        if (minFilter !== "nearest") {
+                            gl.texParameteri(
+                                gl.TEXTURE_CUBE_MAP,
+                                gl.TEXTURE_MIN_FILTER,
+                                gl.LINEAR_MIPMAP_LINEAR
+                            );
+                        } else {
+                            gl.texParameteri(
+                                gl.TEXTURE_CUBE_MAP,
+                                gl.TEXTURE_MIN_FILTER,
+                                gl.NEAREST_MIPMAP_LINEAR
+                            );
+                        }
+                    } else {
+                        if (minFilter !== "nearest") {
+                            gl.texParameteri(
+                                gl.TEXTURE_CUBE_MAP,
+                                gl.TEXTURE_MIN_FILTER,
+                                gl.LINEAR_MIPMAP_NEAREST
+                            );
+                        } else {
+                            gl.texParameteri(
+                                gl.TEXTURE_CUBE_MAP,
+                                gl.TEXTURE_MIN_FILTER,
+                                gl.NEAREST_MIPMAP_NEAREST
+                            );
+                        }
+                    }
+                } else {
+                    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl[minFilter.toUpperCase()]);
+                    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl[magFilter.toUpperCase()]);
+                    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                }
+            }
+        };
+
+        img.onerror = () => {
+            console.error(`Failed to load cube map face from URL: ${urls[i]}`);
+        };
+
+        img.src = urls[i];
+    });
+
+    // Store texture in textures array for consistency with loadTexture
+    this.textures.push(texture);
+
+    function isPowerOf2(value) {
+        return (value & (value - 1)) === 0;
+    }
+
+    return texture;
 }
 
+    
 updateCubeMapFace (cubemap, face, url){
     const gl = this.gl
     const img = new Image()
