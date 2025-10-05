@@ -857,6 +857,91 @@ async loadObj(url){
     const text=await response.text()
     this.pushObj(text)
 }
+pushObj(text) {
+    const vertices = [];
+    const textureCoordinates = [];
+    const normals = [];
+
+    const v = [];   // vertex positions
+    const vt = [];  // texture coordinates
+    const vn = [];  // vertex normals
+
+    const lines = text.split("\n");
+
+    for (const line of lines) {
+        const parts = line.trim().split(/\s+/);
+        if (parts.length === 0) continue;
+
+        switch (parts[0]) {
+            case "v":
+                v.push(parts.slice(1).map(Number));
+                break;
+            case "vt":
+                vt.push(parts.slice(1).map(Number));
+                break;
+            case "vn":
+                vn.push(parts.slice(1).map(Number));
+                break;
+            case "f":
+                const faceVerts = parts.slice(1);
+
+                // Triangulate if face has more than 3 vertices (quads, n-gons)
+                for (let i = 1; i < faceVerts.length - 1; i++) {
+                    const triangle = [faceVerts[0], faceVerts[i], faceVerts[i + 1]];
+
+                    for (const vert of triangle) {
+                        const [viStr, vtiStr, vniStr] = vert.split("/");
+
+                        const vi = parseInt(viStr, 10) - 1;
+                        const position = v[vi] || [0, 0, 0];
+                        vertices.push(...position.slice(0, 3), 1.0); // ensure 4D vertex
+
+                        if (vtiStr !== undefined && vtiStr !== "") {
+                            const vti = parseInt(vtiStr, 10) - 1;
+                            const tex = vt[vti] || [0, 0];
+                            textureCoordinates.push(...tex.slice(0, 2));
+                        } else {
+                            textureCoordinates.push(0, 0); // fallback
+                        }
+
+                        if (vniStr !== undefined && vniStr !== "") {
+                            const vni = parseInt(vniStr, 10) - 1;
+                            const normal = vn[vni] || [0, 0, 1];
+                            normals.push(...normal.slice(0, 3), 0.0); // 4D normal
+                        } else {
+                            normals.push(0, 0, 1, 0.0); // fallback normal
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+    // Fallback per-vertex color (based on position, just for visualization)
+    const colors = [];
+    for (let i = 0; i < vertices.length; i += 4) {
+        colors.push(
+            (vertices[i] + 1) * 0.5,
+            (vertices[i + 1] + 1) * 0.5,
+            (vertices[i + 2] + 1) * 0.5,
+            1.0
+        );
+    }
+
+    const mode = this.gl.TRIANGLES;
+
+    const shape = {
+        vertices,
+        textureCoordinates,
+        normals,
+        colors,
+        mode
+    };
+
+    this.initBuffers(shape);
+    this.models.push(shape);
+}
+/*
 pushObj(text){
     const vertices=[]
     const lines=text.split("\n")
@@ -891,6 +976,8 @@ pushObj(text){
     this.initBuffers(shape)
     this.models.push(shape)
 }
+*/
+
 initBuffers(shape){
     const {vertices,colors,textureCoordinates,normals}=shape
     const positionBuffer=this.gl.createBuffer() 
