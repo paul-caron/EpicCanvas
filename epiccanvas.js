@@ -1119,7 +1119,7 @@ window(startWidthRatio, startHeightRatio, widthRatio, heightRatio){
     return viewportFunc
 }
 
-
+/*
 drawShape(programInfo, shape) {
     const epicCanvas = this
     const { gl, matrices } = epicCanvas
@@ -1279,8 +1279,8 @@ drawShape(programInfo, shape) {
         const vertexCount = shape.vertices.length / 4
         gl.drawArrays(mode, offset, vertexCount)
     }
-}
-/*
+}*/
+
 drawShape(programInfo,shape){
     const epicCanvas = this
     const {gl,matrices}=epicCanvas
@@ -1426,7 +1426,7 @@ drawShape(programInfo,shape){
         const vertexCount=shape.vertices.length/4
         gl.drawArrays(mode,offset,vertexCount)
     }
-}*/
+}
 
 }
 
