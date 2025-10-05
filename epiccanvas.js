@@ -1097,6 +1097,9 @@ makeProgram(vsSource, fsSource){
         pointSize: gl.getUniformLocation(
             shaderProgram, 'uPointSize'
         ),
+        cubeMap: gl.getUniformLocation(
+            shaderProgram, 'uCubeMap'
+        ),
     },
 }
 }
