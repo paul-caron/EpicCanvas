@@ -789,7 +789,7 @@ loadSTL(url) {
 
                 // Check for ASCII vs. binary
                 const firstFive = new TextDecoder().decode(bytes.slice(0, 5)).trim().toLowerCase();
-                if (firstFive === "solid" && array.byteLength > 84) {
+                if (firstFive === "solid" ) {
                     // ASCII STL
                     const text = new TextDecoder().decode(array);
                     const lines = text.split("\n").map(line => line.trim());
