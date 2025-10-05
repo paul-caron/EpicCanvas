@@ -1120,8 +1120,167 @@ window(startWidthRatio, startHeightRatio, widthRatio, heightRatio){
 }
 
 
+drawShape(programInfo, shape) {
+    const epicCanvas = this
+    const { gl, matrices } = epicCanvas
+    const {
+        projectionMatrix,
+        modelViewMatrix,
+        modelMatrix,
+        viewMatrix,
+        normalMatrix
+    } = matrices
+    const { buffers, mode } = shape
 
+    {
+        const numComponents = 4
+        const type = gl.FLOAT
+        const normalize = false
+        const stride = 0
+        const offset = 0
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position)
+        gl.vertexAttribPointer(
+            programInfo.attribLocations.vertexPosition,
+            numComponents,
+            type,
+            normalize,
+            stride,
+            offset
+        )
+        gl.enableVertexAttribArray(
+            programInfo.attribLocations.vertexPosition
+        )
+    }
 
+    if (programInfo.attribLocations.vertexColor !== -1) {
+        const numComponents = 4
+        const type = gl.FLOAT
+        const normalize = false
+        const stride = 0
+        const offset = 0
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffers.color)
+        gl.vertexAttribPointer(
+            programInfo.attribLocations.vertexColor,
+            numComponents,
+            type,
+            normalize,
+            stride,
+            offset
+        )
+        gl.enableVertexAttribArray(
+            programInfo.attribLocations.vertexColor
+        )
+    }
+
+    if (programInfo.attribLocations.textureCoord !== -1) {
+        const numComponents = 2
+        const type = gl.FLOAT
+        const normalize = false
+        const stride = 0
+        const offset = 0
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffers.textureCoord)
+        gl.vertexAttribPointer(
+            programInfo.attribLocations.textureCoord,
+            numComponents,
+            type,
+            normalize,
+            stride,
+            offset
+        )
+        gl.enableVertexAttribArray(
+            programInfo.attribLocations.textureCoord
+        )
+    }
+
+    if (programInfo.attribLocations.vertexNormal !== -1) {
+        const numComponents = 4
+        const type = gl.FLOAT
+        const normalize = false
+        const stride = 0
+        const offset = 0
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffers.normals)
+        gl.vertexAttribPointer(
+            programInfo.attribLocations.vertexNormal,
+            numComponents,
+            type,
+            normalize,
+            stride,
+            offset
+        )
+        gl.enableVertexAttribArray(
+            programInfo.attribLocations.vertexNormal
+        )
+    }
+
+    gl.useProgram(programInfo.program)
+
+    gl.uniformMatrix4fv(
+        programInfo.uniformLocations.projectionMatrix,
+        false,
+        projectionMatrix
+    )
+    gl.uniformMatrix4fv(
+        programInfo.uniformLocations.modelViewMatrix,
+        false,
+        modelViewMatrix
+    )
+    gl.uniformMatrix4fv(
+        programInfo.uniformLocations.modelMatrix,
+        false,
+        modelMatrix
+    )
+    gl.uniformMatrix4fv(
+        programInfo.uniformLocations.viewMatrix,
+        false,
+        viewMatrix
+    )
+    gl.uniformMatrix4fv(
+        programInfo.uniformLocations.normalMatrix,
+        false,
+        normalMatrix
+    )
+    gl.uniform3fv(
+        programInfo.uniformLocations.cameraPosition,
+        new Float32Array(epicCanvas.cameraPosition)
+    )
+    gl.uniform3fv(
+        programInfo.uniformLocations.ambientLight,
+        new Float32Array(epicCanvas.ambientColor)
+    )
+    gl.uniform3fv(
+        programInfo.uniformLocations.directionalLightColor,
+        new Float32Array(epicCanvas.directionalColor)
+    )
+    gl.uniform3fv(
+        programInfo.uniformLocations.directionalVector,
+        new Float32Array(epicCanvas.directionalVector)
+    )
+    gl.uniform3fv(
+        programInfo.uniformLocations.pointLightPosition,
+        new Float32Array(epicCanvas.pointLightPosition)
+    )
+    gl.uniform3fv(
+        programInfo.uniformLocations.pointLightColor,
+        new Float32Array(epicCanvas.pointLightColor)
+    )
+    gl.uniform1f(
+        programInfo.uniformLocations.pointSize,
+        epicCanvas.pointSize
+    )
+
+    if (programInfo.uniformLocations.uCubeMap !== -1 ) {
+        gl.activeTexture(gl.TEXTURE0)
+        gl.bindTexture(gl.TEXTURE_CUBE_MAP, epicCanvas.cubemap)
+        gl.uniform1i(programInfo.uniformLocations.uCubeMap, 0)
+    }
+
+    {
+        const offset = 0
+        const vertexCount = shape.vertices.length / 4
+        gl.drawArrays(mode, offset, vertexCount)
+    }
+}
+/*
 drawShape(programInfo,shape){
     const epicCanvas = this
     const {gl,matrices}=epicCanvas
@@ -1207,6 +1366,7 @@ drawShape(programInfo,shape){
         )
     }
     gl.useProgram(programInfo.program) 
+    
     gl.uniformMatrix4fv(
         programInfo.uniformLocations.projectionMatrix,       
         false,
@@ -1266,7 +1426,7 @@ drawShape(programInfo,shape){
         const vertexCount=shape.vertices.length/4
         gl.drawArrays(mode,offset,vertexCount)
     }
-}
+}*/
 
 }
 
