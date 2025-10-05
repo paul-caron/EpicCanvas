@@ -855,7 +855,7 @@ loadPLY(url){
 async loadObj(url){
     const response=await fetch(url)
     const text=await response.text()
-    this.pushObj(text)
+    return this.pushObj(text)
 }
 pushObj(text) {
     const vertices = [];
@@ -940,6 +940,7 @@ pushObj(text) {
 
     this.initBuffers(shape);
     this.models.push(shape);
+    return shape;
 }
 /*
 pushObj(text){
