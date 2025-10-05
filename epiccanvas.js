@@ -596,42 +596,6 @@ renderToTexture(texture, textureWidth, textureHeight, drawFunction, ...drawFunct
     }
 }
 
-/*
-
-renderToTexture(texture, textureWidth, textureHeight, drawFunction, ...drawFunctionParameters){
-    //framebuffer
-    const fb = this.gl.createFramebuffer()
-    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, fb)
-    const attachmentPoint = this.gl.COLOR_ATTACHMENT0; 
-    this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, attachmentPoint, this.gl.TEXTURE_2D, texture, 0) 
-    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, fb)
-    
-    //depth buffer
-    const depthBuffer = this.gl.createRenderbuffer();
-    this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, depthBuffer);
-    this.gl.renderbufferStorage(this.gl.RENDERBUFFER, this.gl.DEPTH_COMPONENT16, textureWidth, textureHeight);
-    this.gl.framebufferRenderbuffer(this.gl.FRAMEBUFFER, this.gl.DEPTH_ATTACHMENT, this.gl.RENDERBUFFER, depthBuffer);
-    
-    //render
-    this.gl.viewport(0,0,textureWidth,textureHeight)
-    drawFunction(...drawFunctionParameters)
-    this.gl.viewport(0,0,this.canvas.width,this.canvas.height)
-    
-    //clean
-    this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, null);
-    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null)
-    this.gl.deleteFramebuffer(fb)
-    this.gl.deleteRenderbuffer(depthBuffer)
-    
-    function isPowerOf2(value){
-        return (value&(value-1)) == 0
-    }
-    //regenerate mips
-    if(isPowerOf2(textureWidth)&& isPowerOf2(textureHeight)){
-        this.gl.bindTexture(this.gl.TEXTURE_2D, texture)
-        this.gl.generateMipmap(this.gl.TEXTURE_2D)
-    }
-}*/
 
 
 setTexture(texture){
