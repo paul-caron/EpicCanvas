@@ -190,7 +190,7 @@ The parameters:
 
 Example
 ```js
-const cubeMap = epicCanvas.loadCubeMap(urls)
+const cubeMap = await epicCanvas.loadCubeMap(urls)
 const renderingFunction = () => {
     epicCanvas.clearScreen()
     epicCanvas.drawShape(program, shape)
