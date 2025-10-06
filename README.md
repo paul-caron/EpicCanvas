@@ -167,7 +167,7 @@ const cubemapsURLs = [url1,url2,url3,url4,url5,url6]
 ```
 Then load the cubemap like this
 ```js
-const cubemap = epicCanvas.loadCubeMap(cubemapURLs)
+const cubemap = await epicCanvas.loadCubeMap(cubemapURLs, options = {})
 ```
 The cubemap images with be assigned in this order:
 * gl.TEXTURE_CUBE_MAP_POSITIVE_X
