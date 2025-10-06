@@ -87,7 +87,7 @@ const main = async () => {
 "https://raw.githubusercontent.com/paul-caron/EpicCanvas/refs/heads/master/assets/cubemaps/citadella2/posz.jpg",
 "https://raw.githubusercontent.com/paul-caron/EpicCanvas/refs/heads/master/assets/cubemaps/citadella2/negz.jpg",
         ];
-        cubemap = epicCanvas.loadCubeMap(URLs);
+        cubemap = await epicCanvas.loadCubeMap(URLs);
 
         requestAnimationFrame(loop);
 
