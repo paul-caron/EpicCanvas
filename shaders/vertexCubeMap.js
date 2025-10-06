@@ -1,4 +1,4 @@
-`
+const vsSource = `
 attribute vec4 aVertexPosition;
 
 uniform mat4 uModelViewMatrix;
@@ -8,11 +8,11 @@ varying vec3 vDirection;
 
 void main() {
     // Only apply rotation part of modelViewMatrix (remove translation)
-    mat4 viewRotation = mat4(mat3(uModelViewMatrix)); // drop translation
+    mat4 viewRotation = mat4(mat3(uModelViewMatrix));
 
     vec4 direction = viewRotation * aVertexPosition;
     vDirection = direction.xyz;
 
-    gl_Position = uProjectionMatrix * vec4(direction.xyz, 1.0);
-}
-`
+    gl_Position = uProjectionMatrix * viewRotation * vec4(direction.xyz, 1.0);
+}`;
+
