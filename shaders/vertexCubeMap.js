@@ -1,4 +1,4 @@
-const vsSource = `
+const vsCubeMap = `
 attribute vec4 aVertexPosition;
 
 uniform mat4 uModelViewMatrix;
