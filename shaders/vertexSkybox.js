@@ -1,4 +1,4 @@
-const vsCubeMap = `
+const vsSkybox = `
 attribute vec4 aVertexPosition;
 
 uniform mat4 uModelViewMatrix;
