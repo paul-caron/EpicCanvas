@@ -1,4 +1,4 @@
-const fsCubeMap = `
+const fsSkybox = `
 precision highp float;
 uniform samplerCube uCubeMap;
 varying vec3 vDirection;
