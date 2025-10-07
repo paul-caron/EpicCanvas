@@ -189,7 +189,7 @@ constructor(width,height,container){
     this.canvas
     this.gl
     this.matrices
-    this.cameraPosition = [0,0,0]
+   // this.cameraPosition = [0,0,0]
     this.createCanvas(width,height,container)
     this.clearColor=[0.0,0.0,0.0,1.0]
     this.ambientColor=[0,0,0]
