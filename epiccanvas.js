@@ -232,8 +232,9 @@ getMatrices(){
     const normalMatrix=mat4.create()
     return {projectionMatrix, modelViewMatrix, modelMatrix, viewMatrix, normalMatrix}
 }
+//update this for lights to stay in place respective to camera
 updateNormalMatrix(){
-    mat4.invert(this.matrices.normalMatrix, this.matrices.modelMatrix);
+    mat4.invert(this.matrices.normalMatrix, this.matrices.modelViewMatrix);
     mat4.transpose(this.matrices.normalMatrix, this.matrices.normalMatrix);
 }
 updateModelViewMatrix() {
