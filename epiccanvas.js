@@ -233,7 +233,7 @@ getMatrices(){
     return {projectionMatrix, modelViewMatrix, modelMatrix, viewMatrix, normalMatrix}
 }
 updateNormalMatrix(){
-    mat4.invert(this.matrices.normalMatrix, this.matrices.modelViewMatrix);
+    mat4.invert(this.matrices.normalMatrix, this.matrices.modelMatrix);
     mat4.transpose(this.matrices.normalMatrix, this.matrices.normalMatrix);
 }
 updateModelViewMatrix() {
