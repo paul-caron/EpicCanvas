@@ -245,6 +245,9 @@ updateModelViewMatrix() {
         this.matrices.modelMatrix
     );
 }
+updateCameraPosition() {
+
+}
 /*
 updateModelViewMatrix(){
     mat4.multiply(
