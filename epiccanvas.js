@@ -189,7 +189,7 @@ constructor(width,height,container){
     this.canvas
     this.gl
     this.matrices
-   // this.cameraPosition = [0,0,0]
+    this.cameraPosition = [0,0,0]
     this.createCanvas(width,height,container)
     this.clearColor=[0.0,0.0,0.0,1.0]
     this.ambientColor=[0,0,0]
@@ -198,7 +198,7 @@ constructor(width,height,container){
     this.pointLightPosition=[0,0,0]
     this.pointLightColor=[0,0,0]
     this.pointSize = 1
-    this._cameraPosition = [0,0,0]
+    
     this._fieldOfView=60*Math.PI/180
     this._aspectRatio=this.gl.canvas.clientWidth/
                       this.gl.canvas.clientHeight
