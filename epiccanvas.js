@@ -198,6 +198,7 @@ constructor(width,height,container){
     this.pointLightPosition=[0,0,0]
     this.pointLightColor=[0,0,0]
     this.pointSize = 1
+    this._cameraPosition = [0,0,0]
     this._fieldOfView=60*Math.PI/180
     this._aspectRatio=this.gl.canvas.clientWidth/
                       this.gl.canvas.clientHeight
