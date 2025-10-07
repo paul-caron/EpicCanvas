@@ -246,7 +246,9 @@ updateModelViewMatrix() {
     );
 }
 updateCameraPosition() {
-
+  let invView = mat4.create()
+  mat4.invert(invView, epicCanvas.matrices.viewMatrix)
+  this.cameraPosition = [invView[12], invView[13], invView[14] ]
 }
 /*
 updateModelViewMatrix(){
