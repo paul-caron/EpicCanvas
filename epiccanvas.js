@@ -295,7 +295,9 @@ rotateMatrix(m,angle,vec3){
     if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
         this.updateModelViewMatrix()
     }
-    
+    if(m == this.matrices.viewMatrix ){
+        this.updateCameraPosition()
+    }
    // if(update) this.updateModelViewMatrix()
 }
 translateMatrix(m,vec3){
@@ -304,7 +306,9 @@ translateMatrix(m,vec3){
     if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
         this.updateModelViewMatrix()
     }
-    
+    if(m == this.matrices.viewMatrix ){
+        this.updateCameraPosition()
+    }
    // if(update) this.updateModelViewMatrix()
 }
 scaleMatrix(m,vec3){
@@ -312,6 +316,9 @@ scaleMatrix(m,vec3){
     mat4.scale(m,m,vec3)
     if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
         this.updateModelViewMatrix()
+    }
+    if(m == this.matrices.viewMatrix ){
+        this.updateCameraPosition()
     }
    // if(update) this.updateModelViewMatrix()
 }
