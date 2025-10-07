@@ -232,12 +232,23 @@ getMatrices(){
     const normalMatrix=mat4.create()
     return {projectionMatrix, modelViewMatrix, modelMatrix, viewMatrix, normalMatrix}
 }
+updateModelViewMatrix() {
+    mat4.multiply(
+        this.matrices.modelViewMatrix,
+        this.matrices.viewMatrix,
+        this.matrices.modelMatrix
+    );
+    // Update normalMatrix for view-space normals
+    mat4.invert(this.matrices.normalMatrix, this.matrices.modelViewMatrix);
+    mat4.transpose(this.matrices.normalMatrix, this.matrices.normalMatrix);
+}
+/*
 updateModelViewMatrix(){
     mat4.multiply(
         this.matrices.modelViewMatrix,
         this.matrices.viewMatrix,
         this.matrices.modelMatrix)
-}
+}*/
 lookAt(eyePositionVec3, centerVec3, upVec3){
     this.cameraPosition = [...eyePositionVec3]
     mat4.lookAt(this.matrices.viewMatrix, eyePositionVec3, centerVec3, upVec3)
