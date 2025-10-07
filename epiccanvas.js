@@ -288,6 +288,34 @@ lookPitchYaw(eyePositionVec3, pitch, yaw){
     
     return [center, up]
 }
+
+rotateMatrix(m,angle,vec3){
+    let update = false
+    mat4.rotate(m,m,angle,vec3)
+    if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
+        this.updateModelViewMatrix()
+    }
+    
+   // if(update) this.updateModelViewMatrix()
+}
+translateMatrix(m,vec3){
+    let update = false
+    mat4.translate(m,m,vec3)
+    if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
+        this.updateModelViewMatrix()
+    }
+    
+   // if(update) this.updateModelViewMatrix()
+}
+scaleMatrix(m,vec3){
+    let update = false
+    mat4.scale(m,m,vec3)
+    if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
+        this.updateModelViewMatrix()
+    }
+   // if(update) this.updateModelViewMatrix()
+}
+/*
 rotateMatrix(m,angle,vec3){
     let update = false
     if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
@@ -312,6 +340,8 @@ scaleMatrix(m,vec3){
     mat4.scale(m,m,vec3)
     if(update) this.updateModelViewMatrix()
 }
+*/
+    
 set fieldOfView(angle){
     this._fieldOfView = angle
     mat4.perspective(
