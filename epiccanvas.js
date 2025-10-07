@@ -232,15 +232,16 @@ getMatrices(){
     const normalMatrix=mat4.create()
     return {projectionMatrix, modelViewMatrix, modelMatrix, viewMatrix, normalMatrix}
 }
+updateNormalMatrix(){
+    mat4.invert(this.matrices.normalMatrix, this.matrices.modelViewMatrix);
+    mat4.transpose(this.matrices.normalMatrix, this.matrices.normalMatrix);
+}
 updateModelViewMatrix() {
     mat4.multiply(
         this.matrices.modelViewMatrix,
         this.matrices.viewMatrix,
         this.matrices.modelMatrix
     );
-    // Update normalMatrix for view-space normals
-    mat4.invert(this.matrices.normalMatrix, this.matrices.modelViewMatrix);
-    mat4.transpose(this.matrices.normalMatrix, this.matrices.normalMatrix);
 }
 /*
 updateModelViewMatrix(){
