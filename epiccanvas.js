@@ -235,11 +235,6 @@ getMatrices(){
 }
 
 updateNormalMatrix(){
-   // mat4.invert(this.matrices.normalMatrix, this.matrices.modelViewMatrix);
- //   mat4.transpose(this.matrices.normalMatrix, this.matrices.normalMatrix);
-
-    // Input: modelMatrix (mat4)
-// Output: normalMatrix4x4 (mat4)
     let normalMatrix3x3 = mat3.create();
     mat3.fromMat4(normalMatrix3x3, this.matrices.modelMatrix);
     let inverseMatrix3x3 = mat3.create();
@@ -270,13 +265,7 @@ updateCameraPosition() {
   mat4.invert(invView, epicCanvas.matrices.viewMatrix)
   this.cameraPosition = [invView[12], invView[13], invView[14] ]
 }
-/*
-updateModelViewMatrix(){
-    mat4.multiply(
-        this.matrices.modelViewMatrix,
-        this.matrices.viewMatrix,
-        this.matrices.modelMatrix)
-}*/
+
 lookAt(eyePositionVec3, centerVec3, upVec3){
     this.cameraPosition = [...eyePositionVec3]
     mat4.lookAt(this.matrices.viewMatrix, eyePositionVec3, centerVec3, upVec3)
@@ -320,7 +309,6 @@ rotateMatrix(m,angle,vec3){
     if(m == this.matrices.viewMatrix ){
         this.updateCameraPosition()
     }
-   // if(update) this.updateModelViewMatrix()
 }
 translateMatrix(m,vec3){
     let update = false
@@ -331,7 +319,6 @@ translateMatrix(m,vec3){
     if(m == this.matrices.viewMatrix ){
         this.updateCameraPosition()
     }
-   // if(update) this.updateModelViewMatrix()
 }
 scaleMatrix(m,vec3){
     let update = false
@@ -342,34 +329,7 @@ scaleMatrix(m,vec3){
     if(m == this.matrices.viewMatrix ){
         this.updateCameraPosition()
     }
-   // if(update) this.updateModelViewMatrix()
 }
-/*
-rotateMatrix(m,angle,vec3){
-    let update = false
-    if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
-        update = true
-    }
-    mat4.rotate(m,m,angle,vec3)
-    if(update) this.updateModelViewMatrix()
-}
-translateMatrix(m,vec3){
-    let update = false
-    if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
-        update = true
-    }
-    mat4.translate(m,m,vec3)
-    if(update) this.updateModelViewMatrix()
-}
-scaleMatrix(m,vec3){
-    let update = false
-    if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
-        update = true
-    }
-    mat4.scale(m,m,vec3)
-    if(update) this.updateModelViewMatrix()
-}
-*/
     
 set fieldOfView(angle){
     this._fieldOfView = angle
