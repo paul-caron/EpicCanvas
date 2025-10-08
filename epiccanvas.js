@@ -1716,32 +1716,46 @@ drawShape(programInfo,shape){
         )
     }
     gl.useProgram(programInfo.program) 
-    
-    gl.uniformMatrix4fv(
+    if(programInfo.uniformLocations.projectionMatrix!=-1)
+    {
+      gl.uniformMatrix4fv(
         programInfo.uniformLocations.projectionMatrix,       
         false,
         projectionMatrix
-    )
-    gl.uniformMatrix4fv(
+      )
+    }
+    if(programInfo.uniformLocations.modelViewMatrix!=-1)
+    {
+      gl.uniformMatrix4fv(
         programInfo.uniformLocations.modelViewMatrix, 
         false,
         modelViewMatrix
-    )
-    gl.uniformMatrix4fv(
+      )
+    }
+    if(programInfo.uniformLocations.modelMatrix!=-1)
+    {
+      gl.uniformMatrix4fv(
         programInfo.uniformLocations.modelMatrix, 
         false,
         modelMatrix
-    )
-    gl.uniformMatrix4fv(
+      )
+    }
+    if(programInfo.uniformLocations.viewMatrix!=-1)
+    {
+      gl.uniformMatrix4fv(
         programInfo.uniformLocations.viewMatrix, 
         false,
         viewMatrix
-    )
-    gl.uniformMatrix4fv(
+      )
+    }
+    if(programInfo.uniformLocations.normalMatrix!=-1)
+    {
+      gl.uniformMatrix4fv(
         programInfo.uniformLocations.normalMatrix,
         false,
         normalMatrix
-    )
+      )
+    }
     gl.uniform3fv(
         programInfo.uniformLocations.cameraPosition,
         new Float32Array(epicCanvas.cameraPosition)
