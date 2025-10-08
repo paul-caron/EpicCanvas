@@ -235,8 +235,28 @@ getMatrices(){
 }
 //update this for lights to stay in place respective to camera
 updateNormalMatrix(){
-    mat4.invert(this.matrices.normalMatrix, this.matrices.modelViewMatrix);
-    mat4.transpose(this.matrices.normalMatrix, this.matrices.normalMatrix);
+   // mat4.invert(this.matrices.normalMatrix, this.matrices.modelViewMatrix);
+ //   mat4.transpose(this.matrices.normalMatrix, this.matrices.normalMatrix);
+
+    // Input: modelMatrix (mat4)
+// Output: normalMatrix4x4 (mat4)
+    let normalMatrix3x3 = mat3.create();
+    mat3.fromMat4(normalMatrix3x3, this.matrices.modelMatrix);
+    let inverseMatrix3x3 = mat3.create();
+    mat3.invert(inverseMatrix3x3, normalMatrix3x3);
+    let normalMatrix3x3Final = mat3.create();
+    mat3.transpose(normalMatrix3x3Final, inverseMatrix3x3);
+    let normalMatrix4x4 = mat4.create();
+    normalMatrix4x4[0] = normalMatrix3x3Final[0];
+    normalMatrix4x4[1] = normalMatrix3x3Final[1];
+    normalMatrix4x4[2] = normalMatrix3x3Final[2];
+    normalMatrix4x4[4] = normalMatrix3x3Final[3];
+    normalMatrix4x4[5] = normalMatrix3x3Final[4];
+    normalMatrix4x4[6] = normalMatrix3x3Final[5];
+    normalMatrix4x4[8] = normalMatrix3x3Final[6];
+    normalMatrix4x4[9] = normalMatrix3x3Final[7];
+    normalMatrix4x4[10] = normalMatrix3x3Final[8];
+    this.matrices.normalMatrix = normalMatrix4x4;
 }
 updateModelViewMatrix() {
     mat4.multiply(
