@@ -1125,42 +1125,6 @@ pushObj(text) {
     this.models.push(shape);
     return shape;
 }
-/*
-pushObj(text){
-    const vertices=[]
-    const lines=text.split("\n")
-    const vlines=lines.filter(line=>line.trim().startsWith("v "))
-    const flines=lines.filter(line=>line.trim().startsWith("f "))
-    flines.forEach(line=>{
-        const indices=line.trim().split(" ")
-        indices.shift()
-        for(const i of indices){
-            let vl=vlines[i-1].trim()
-            vl=vl.split(" ")
-            vl.shift()
-            for(const v of vl)
-                vertices.push(parseFloat(v))
-            vertices.push(1.0)
-        }
-    })
-    const colors=new Array(vertices.length)
-    for(let i=0;i<colors.length;i+=4){
-        colors[i]=(vertices[i]+1)*0.5
-        colors[i+1]=(vertices[i+1]+1)*0.5
-        colors[i+2]=(vertices[i+2]+1)*0.5
-        colors[i+3]=1.0
-    }
-    const textureCoordinates=new Array(vertices.length/2)
-    for(let i=0;i<colors.length;i+=2){
-        textureCoordinates[i]=(vertices[i]+1)*0.25+(-vertices[i+2]+1)*0.25
-        textureCoordinates[i+1]=(vertices[i+1]+1)*0.25+(-vertices[i+2]+1)*0.25
-    }
-    const mode=this.gl.TRIANGLES
-    const shape={vertices,colors,textureCoordinates,mode}
-    this.initBuffers(shape)
-    this.models.push(shape)
-}
-*/
 
 initBuffers(shape){
     const {vertices,colors,textureCoordinates,normals}=shape
