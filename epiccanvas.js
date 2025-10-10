@@ -678,6 +678,57 @@ copyTexture(from, to, from_type, to_type, width, height){
     this.gl.deleteFramebuffer(fb)
 }
 
+createEmptyCubeMap(width) {
+    // Create the cubemap texture
+    const texture = this.gl.createTexture();
+    this.gl.bindTexture(this.gl.TEXTURE_CUBE_MAP, texture);
+
+    // Define the six faces of the cubemap
+    const faces = [
+        this.gl.TEXTURE_CUBE_MAP_POSITIVE_X,
+        this.gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+        this.gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
+        this.gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+        this.gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
+        this.gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
+    ];
+
+    // Create blue pixel data (RGBA)
+    const pixelData = new Uint8Array(width * width * 4);
+    for (let i = 0; i < pixelData.length; i += 4) {
+        pixelData[i] = 0;     // R
+        pixelData[i + 1] = 0; // G
+        pixelData[i + 2] = 255; // B
+        pixelData[i + 3] = 255; // A
+    }
+
+    // Set up each face with the blue pixel data
+    for (let i = 0; i < faces.length; i++) {
+        this.gl.texImage2D(
+            faces[i],
+            0, // level
+            this.gl.RGBA, // internal format
+            width,
+            width,
+            0, // border
+            this.gl.RGBA, // format
+            this.gl.UNSIGNED_BYTE, // type
+            pixelData
+        );
+    }
+
+    // Set texture parameters
+    this.gl.texParameteri(this.gl.TEXTURE_CUBE_MAP, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
+    this.gl.texParameteri(this.gl.TEXTURE_CUBE_MAP, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
+    this.gl.texParameteri(this.gl.TEXTURE_CUBE_MAP, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+    this.gl.texParameteri(this.gl.TEXTURE_CUBE_MAP, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+    // Note: TEXTURE_WRAP_R is not available in WebGL 1.0, but cubemaps are typically clamped
+
+    // Unbind the texture
+    this.gl.bindTexture(this.gl.TEXTURE_CUBE_MAP, null);
+
+    return texture;
+}
 loadCubeMap(urls, options = {}) {
     if (urls.length !== 6) {
         return Promise.reject(new Error("loadCubeMap requires exactly 6 URLs for cube map faces"));
