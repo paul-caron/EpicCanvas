@@ -177,6 +177,13 @@ The cubemap images with be assigned in this order:
 * gl.TEXTURE_CUBE_MAP_POSITIVE_Z
 * gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
 
+# Create an Empty Cube Map
+To create a blue default cube map:
+
+```
+let cubeMap = epicCanvas.createEmptyCubeMap(width)
+```
+
 # Render Drawing Onto Cubemap Face
 Sometimes you would like to modify a cubemap, like for adding shadows perhaps.
 The renderToCubeMapFace method is there to help.
