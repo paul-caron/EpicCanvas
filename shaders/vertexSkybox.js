@@ -15,5 +15,9 @@ void main() {
     vDirection = direction.xyz;
 
     gl_Position = uProjectionMatrix * viewRotation * vec4(direction.xyz, 1.0);
-}`;
+}
+
+
+
+`;
 
