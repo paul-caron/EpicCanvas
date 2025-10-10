@@ -14,7 +14,7 @@
 <body>
     <!-- dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.25/epiccanvas.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.28/epiccanvas.js" crossorigin='anonymous'></script>
     <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.23/primitives/sphere.js" crossorigin='anonymous'></script>
     <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.23/primitives/cube.js" crossorigin='anonymous'></script>
 
@@ -87,20 +87,22 @@ void main() {
 const vsSource2 = `
 attribute vec4 aVertexPosition;
 
-uniform mat4 uModelViewMatrix;
+uniform mat4 uModelMatrix;
+uniform mat4 uViewMatrix;
 uniform mat4 uProjectionMatrix;
 
 varying vec3 vDirection;
 
 void main() {
     // Only apply rotation part of modelViewMatrix (remove translation)
-    mat4 viewRotation = mat4(mat3(uModelViewMatrix));
+    mat4 viewRotation = mat4(mat3(uViewMatrix * uModelMatrix));
 
     vec4 direction = viewRotation * aVertexPosition;
     vDirection = direction.xyz;
 
     gl_Position = uProjectionMatrix * viewRotation * vec4(direction.xyz, 1.0);
 }`;
+
 
 const fsSource2 = `
 precision highp float;
