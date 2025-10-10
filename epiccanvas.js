@@ -1339,15 +1339,6 @@ drawShape(programInfo,shape){
         projectionMatrix
       )
     }
-    /*
-    if(programInfo.uniformLocations.modelViewMatrix!=-1)
-    {
-      gl.uniformMatrix4fv(
-        programInfo.uniformLocations.modelViewMatrix, 
-        false,
-        modelViewMatrix
-      )
-    }*/
     if(programInfo.uniformLocations.modelMatrix!=-1)
     {
       gl.uniformMatrix4fv(
