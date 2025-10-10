@@ -1191,10 +1191,6 @@ makeProgram(vsSource, fsSource){
         projectionMatrix:gl.getUniformLocation(
             shaderProgram,'uProjectionMatrix'
         ),
-        /*
-        modelViewMatrix:gl.getUniformLocation(
-            shaderProgram,'uModelViewMatrix'
-        ),*/
         modelMatrix:gl.getUniformLocation(
             shaderProgram,'uModelMatrix'
         ),
