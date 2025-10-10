@@ -227,11 +227,10 @@ getMatrices(){
         this._zNear,
         this._zFar)
         
-    const modelViewMatrix=mat4.create()
     const modelMatrix = mat4.create()
     const viewMatrix = mat4.create()
     const normalMatrix=mat4.create()
-    return {projectionMatrix, modelViewMatrix, modelMatrix, viewMatrix, normalMatrix}
+    return {projectionMatrix, modelMatrix, viewMatrix, normalMatrix}
 }
 
 updateNormalMatrix(){
@@ -253,13 +252,14 @@ updateNormalMatrix(){
     normalMatrix4x4[10] = normalMatrix3x3Final[8];
     this.matrices.normalMatrix = normalMatrix4x4;
 }
+/*
 updateModelViewMatrix() {
     mat4.multiply(
         this.matrices.modelViewMatrix,
         this.matrices.viewMatrix,
         this.matrices.modelMatrix
     );
-}
+}*/
 updateCameraPosition() {
   let invView = mat4.create()
   mat4.invert(invView, epicCanvas.matrices.viewMatrix)
@@ -269,7 +269,7 @@ updateCameraPosition() {
 lookAt(eyePositionVec3, centerVec3, upVec3){
     this.cameraPosition = [...eyePositionVec3]
     mat4.lookAt(this.matrices.viewMatrix, eyePositionVec3, centerVec3, upVec3)
-    this.updateModelViewMatrix()
+    //this.updateModelViewMatrix()
 }
 lookFront(eyePositionVec3, yawAngle){
     this.cameraPosition = [...eyePositionVec3]
@@ -303,9 +303,10 @@ lookPitchYaw(eyePositionVec3, pitch, yaw){
 rotateMatrix(m,angle,vec3){
     let update = false
     mat4.rotate(m,m,angle,vec3)
+    /*
     if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
         this.updateModelViewMatrix()
-    }
+    }*/
     if(m == this.matrices.viewMatrix ){
         this.updateCameraPosition()
     }
@@ -316,9 +317,10 @@ rotateMatrix(m,angle,vec3){
 translateMatrix(m,vec3){
     let update = false
     mat4.translate(m,m,vec3)
+    /*
     if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
         this.updateModelViewMatrix()
-    }
+    }*/
     if(m == this.matrices.viewMatrix ){
         this.updateCameraPosition()
     }
@@ -326,9 +328,10 @@ translateMatrix(m,vec3){
 scaleMatrix(m,vec3){
     let update = false
     mat4.scale(m,m,vec3)
+    /*
     if(m == this.matrices.viewMatrix || m == this.matrices.modelMatrix){
         this.updateModelViewMatrix()
-    }
+    }*/
     if(m == this.matrices.viewMatrix ){
         this.updateCameraPosition()
     }
@@ -1209,9 +1212,10 @@ makeProgram(vsSource, fsSource){
         projectionMatrix:gl.getUniformLocation(
             shaderProgram,'uProjectionMatrix'
         ),
+        /*
         modelViewMatrix:gl.getUniformLocation(
             shaderProgram,'uModelViewMatrix'
-        ),
+        ),*/
         modelMatrix:gl.getUniformLocation(
             shaderProgram,'uModelMatrix'
         ),
@@ -1360,6 +1364,7 @@ drawShape(programInfo,shape){
         projectionMatrix
       )
     }
+    /*
     if(programInfo.uniformLocations.modelViewMatrix!=-1)
     {
       gl.uniformMatrix4fv(
@@ -1367,7 +1372,7 @@ drawShape(programInfo,shape){
         false,
         modelViewMatrix
       )
-    }
+    }*/
     if(programInfo.uniformLocations.modelMatrix!=-1)
     {
       gl.uniformMatrix4fv(
