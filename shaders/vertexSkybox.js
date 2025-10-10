@@ -1,14 +1,15 @@
 const vsSkybox = `
 attribute vec4 aVertexPosition;
 
-uniform mat4 uModelViewMatrix;
+uniform mat4 uModelMatrix;
+uniform mat4 uViewMatrix;
 uniform mat4 uProjectionMatrix;
 
 varying vec3 vDirection;
 
 void main() {
     // Only apply rotation part of modelViewMatrix (remove translation)
-    mat4 viewRotation = mat4(mat3(uModelViewMatrix));
+    mat4 viewRotation = mat4(mat3(uViewMatrix * uModelMatrix));
 
     vec4 direction = viewRotation * aVertexPosition;
     vDirection = direction.xyz;
