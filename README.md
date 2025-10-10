@@ -180,7 +180,7 @@ The cubemap images with be assigned in this order:
 # Create an Empty Cube Map
 To create a blue default cube map:
 
-```
+```js
 let cubeMap = epicCanvas.createEmptyCubeMap(width)
 ```
 
