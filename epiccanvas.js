@@ -309,6 +309,9 @@ rotateMatrix(m,angle,vec3){
     if(m == this.matrices.viewMatrix ){
         this.updateCameraPosition()
     }
+    if(m == this.matrices.modelMatrix ){
+        this.updateNormalMatrix()
+    }
 }
 translateMatrix(m,vec3){
     let update = false
@@ -328,6 +331,9 @@ scaleMatrix(m,vec3){
     }
     if(m == this.matrices.viewMatrix ){
         this.updateCameraPosition()
+    }
+    if(m == this.matrices.modelMatrix ){
+        this.updateNormalMatrix()
     }
 }
     
