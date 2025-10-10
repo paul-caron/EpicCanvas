@@ -54,31 +54,15 @@ varying vec3 v_worldNormal;
  
 // The texture.
 uniform samplerCube uSampler;
- uniform mat4 uModelMatrix;
  
 // The position of the camera
 uniform vec3 uCameraPosition;
-
-
-// Function to reverse a 3x3 rotation matrix by applying its transpose
-mat3 inverseMatrix(mat3 rotationMatrix) {
-    // Compute the transpose of the rotation matrix
-    mat3 invMatrix = mat3(
-        rotationMatrix[0][0], rotationMatrix[1][0], rotationMatrix[2][0], // Column 0
-        rotationMatrix[0][1], rotationMatrix[1][1], rotationMatrix[2][1], // Column 1
-        rotationMatrix[0][2], rotationMatrix[1][2], rotationMatrix[2][2]  // Column 2
-    );
-    
-    return invMatrix ;
-}
  
 void main() {
   vec3 worldNormal = normalize(v_worldNormal);
   vec3 eyeToSurfaceDir = normalize(v_worldPosition - uCameraPosition);
   vec3 direction = reflect(eyeToSurfaceDir,worldNormal);
-  mat3 invModelMatrix = inverseMatrix(mat3(uModelMatrix));
-  vec3 direction2 = invModelMatrix * direction;
-  gl_FragColor = textureCube(uSampler, direction2) ;
+  gl_FragColor = textureCube(uSampler, direction) ;
 }
 
 `;
@@ -86,16 +70,14 @@ void main() {
 //skybox
 const vsSource2 = `
 attribute vec4 aVertexPosition;
-
-uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
 uniform mat4 uProjectionMatrix;
 
 varying vec3 vDirection;
 
 void main() {
-    // Only apply rotation part of modelViewMatrix (remove translation)
-    mat4 viewRotation = mat4(mat3(uViewMatrix * uModelMatrix));
+    // Only apply rotation part of ViewMatrix (remove translation)
+    mat4 viewRotation = mat4(mat3(uViewMatrix));
 
     vec4 direction = viewRotation * aVertexPosition;
     vDirection = direction.xyz;
@@ -119,11 +101,7 @@ void main() {
 let sphere, skybox, w, h, epicCanvas, program, program2, cubemap;
 
 
-
 const loop = (t) => {
-	rotateX(sphere, 0.01);
-	rotateZ(sphere, Math.sin(t/1000)*0.01);
-	epicCanvas.reloadBufferData(sphere);
     epicCanvas.clearColor = [0.7, 0.5, 0.8, 1.0];
     epicCanvas.clearScreen();
     epicCanvas.setCubeMap(cubemap);
@@ -134,8 +112,8 @@ const loop = (t) => {
     if (error !== epicCanvas.gl.NO_ERROR) {
         console.error("WebGL error in loop:", error);
     }
-    epicCanvas.rotateMatrix(epicCanvas.matrices.viewMatrix, 0.01, [0,1,0]);
-  epicCanvas.rotateMatrix(epicCanvas.matrices.modelMatrix, Math.sin(t/2000)*(-0.01), [1,0,0]);
+    epicCanvas.rotateMatrix(epicCanvas.matrices.viewMatrix, 0.01, [1,0,1]);
+  epicCanvas.rotateMatrix(epicCanvas.matrices.viewMatrix, Math.sin(t/1000)*(0.01), [0,0,1]);
   
   requestAnimationFrame(loop);
 };
@@ -157,16 +135,16 @@ const main = async () => {
         program2 = epicCanvas.makeProgram(vsSource2, fsSource2);
 
         // Create a sphere
-        sphere = Sphere(epicCanvas, 7);
-        
+        sphere = Sphere(epicCanvas, 55);
+ 
         // creat skybox
         skybox = Cube(epicCanvas);
-        scale(skybox, 50, 50, 50);
+        scale(skybox, 50,50,50);
         epicCanvas.reloadBufferData(skybox);
         
         
         // load cube map
-        const prefix = "https://raw.githubusercontent.com/paul-caron/EpicCanvas/refs/heads/master/assets/cubemaps/earth/";
+        const prefix = "https://raw.githubusercontent.com/paul-caron/EpicCanvas/refs/heads/master/assets/cubemaps/citadella2/";
 
         const URLs = [
 prefix + "posx.jpg",
@@ -195,3 +173,4 @@ onload = main;
 </script>
 </body>
 </html>
+
