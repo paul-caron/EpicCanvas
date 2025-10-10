@@ -8,28 +8,81 @@
 <body>
     <!-- dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.25/epiccanvas.js" crossorigin='anonymous'></script>
-    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.25/primitives/cube.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.28/epiccanvas.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.28/primitives/cube.js" crossorigin='anonymous'></script>
 
 <script>
 const vsSource = `
-    attribute vec4 aVertexPosition;
-    attribute vec2 aTextureCoord;
-    uniform mat4 uModelViewMatrix;
-    uniform mat4 uProjectionMatrix;
-    varying highp vec2 vTextureCoord;
-    void main() {
-        gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
-        vTextureCoord = aTextureCoord;
-    }
+attribute vec4 aVertexPosition;
+attribute vec4 aVertexNormal;
+attribute vec2 aTextureCoord;
+
+uniform mat4 uModelMatrix;
+uniform mat4 uViewMatrix;
+uniform mat4 uProjectionMatrix;
+uniform mat4 uNormalMatrix;
+uniform vec3 uCameraPosition;
+
+varying vec3 vNormal;
+varying vec3 vWorldPosition;
+varying vec2 vTextureCoord;
+varying vec3 vViewDirection;
+
+void main() {
+    vec4 worldPosition = uModelMatrix * aVertexPosition;
+    vWorldPosition = worldPosition.xyz;
+    vNormal = normalize(uNormalMatrix * aVertexNormal).xyz;
+    vViewDirection = normalize(uCameraPosition - worldPosition.xyz);
+    vTextureCoord = aTextureCoord;
+    gl_Position = uProjectionMatrix * uViewMatrix * worldPosition;
+}
+
 `;
 
+
 const fsSource = `
-    varying highp vec2 vTextureCoord;
-    uniform sampler2D uSampler;
-    void main() {
-        gl_FragColor = texture2D(uSampler, vTextureCoord);
-    }
+precision mediump float;
+
+varying vec3 vNormal;
+varying vec3 vWorldPosition;
+varying vec3 vViewDirection;
+varying vec2 vTextureCoord;
+
+uniform sampler2D uSampler;
+uniform vec3 pointLightPosition;
+uniform vec3 pointLightColor;
+uniform vec3 directionalLightColor;
+uniform vec3 directionalVector;
+uniform vec3 ambientLight;
+//uniform float shininess;
+
+void main() {
+	float shininess = 112.0;
+    vec3 normal = normalize(vNormal);
+    vec3 lightDir = normalize(pointLightPosition - vWorldPosition);
+    vec3 reflectDir = reflect(-lightDir, normal);
+    vec3 viewDir = normalize(vViewDirection);
+    vec4 textureColor = texture2D(uSampler, vTextureCoord);
+
+    // Ambient
+    vec3 ambient = ambientLight * textureColor.rgb;
+    
+    // Directional
+    float directionalLightIntensity=max(dot(normal, directionalVector),0.0);
+    vec3 directional = directionalLightIntensity * directionalLightColor * textureColor.rgb;
+
+    // Diffuse
+    float diff = max(dot(normal, lightDir), 0.0);
+    vec3 diffuse = pointLightColor * diff * textureColor.rgb;
+
+    // Specular
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
+    vec3 specular = pointLightColor * spec * textureColor.rgb;
+
+    // Combine
+    vec3 finalColor = ambient + diffuse + specular + directional;
+    gl_FragColor = vec4(finalColor, textureColor.a);
+}
 `;
 
 // Globals
@@ -44,8 +97,7 @@ const textureRenderingFunction = () => {
 
 const loop = (t) => {
     rotateY(s, 0.01);
-    rotateX(s, 0.005);
-    rotateZ(s, 0.001);
+    rotateZ(s, Math.sin(t/2000)* 0.01);
     epicCanvas.reloadBufferData(s);
     epicCanvas.clearColor = [0.7, 0.5, 0.8, 1.0];
     epicCanvas.clearScreen();
@@ -85,6 +137,12 @@ const main = () => {
         if (error !== epicCanvas.gl.NO_ERROR) {
             console.error("WebGL error after initial render:", error);
         }
+        epicCanvas.ambientColor = [0.25,0.25,0.125];
+//epicCanvas.directionalColor = [0.5,0.5,1.0]
+//epicCanvas.directionalVector = [0,0.7,0.7] //direction the light comes from
+epicCanvas.pointLightColor = [0.2,0.45,0.75]
+epicCanvas.pointLightPosition = [0,1.5,5]
+
 
         // Start the loop
         requestAnimationFrame(loop);
