@@ -145,12 +145,13 @@ const main = async () => {
         mirrorProgram = epicCanvas.makeProgram(vsSource, fsSource);
         skyboxProgram = epicCanvas.makeProgram(vsSource2, fsSource2);
 
-        // Create a sphere
+        // Create shapes
         models[0] = TorusKnot(epicCanvas, 1, 0.151, 1024, 32, 2, 3)
         models[1] = TorusKnot(epicCanvas, 1, 0.151, 1024, 32, 2, 5)
         models[2] = TorusKnot(epicCanvas, 1, 0.151, 1024, 32, 3, 5)
         models[3] = TorusKnot(epicCanvas, 1, 0.151, 1024, 32, 3, 8)
- 
+
+		// Create windows
         windows[0] = epicCanvas.window(0,0,0.5,0.5);
         windows[1] = epicCanvas.window(0.5,0,0.5,0.5);
         windows[2] = epicCanvas.window(0,0.5,0.5,0.5);
