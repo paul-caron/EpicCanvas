@@ -19,10 +19,10 @@ function Square(epicCanvas, initBuffers = true){
         0.0,1.0,
     ]
     const normals=[
-        0.0,0.0,1.0,1.0,
-        0.0,0.0,1.0,1.0,
-        0.0,0.0,1.0,1.0,
-        0.0,0.0,1.0,1.0
+        0.0,0.0,1.0,0.0,
+        0.0,0.0,1.0,0.0,
+        0.0,0.0,1.0,0.0,
+        0.0,0.0,1.0,0.0
     ]
     const mode=epicCanvas.gl.TRIANGLE_STRIP
     const shape={vertices,colors,textureCoordinates,mode,normals}
