@@ -42,7 +42,10 @@ function Sphere(ec, divisions = 10, initBuffers = true){
         }
         return tcs
     })()
-    const normals = vertices.map(v=>v)
+    const normals = vertices.forEach((v,i)=>{
+        if(i%4==3) return 0;
+        return v;
+    });
     const mode = ec.gl.TRIANGLES
     const shape = {
         vertices, colors, textureCoordinates, normals, mode
