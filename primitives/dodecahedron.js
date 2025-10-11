@@ -260,7 +260,7 @@ function Dodecahedron(ec, initBuffers = true){
             const n = vertices.slice(i,i+4)
             const l = Math.sqrt(n[0]**2+n[1]**2+n[2]**2)
             for(let j=0;j<5*3;++j)
-                norms.push(n[0]/l,n[1]/l,n[2]/l,1)
+                norms.push(n[0]/l,n[1]/l,n[2]/l,0)
         }
         return norms
     })()
