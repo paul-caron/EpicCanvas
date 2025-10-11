@@ -52,16 +52,16 @@ function Tetrahedron(ec, initBuffers = true){
         const h = 1/Math.sqrt(3)
         const norms = []
         for(let i=0;i<3;++i){
-            norms.push(h,-h,-h,1)
+            norms.push(h,-h,-h,0)
         }
         for(let i=0;i<3;++i){
-            norms.push(h,h,h,1)
+            norms.push(h,h,h,0)
         }
         for(let i=0;i<3;++i){
-            norms.push(-h,h,-h,1)
+            norms.push(-h,h,-h,0)
         }
         for(let i=0;i<3;++i){
-            norms.push(-h,-h,h,1)
+            norms.push(-h,-h,h,0)
         }
         return norms
     })()
