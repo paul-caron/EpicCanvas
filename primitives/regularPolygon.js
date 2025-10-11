@@ -31,7 +31,7 @@ function RegularPolygon(ec,numberOfCorners, initBuffers = true){
     const normals=(()=>{
         const norms=[]
         for(let i=0;i<vertices.length;i+=4){
-            norms.push(...[0,0,1,1])
+            norms.push(...[0,0,1,0])
         }
         return norms
     })()
