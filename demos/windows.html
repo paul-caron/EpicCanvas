@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+    	body {
+    	    margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    </style>
+ </head>
+<body>
+    <!-- dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.29/epiccanvas.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.29/primitives/torusknot.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.29/primitives/cube.js" crossorigin='anonymous'></script>
+
+<script>
+  
+const vsSource = `
+attribute vec4 aVertexPosition;
+attribute vec3 aVertexNormal;
+ 
+uniform mat4 uProjectionMatrix;
+uniform mat4 uViewMatrix;
+uniform mat4 uModelMatrix;
+ 
+varying vec3 v_worldPosition;
+varying vec3 v_worldNormal;
+ 
+void main() {
+  // Multiply the position by the matrix.
+  gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * aVertexPosition;
+ 
+  // send the view position to the fragment shader
+  v_worldPosition = (uModelMatrix * aVertexPosition).xyz;
+ 
+  // orient the normals and pass to the fragment shader
+  v_worldNormal = mat3(uModelMatrix) * aVertexNormal.xyz;
+}
+    
+`;
+
+const fsSource = `
+
+precision highp float;
+ 
+// Passed in from the vertex shader.
+varying vec3 v_worldPosition;
+varying vec3 v_worldNormal;
+ 
+// The texture.
+uniform samplerCube uSampler;
+ 
+// The position of the camera
+uniform vec3 uCameraPosition;
+ 
+void main() {
+  vec3 worldNormal = normalize(v_worldNormal);
+  vec3 eyeToSurfaceDir = normalize(v_worldPosition - uCameraPosition);
+  vec3 direction = reflect(eyeToSurfaceDir,worldNormal);
+  gl_FragColor = textureCube(uSampler, direction) ;
+}
+
+`;
+
+//skybox
+const vsSource2 = `
+attribute vec4 aVertexPosition;
+uniform mat4 uViewMatrix;
+uniform mat4 uProjectionMatrix;
+
+varying vec3 vDirection;
+
+void main() {
+    // Only apply rotation part of ViewMatrix (remove translation)
+    mat4 viewRotation = mat4(mat3(uViewMatrix));
+
+    vec4 direction = viewRotation * aVertexPosition;
+    vDirection = direction.xyz;
+
+    gl_Position = uProjectionMatrix * viewRotation * vec4(direction.xyz, 1.0);
+}
+
+
+`;
+
+
+const fsSource2 = `
+precision highp float;
+uniform samplerCube uCubeMap;
+varying vec3 vDirection;
+
+void main() {
+    gl_FragColor = textureCube(uCubeMap, normalize(vDirection));
+}
+
+
+`;
+
+
+
+// Globals
+let models=Array(4);
+let windows=Array(4);
+let skybox, w, h, epicCanvas, skyboxProgram, mirrorProgram, cubemap;
+
+
+const loop = (t) => {
+	for(let i=0;i<4;i++){
+	    windows[i]();
+        epicCanvas.clearScreen();
+        epicCanvas.setCubeMap(cubemap);
+        epicCanvas.drawShape(mirrorProgram, models[i]);
+        epicCanvas.setCubeMap(cubemap);
+        epicCanvas.drawShape(skyboxProgram, skybox);
+        const error = epicCanvas.gl.getError();
+        if (error !== epicCanvas.gl.NO_ERROR) {
+            console.error("WebGL error in loop:", error);
+        }
+    }
+    epicCanvas.rotateMatrix(epicCanvas.matrices.viewMatrix, 0.01, [1,0,1]);
+    epicCanvas.rotateMatrix(epicCanvas.matrices.viewMatrix, Math.sin(t/1000)*(0.01), [0,0,1]);
+  
+    requestAnimationFrame(loop);
+};
+
+const main = async () => {
+    try {
+        // Create canvas
+        const width = w = innerWidth;
+        const height = h = innerHeight;
+        epicCanvas = new EpicCanvas(width, height, "body");
+
+        // Set up camera
+        epicCanvas.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0]);
+        epicCanvas.aspectRatio = w/h;
+        epicCanvas.fieldOfView = Math.PI / 3
+        
+        // Create shader programs
+        mirrorProgram = epicCanvas.makeProgram(vsSource, fsSource);
+        skyboxProgram = epicCanvas.makeProgram(vsSource2, fsSource2);
+
+        // Create a sphere
+        models[0] = TorusKnot(epicCanvas, 1, 0.151, 1024, 32, 2, 3)
+        models[1] = TorusKnot(epicCanvas, 1, 0.151, 1024, 32, 2, 5)
+        models[2] = TorusKnot(epicCanvas, 1, 0.151, 1024, 32, 3, 5)
+        models[3] = TorusKnot(epicCanvas, 1, 0.151, 1024, 32, 3, 8)
+ 
+        windows[0] = epicCanvas.window(0,0,0.5,0.5);
+        windows[1] = epicCanvas.window(0.5,0,0.5,0.5);
+        windows[2] = epicCanvas.window(0,0.5,0.5,0.5);
+        windows[3] = epicCanvas.window(0.5,0.5,0.5,0.5);
+ 
+        // creat skybox
+        skybox = Cube(epicCanvas);
+        scale(skybox, 50,50,50);
+        epicCanvas.reloadBufferData(skybox);
+        
+        
+        // load cube map
+        const prefix = "https://raw.githubusercontent.com/paul-caron/EpicCanvas/refs/heads/master/assets/cubemaps/citadella2/";
+
+        const URLs = [
+prefix + "posx.jpg",
+prefix + "negx.jpg",
+prefix + "posy.jpg",
+prefix + "negy.jpg",
+prefix + "posz.jpg",
+prefix + "negz.jpg",
+        ];
+        cubemap = await epicCanvas.loadCubeMap(URLs);
+
+        // Check for WebGL errors
+        const error = epicCanvas.gl.getError();
+        if (error !== epicCanvas.gl.NO_ERROR) {
+            console.error("WebGL error after initial render:", error);
+        }
+
+        // Start the loop
+        requestAnimationFrame(loop);
+    } catch (e) {
+        console.error("Error in main:", e);
+    }
+};
+
+onload = main;
+</script>
+</body>
+</html>
+
