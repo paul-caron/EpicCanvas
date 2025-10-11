@@ -254,7 +254,7 @@ updateNormalMatrix(){
 }
 updateCameraPosition() {
   let invView = mat4.create()
-  mat4.invert(invView, epicCanvas.matrices.viewMatrix)
+  mat4.invert(invView, this.matrices.viewMatrix)
   this.cameraPosition = [invView[12], invView[13], invView[14] ]
 }
 
