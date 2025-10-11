@@ -78,9 +78,9 @@ const normals = (()=>{
         const z = i%2?0:i%4==0?-cosN:cosN
         for(let j=0;j<3;++j){
             if(i<4)
-            norms.push(x,y,z,1.0)
+            norms.push(x,y,z,0.0)
             else
-            norms.push(x,-y,z,1.0)
+            norms.push(x,-y,z,0.0)
         }
     }
     return norms
