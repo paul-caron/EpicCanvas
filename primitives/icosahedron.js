@@ -68,7 +68,7 @@ function Icosahedron(ec, initBuffers = true){
             const l = Math.sqrt(x**2+y**2+z**2)
             //push normalized values three times
             for(let j=0;j<3;++j)
-                norms.push(x/l,y/l,z/l,1)
+                norms.push(x/l,y/l,z/l,0)
         }
         return norms
     })()
