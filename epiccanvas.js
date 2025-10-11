@@ -1549,7 +1549,7 @@ function setNormals(shape){
         const AB = [pointB[0]-pointA[0], pointB[1]-pointA[1],pointB[2]-pointA[2]]
         const AC = [pointC[0]-pointA[0], pointC[1]-pointA[1],pointC[2]-pointA[2]]
         //cross product
-        const N = [0,0,0,1]
+        const N = [0,0,0,0]
         N[0] = ((AB[1]*AC[2]) - (AB[2]*AC[1]))
         N[1] = ((AB[2]*AC[0]) - (AB[0]*AC[2]))
         N[2] = ((AB[0]*AC[1]) - (AB[1]*AC[0]))
