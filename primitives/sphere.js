@@ -42,7 +42,7 @@ function Sphere(ec, divisions = 10, initBuffers = true){
         }
         return tcs
     })()
-    const normals = vertices.forEach((v,i)=>{
+    const normals = vertices.map((v,i)=>{
         if(i%4==3) return 0;
         return v;
     });
