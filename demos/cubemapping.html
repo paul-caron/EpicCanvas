@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+    	body {
+    	    margin: 0;
+            padding: 0;
+            background-color: black;
+        }
+        canvas {
+  width: 100vmin;
+  height: 100vmin;
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+}
+    </style>
+ </head>
+<body>
+    <!-- dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.30/epiccanvas.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.30/primitives/sphere.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.30/primitives/cube.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.30/shaders/vertexPhong.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.30/shaders/fragmentPhong.js" crossorigin='anonymous'></script>
+   <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.30/shaders/vertexMirror.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.30/shaders/fragmentMirror.js" crossorigin='anonymous'></script>
+
+<script>
+  
+
+
+
+
+
+// Globals
+let models=Array(6);
+let colors = [
+[1,0,0,1],
+[0,1,0,1],
+[0,0,1,1],
+[1,1,0,1],
+[1,0,1,1],
+[0,1,1,1],
+];
+let skybox, w, h, ec, phongProgram, mirrorProgram, cubemap, sphere;
+let error;
+let room;
+
+let dt=0;
+let oldt=0;
+const loop = (t) => {
+	    dt=t-oldt;
+	    oldt=t;
+	    try{
+            ec.clearScreen();
+            ec.pointLightColor = [0.7,0.7,0.7];
+            models.forEach(m=>{
+            	ec.drawShape(phongProgram, m);
+            });
+            ec.setCubeMap(cubemap);
+            ec.drawShape(mirrorProgram, sphere);
+            ec.pointLightColor = [0,0,0];
+            ec.drawShape(phongProgram, room);
+            ec.rotateMatrix(ec.matrices.viewMatrix,Math.sin(t/1400)*dt/600,[0,0,1]);
+            ec.rotateMatrix(ec.matrices.viewMatrix,dt/1000, [0,1,0]);
+            requestAnimationFrame(loop);
+        }catch(e){
+        	alert(e);
+        }
+};
+
+const main = async () => {
+    try {
+        // Create canvas
+        const width = w = 1024;
+        const height = h = w;  // width must be same as height for the cube map to work
+        ec = new EpicCanvas(width, height, "body");
+        ec.clearColor=[0.1,0.1,0.15,1]
+        
+        // Set up camera
+        ec.aspectRatio = w/h;
+        ec.fieldOfView = Math.PI / 2;
+        
+        // Set up lighting
+       ec.ambientColor = [0.2,0.2, 0.2];
+       ec.pointLightPosition =[0,0,0];
+       ec.pointLightColor = [0.7,0.7,0.7];
+        
+        // Create shader programs
+       mirrorProgram = ec.makeProgram(vsMirror, fsMirror);
+       phongProgram = ec.makeProgram(vsPhong, fsPhong);
+        
+        // create sphere
+        sphere = Sphere(ec,55);
+
+        //create room
+        room = Cube(ec);
+        scale(room,50,50,50);
+        ec.reloadBufferData(room);
+        
+        // create models
+        const d= 2 // distance from center
+        const url = "https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@master/models/legs/LEEEEEGGGGGSSSSS.stl";
+        for(let i=0;i<4;i++){
+            models[i] = await ec.loadSTL(url);
+            center(models[i]);
+            if(i%2) rotateX(models[i], Math.PI);
+            scaleToUnitSize(models[i]);
+            for(let j=0;j<models[i].colors.length;j+=4){
+            	models[i].colors[j] = colors[i][0];
+                models[i].colors[j+1] = colors[i][1];
+                models[i].colors[j+2] = colors[i][2];
+                models[i].colors[j+3] = colors[i][3];
+            }
+            translateZ(models[i], d);
+            rotateY(models[i], i*Math.PI/2);
+            ec.reloadBufferData(models[i]);
+        }
+        models[4] = await ec.loadSTL(url); 
+        center(models[4]);
+        scaleToUnitSize(models[4]);
+        for(let j=0;j<models[4].colors.length;j+=4){
+            	models[4].colors[j] = colors[4][0];
+                models[4].colors[j+1] = colors[4][1];
+                models[4].colors[j+2] = colors[4][2];
+                models[4].colors[j+3] = colors[4][3];
+            }
+        translateY(models[4], d);
+        ec.reloadBufferData(models[4]);
+        
+        models[5] = await ec.loadSTL(url);
+        center(models[5]);
+        scaleToUnitSize(models[5]);
+        for(let j=0;j<models[5].colors.length;j+=4){
+            	models[5].colors[j] = colors[5][0];
+                models[5].colors[j+1] = colors[5][1];
+                models[5].colors[j+2] = colors[5][2];
+                models[5].colors[j+3] = colors[5][3];
+            }
+        translateY(models[5], -d);
+        ec.reloadBufferData(models[5]);
+            
+            
+        // create a cube map
+        cubemap = ec.createEmptyCubeMap(w);
+        
+         const renderCubemapFace = (target, lookAt, up) => {
+               ec.renderToCubeMapFace(cubemap, target, w, h, () => {
+                        ec.lookAt([0, 0, 0], lookAt, up);
+                        ec.pointLightColor = [0.7,0.7,0.7];
+                        ec.aspectRatio = w /h ; //aspectRatio can be modified for distorting mirrors
+                        ec.fieldOfView = Math.PI / 2 // set camera angle to Math.PI/2, 90 degrees for a perfect cube map, but the cube size distorts the projection, but disortion effect can be added to the mirror by changing this angle (narrowing vs biggering mirrors).
+                        ec.clearScreen();
+                        models.forEach((m) => {
+                            ec.drawShape(phongProgram, m);
+                        });
+               });
+          };
+          renderCubemapFace(ec.gl.TEXTURE_CUBE_MAP_POSITIVE_X, [1, 0, 0], [0, -1, 0]);
+          renderCubemapFace(ec.gl.TEXTURE_CUBE_MAP_NEGATIVE_X, [-1, 0, 0], [0, -1, 0]);
+          renderCubemapFace(ec.gl.TEXTURE_CUBE_MAP_POSITIVE_Y, [0, 1, 0], [0, 0, 1]);
+          renderCubemapFace(ec.gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, [0, -1, 0], [0, 0, -1]);
+          renderCubemapFace(ec.gl.TEXTURE_CUBE_MAP_POSITIVE_Z, [0, 0, 1], [0, -1, 0]);
+          renderCubemapFace(ec.gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, [0, 0, -1], [0, -1, 0]);
+                
+          // Set up camera
+          ec.lookAt([0, 1.5, 6], [0, 0, 0], [0, 1, 0]);
+          ec.aspectRatio = w/h;
+          ec.fieldOfView = Math.PI / 6;
+        
+          // Start the loop
+          requestAnimationFrame(loop);
+    } catch (e) {
+          alert("Error in main:", e);
+    }
+};
+
+onload = main;
+</script>
+</body>
+</html>
