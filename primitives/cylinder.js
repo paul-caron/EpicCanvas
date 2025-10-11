@@ -119,9 +119,9 @@ const Cylinder = (ec, nDivisions, initBuffers = true) => {
         const norms = []
         for(let i=0;i<vertices.length;i+=4){
             if(i<4*3*nDivisions){
-                norms.push(...[0,1,0,1])
+                norms.push(...[0,1,0,0])
             }else if(i<2*4*3*nDivisions){
-                norms.push(...[0,-1,0,1])
+                norms.push(...[0,-1,0,0])
             }else{
                 const v = vertices.slice(i,i+4)
                 const angleDelta = Math.PI*2/nDivisions/2
@@ -137,7 +137,7 @@ const Cylinder = (ec, nDivisions, initBuffers = true) => {
                 const x = Math.cos(normAngle)
                 const y = 0
                 const z = Math.sin(normAngle)
-                norms.push(...[x,y,z,1])
+                norms.push(...[x,y,z,0])
             }
         }
         return norms
