@@ -1256,7 +1256,8 @@ window(startWidthRatio, startHeightRatio, widthRatio, heightRatio){
 drawShape(programInfo,shape){
     const epicCanvas = this
     const {gl,matrices}=epicCanvas
-    const {projectionMatrix,modelViewMatrix,modelMatrix,viewMatrix,normalMatrix}=matrices
+    const {projectionMatrix,viewMatrix}=matrices
+    const {modelMatrix, normalMatrix} = shape.matrices
     const {buffers,mode}=shape
     {
         const numComponents=4
