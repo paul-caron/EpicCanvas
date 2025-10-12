@@ -1370,34 +1370,55 @@ drawShape(programInfo,shape){
         normalMatrix
       )
     }
-    gl.uniform3fv(
+    if(programInfo.uniformLocations.cameraPosition!=-1)
+    {
+      gl.uniform3fv(
         programInfo.uniformLocations.cameraPosition,
         new Float32Array(epicCanvas.cameraPosition)
-    )
-    gl.uniform3fv(
+      )
+    }
+    if(programInfo.uniformLocations.ambientLight!=-1)
+    {
+      gl.uniform3fv(
         programInfo.uniformLocations.ambientLight,
         new Float32Array(epicCanvas.ambientColor)
-    )
-    gl.uniform3fv(
+      )
+    }
+    if(programInfo.uniformLocations.directionalLightColor!=-1)
+    {
+      gl.uniform3fv(
         programInfo.uniformLocations.directionalLightColor, 
         new Float32Array(epicCanvas.directionalColor)
-    )
-    gl.uniform3fv(
+      )
+    }
+    if(programInfo.uniformLocations.directionalVector!=-1)
+    {
+      gl.uniform3fv(
         programInfo.uniformLocations.directionalVector,
         new Float32Array(epicCanvas.directionalVector)
-    )
-    gl.uniform3fv(
+      )
+    }
+    if(programInfo.uniformLocations.pointLightPosition!=-1)
+    {
+      gl.uniform3fv(
         programInfo.uniformLocations.pointLightPosition, 
         new Float32Array(epicCanvas.pointLightPosition)
-    )
-    gl.uniform3fv(
+      )
+    }
+    if(programInfo.uniformLocations.pointLightColor!=-1)
+    {
+      gl.uniform3fv(
         programInfo.uniformLocations.pointLightColor,
         new Float32Array(epicCanvas.pointLightColor)
-    )
-    gl.uniform1f(
+      )
+    }
+    if(programInfo.uniformLocations.pointSize!=-1)
+    {
+      gl.uniform1f(
         programInfo.uniformLocations.pointSize,
         epicCanvas.pointSize
-    )
+      )
+    }
     
     {
         const offset=0
