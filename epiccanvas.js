@@ -1115,7 +1115,7 @@ initShapeMatrices(shape){
 }
 
 initBuffers(shape){
-    initShapeMatrices(shape)
+    this.initShapeMatrices(shape)
     const {vertices,colors,textureCoordinates,normals}=shape
     const positionBuffer=this.gl.createBuffer() 
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER,positionBuffer)
