@@ -300,12 +300,12 @@ Three types of transformations can be done:
 * rotation: turn something around an axis.
 * scaling: enlarge or shrink something.
 
-Transformations on the model or view matrix:
-* EpicCanvas.translateMatrix(mat4)
-* EpicCanvas.rotateMatrix(mat4)
-* EpicCanvas.scaleMatrix(mat4)
+Transformations on the model matrix:
+* translateModelMatrix(shape, angle, [x,y,z])
+* rotateModelMatrix(shape, [x,y,z])
+* scaleModelMatrix(shape, [x,y,z])
 
-Transformations on the shapes:
+For permanent transformations on the shape (changes the vertices and normals directly):
 * translateX(shape, dx)
 * translateY(shape, dy)
 * translateZ(shape, dz)
