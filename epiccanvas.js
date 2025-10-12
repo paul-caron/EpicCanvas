@@ -1644,3 +1644,46 @@ function rotateModelMatrix(shape, angleInRadians, axis) {
     shape.matrices.modelMatrix = modelMatrix;
     shape.matrices.normalMatrix = normalMatrix;
 }
+
+
+function translateModelMatrix(shape, translation) {
+    const { modelMatrix, normalMatrix } = shape.matrices;
+    
+    // Create a temporary matrix for translation
+    const translationMatrix = mat4.create();
+    
+    // Apply translation to the translation matrix
+    mat4.translate(translationMatrix, mat4.create(), translation);
+    
+    // Update modelMatrix by multiplying with translation
+    mat4.multiply(modelMatrix, translationMatrix, modelMatrix);
+    
+    // Update normalMatrix (inverse transpose of modelMatrix)
+    mat4.invert(normalMatrix, modelMatrix);
+    mat4.transpose(normalMatrix, normalMatrix);
+    
+    // Update the shape's matrices
+    shape.matrices.modelMatrix = modelMatrix;
+    shape.matrices.normalMatrix = normalMatrix;
+}
+
+function scaleModelMatrix(shape, scale) {
+    const { modelMatrix, normalMatrix } = shape.matrices;
+    
+    // Create a temporary matrix for scaling
+    const scaleMatrix = mat4.create();
+    
+    // Apply scaling to the scale matrix
+    mat4.scale(scaleMatrix, mat4.create(), scale);
+    
+    // Update modelMatrix by multiplying with scale
+    mat4.multiply(modelMatrix, scaleMatrix, modelMatrix);
+    
+    // Update normalMatrix (inverse transpose of modelMatrix)
+    mat4.invert(normalMatrix, modelMatrix);
+    mat4.transpose(normalMatrix, normalMatrix);
+    
+    // Update the shape's matrices
+    shape.matrices.modelMatrix = modelMatrix;
+    shape.matrices.normalMatrix = normalMatrix;
+}
