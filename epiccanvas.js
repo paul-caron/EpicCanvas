@@ -1623,4 +1623,23 @@ function scaleToUnitSize(shape){
     scale(shape, 1/max, 1/max, 1/max)
 }
 
-
+function rotateModelMatrix(shape, angleInRadians, axis) {
+    const { modelMatrix, normalMatrix } = shape.matrices;
+    
+    // Create a temporary matrix for rotation
+    const rotationMatrix = mat4.create();
+    
+    // Apply rotation to the rotation matrix based on axis and angle
+    mat4.rotate(rotationMatrix, mat4.create(), angleInRadians, axis);
+    
+    // Update modelMatrix by multiplying with rotation
+    mat4.multiply(modelMatrix, rotationMatrix, modelMatrix);
+    
+    // Update normalMatrix (inverse transpose of modelMatrix)
+    mat4.invert(normalMatrix, modelMatrix);
+    mat4.transpose(normalMatrix, normalMatrix);
+    
+    // Update the shape's matrices
+    shape.matrices.modelMatrix = modelMatrix;
+    shape.matrices.normalMatrix = normalMatrix;
+}
