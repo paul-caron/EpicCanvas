@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+    	body {
+    	    margin: 0;
+            padding: 0;
+            background-color: black;
+        }
+        canvas {
+           
+        }
+    </style>
+</head>
+<body>
+    <!-- dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta/epiccanvas.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.34/shaders/vertexPhong.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.34/shaders/fragmentPhong.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.34/shaders/vertexMirror.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.34/shaders/fragmentMirror.js" crossorigin='anonymous'></script>
+<script>
+//globals
+let s, model, epicCanvas, program;
+
+let rotationQuat = quat.create(); // Identity quaternion
+
+
+
+
+
+let startX, startY;
+let isSwiping = false;
+
+
+
+
+
+
+
+
+
+//draw loop
+const loop = (t) => {
+	try{
+  //clear screen
+  epicCanvas.clearScreen();
+  
+  //draw
+  epicCanvas.drawShape(program, model);
+  
+  //loop
+ requestAnimationFrame(loop)
+ }catch(e){
+ 	alert(e);
+ }
+}
+
+
+
+function handleSwipe(deltaX, deltaY) {
+	const rotationSensitivity = 0.01; // Adjust for desired sensitivity
+	
+  const angleY = deltaX * rotationSensitivity; // Yaw
+  const angleX = deltaY * rotationSensitivity; // Pitch
+
+  let quatX = quat.create();
+  let quatY = quat.create();
+  quat.setAxisAngle(quatX, [1, 0, 0], angleX); // X-axis rotation
+  quat.setAxisAngle(quatY, [0, 1, 0], angleY); // Y-axis rotation
+
+  // Combine swipe rotations (Y * X order, X first)
+  let deltaQuat = quat.create();
+  quat.multiply(deltaQuat, quatY, quatX);
+
+  // Option 1: Local rotation (recommended for swipe controls)
+ //quat.multiply(rotationQuat, rotationQuat, deltaQuat); // Local: apply deltaQuat in object’s space
+
+  // Option 2: Global rotation (uncomment to test)
+  quat.multiply(rotationQuat, deltaQuat, rotationQuat); // Global: apply deltaQuat in world space
+
+  // Normalize quaternion to prevent drift
+  quat.normalize(rotationQuat, rotationQuat);
+
+  // Convert to model matrix
+  mat4.fromQuat(model.matrices.modelMatrix, rotationQuat);
+  
+  // Update normalMatrix (inverse transpose of modelMatrix)
+    mat4.invert(model.matrices.normalMatrix, model.matrices.modelMatrix);
+    mat4.transpose(model.matrices.normalMatrix, model.matrices.normalMatrix);
+  
+}
+
+const main = async () => {
+	try{
+  // create canvas
+  const width = innerWidth;
+  const height = innerHeight;
+  epicCanvas = new EpicCanvas(width,height,"body");
+
+const canvas = epicCanvas.canvas;
+
+// Start of swipe
+canvas.addEventListener('touchstart', (e) => {
+	e.preventDefault();
+  const touch = e.touches[0];
+  startX = touch.clientX;
+  startY = touch.clientY;
+  isSwiping = true;
+});
+
+// During swipe
+canvas.addEventListener('touchmove', (e) => {
+	e.preventDefault();
+  if (!isSwiping) return;
+  const touch = e.touches[0];
+  const deltaX = touch.clientX - startX;
+  const deltaY = touch.clientY - startY;
+  handleSwipe(deltaX, deltaY);
+  startX = touch.clientX;
+  startY = touch.clientY;
+});
+
+// End of swipe
+canvas.addEventListener('touchend', () => {
+	e.preventDefault();
+  isSwiping = false;
+});
+
+
+
+
+  // set clear color 
+  epicCanvas.clearColor = [0.0,0,0,1.0];
+
+  // setup the camera position, lookat center point, up vector.
+  epicCanvas.lookAt([0,0,4], [0,0,0], [0,1,0]);
+
+  // create shader program
+  program = epicCanvas.makeProgram(vsPhong, fsPhong);
+
+    //setup some lighting of 3 types
+   epicCanvas.ambientColor = [0.1,0.1,0.1];
+   //epicCanvas.directionalColor = [0.25,0.25,0.25]
+   //epicCanvas.directionalVector = [0,0,1] //direction the light comes from
+   epicCanvas.pointLightColor = [0.75,0.75,0.75]
+     epicCanvas.pointLightPosition = [0,5,5]
+
+
+     model = await epicCanvas.loadSTL("https://raw.githubusercontent.com/reprappro/Extruder-drive/master/Print-extruder-drive/Individual-STLs/small-gear-1off.stl")
+     scaleToUnitSize(model);
+     center(model);
+     epicCanvas.reloadBufferData(model);
+     
+     
+     requestAnimationFrame(loop);
+     }catch(e){
+     	alert("error", e);
+     }
+}
+
+
+onload = main;
+</script>
+</body>
+</html>
