@@ -1108,13 +1108,14 @@ pushObj(text) {
     return shape;
 }
 
-initTransformMatrices(shape){
-    shape.verticesTransform = mat4.create()
-    shape.normalsTransform = mat4.create()
+initMatrices(shape){
+    shape.matrices = {}
+    shape.matrices.modelMatrix = mat4.create()
+    shape.matrices.normalMatrix = mat4.create()
 }
 
 initBuffers(shape){
-    initTransformMatrices(shape)
+    initMatrices(shape)
     const {vertices,colors,textureCoordinates,normals}=shape
     const positionBuffer=this.gl.createBuffer() 
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER,positionBuffer)
