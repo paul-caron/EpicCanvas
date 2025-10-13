@@ -232,6 +232,11 @@ getMatrices(){
     const normalMatrix=mat4.create()
     return {projectionMatrix, modelMatrix, viewMatrix, normalMatrix}
 }
+setLightProjectionMatrix(w=10, h=10, near=0.1, far=20){
+    const lightProjectionMatrix = mat4.create()
+    mat4.ortho(lightProjectionMatrix, -w, w, -h, h, near, far)
+    this.matrices.lightProjectionMatrix = lightProjectionMatrix
+}
 
 updateNormalMatrix(){
     let normalMatrix3x3 = mat3.create();
@@ -1455,7 +1460,7 @@ drawShape(programInfo,shape){
       gl.uniformMatrix4fv(
         programInfo.uniformLocations.lightProjectionMatrix,
         false,
-        epicCanvas.lightProjectionMatrix
+        epicCanvas.matrices.lightProjectionMatrix
       )
     }
     
