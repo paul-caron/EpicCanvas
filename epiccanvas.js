@@ -1223,7 +1223,8 @@ makeProgram(vsSource, fsSource){
             shaderProgram, 'directionalVector'
         ),
         pointLightPosition:gl.getUniformLocation(
-            shaderProgram, 'pointLightPosition'),
+            shaderProgram, 'pointLightPosition'
+        ),
         pointLightColor:gl.getUniformLocation(
             shaderProgram, 'pointLightColor'
         ),
@@ -1232,6 +1233,18 @@ makeProgram(vsSource, fsSource){
         ),
         cubeMap: gl.getUniformLocation(
             shaderProgram, 'uCubeMap'
+        ),
+        shadowMap: gl.getUniformLocation(
+            shaderProgram, 'uShadowMap'
+        ),
+        lightViewMatrix: gl.getUniformLocation(
+            shaderProgram, 'uLightViewMatrix'
+        ),
+        lightProjectionMatrix: gl.getUniformLocation(
+            shaderProgram, 'uLightProjectionMatrix'
+        ),
+        shininess: gl.getUniformLocation(
+            shaderProgram, 'shininess'
         ),
     },
 }
