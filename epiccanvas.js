@@ -389,6 +389,15 @@ createDepthTexture(width, height) {
     return depthTexture
 }
 
+createDepthFramebuffer(depthTexture){
+    const gl = this.gl
+    let framebuffer = gl.createFramebuffer()
+    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer)
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, depthTexture, 0)
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null)
+    return framebuffer
+}
+
 loadTextures(URLs){
     for(const u of URLs){
         this.loadTexture(u)
