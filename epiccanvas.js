@@ -375,6 +375,20 @@ clearScreen(){
     this.gl.clear(this.gl.COLOR_BUFFER_BIT|    
                   this.gl.DEPTH_BUFFER_BIT)
 }
+
+createDepthTexture(width, height) {
+    const gl = this.gl
+    gl.getExtension('WEBGL_depth_texture')
+    let depthTexture = gl.createTexture()
+    gl.bindTexture(gl.TEXTURE_2D, depthTexture)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT, width, height, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_INT, null);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    return depthTexture
+}
+
 loadTextures(URLs){
     for(const u of URLs){
         this.loadTexture(u)
