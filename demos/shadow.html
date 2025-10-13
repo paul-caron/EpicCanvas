@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+    	body {
+    	    margin: 0;
+            padding: 0;
+            background-color: black;
+        }
+        canvas {
+           
+        }
+    </style>
+</head>
+<body>
+	<audio src="https://github.com/paul-caron/pedrogame/raw/refs/heads/main/assets/dorienigm.mp3" loop autoplay></audio>
+    <!-- dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-6/epiccanvas.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-6/shaders/vertexPhong.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-6/shaders/fragmentPhong.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-6/shaders/vertexDiffuseShadow.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-6/shaders/fragmentDiffuseShadow.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-6/shaders/vertexDepth.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-6/shaders/fragmentDepth.js" crossorigin='anonymous'></script>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/perlin2d@master/perlin2d.js"></script>
+<script>
+	
+//globals
+let model, epicCanvas, program, shadowProgram, depthProgram;
+
+
+let shadowMapSize = 4096
+let framebuffer;
+let depthTexture;
+
+function render() {
+	try{
+    // depthRender
+    {
+    let gl =   epicCanvas.gl;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+    gl.viewport(0, 0, shadowMapSize, shadowMapSize);
+     //render scene
+     {
+        epicCanvas.clearScreen();
+        epicCanvas.drawShape(depthProgram, model);
+      }
+      //end render scene
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.viewport(0, 0, epicCanvas.canvas.width, epicCanvas.canvas.height);
+    }
+    // end depthRender
+    //todo: epicCanvas.depthRender(depthFramebuffer, size, renderFunction);
+
+    // final render
+   epicCanvas.setTexture(depthTexture);
+   epicCanvas.clearScreen();
+    epicCanvas.drawShape(shadowProgram, model);
+    
+    //update model
+    rotateModelMatrix(model, 0.01, [0,1,0])
+    
+    //loop
+    requestAnimationFrame(render);
+  }catch(e){
+  	alert(e)
+  }
+}
+
+const main = async () => {
+	try{
+  // create canvas
+  const width = innerWidth;
+  const height = innerHeight;
+  epicCanvas = new EpicCanvas(width,height,"body");
+
+const canvas = epicCanvas.canvas;
+
+
+  // set clear color 
+  epicCanvas.clearColor = [0.0,1,0,1.0];
+
+  // setup the camera position, lookat center point, up vector.
+  epicCanvas.lookAt([0,1,5], [0,0,0], [0,1,0]);
+
+  // create shader program
+shadowProgram = epicCanvas.makeProgram(vsDiffuseShadow, fsDiffuseShadow);
+depthProgram = epicCanvas.makeProgram(vsDepth, fsDepth);
+
+    //setup some lighting of 3 types
+   epicCanvas.ambientColor = [0.5,0.2,0.1];
+   epicCanvas.directionalColor = [0.2,0.75,0.75]
+   epicCanvas.directionalVector = [0,0.7,0.7] //direction the light comes from
+   
+   let gl = epicCanvas.gl;
+   
+
+//createDepthTexture 
+gl.enable(gl.DEPTH_TEST);
+gl.depthFunc(gl.LEQUAL);
+//gl.enable(gl.CULL_FACE);
+ gl.getExtension('WEBGL_depth_texture');
+depthTexture = gl.createTexture();
+gl.bindTexture(gl.TEXTURE_2D, depthTexture);
+gl.texImage2D(gl.TEXTURE_2D, 0, gl.DEPTH_COMPONENT, shadowMapSize, shadowMapSize, 0, gl.DEPTH_COMPONENT, gl.UNSIGNED_INT, null);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+//end createDepthTexture
+//todo: depthTexture = epicCanvas.createDepthTexture(size)
+
+
+
+//createDepthFramebuffer and attach the depthTexture to its output
+framebuffer = gl.createFramebuffer();
+gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, depthTexture, 0);
+gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+// end createDepthBuffer
+//todo: depthFramebuffer = epicCanvas.createDepthFramebuffer(depthTexture);
+
+// Light matrices
+const lightPos =  [10, 5,5]  // should be parallel to epicCanvas.directionalVector, ideally in a nice place to project close to the model
+const target = vec3.fromValues(10, 0, 0); //this vector should be in parallel to epicCanvas.directionalVector
+const up = vec3.fromValues(0, 1,0);
+
+const lightViewMatrix = mat4.create();
+mat4.lookAt(lightViewMatrix, lightPos, target, up);
+//todo: epicCanvas.setLightViewMatrix(pos, target, up)
+
+const lightProjectionMatrix = mat4.create();
+mat4.ortho(lightProjectionMatrix, -20, 20, -20, 20, 0.1, 20);
+//todo: epicCanvas.setLightProjectionMatrix(size=10, near=0.1, far=20)
+  
+  epicCanvas.lightProjectionMatrix = lightProjectionMatrix;
+  //todo: remove this
+  epicCanvas.lightViewMatrix = lightViewMatrix;
+  //todo: remove this
+  
+     const url = "https://raw.githubusercontent.com/paul-caron/EpicCanvas/master/models/blackimp/black_imp.stl"
+     model = await epicCanvas.loadSTL(url);
+     center(model);
+     rotateX(model, -Math.PI/2)
+     scaleToUnitSize(model)
+     translateZ(model, -2);
+     epicCanvas.reloadBufferData(model);
+     model.shininess = 30;
+     requestAnimationFrame(render);
+     }catch(e){
+     	alert("error in main:"+e);
+     }
+}
+
+
+onload = main;
+</script>
+</body>
+</html>
