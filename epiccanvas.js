@@ -1441,8 +1441,7 @@ drawShape(programInfo,shape){
         shape.shininess
       )
     }
-    /*
-    if(programInfo.uniformLocations.lightViewMatrix!=-1)
+    if(programInfo.uniformLocations.lightViewMatrix && programInfo.uniformLocations.lightViewMatrix!=-1)
     {
       gl.uniformMatrix4fv(
         programInfo.uniformLocations.lightViewMatrix,
@@ -1451,14 +1450,14 @@ drawShape(programInfo,shape){
       )
     }
     
-    if(programInfo.uniformLocations.lightProjectionMatrix!=-1)
+    if(programInfo.uniformLocations.lightProjectionMatrix && programInfo.uniformLocations.lightProjectionMatrix!=-1)
     {
       gl.uniformMatrix4fv(
         programInfo.uniformLocations.lightProjectionMatrix,
         false,
         epicCanvas.lightProjectionMatrix
       )
-    }*/
+    }
     
     {
         const offset=0
