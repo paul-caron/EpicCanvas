@@ -1292,7 +1292,7 @@ drawShape(programInfo,shape){
             programInfo.attribLocations.vertexPosition
         )
     }
-    if(programInfo.attribLocations.vertexColor!=-1)
+    if(programIngo.attribLocations.vertexColor && programInfo.attribLocations.vertexColor!=-1)
     {
         const numComponents=4
         const type=gl.FLOAT
@@ -1312,7 +1312,7 @@ drawShape(programInfo,shape){
             programInfo.attribLocations.vertexColor
         )
     }
-    if(programInfo.attribLocations.textureCoord!=-1)
+    if( programInfo.attribLocations.textureCoord &&   programInfo.attribLocations.textureCoord!=-1)
     {
         const numComponents=2
         const type=gl.FLOAT
@@ -1332,7 +1332,7 @@ drawShape(programInfo,shape){
             programInfo.attribLocations.textureCoord
         )
     }
-    if(programInfo.attribLocations.vertexNormal!=-1)
+    if( programInfo.attribLocations.vertexNormal &&   programInfo.attribLocations.vertexNormal!=-1)
     {
         const numComponents=4
         const type=gl.FLOAT
