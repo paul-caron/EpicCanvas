@@ -1116,6 +1116,7 @@ initShapeMatrices(shape){
 
 initBuffers(shape){
     this.initShapeMatrices(shape)
+    shape.shininess = 112.0;
     const {vertices,colors,textureCoordinates,normals}=shape
     const positionBuffer=this.gl.createBuffer() 
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER,positionBuffer)
@@ -1431,6 +1432,30 @@ drawShape(programInfo,shape){
       gl.uniform1f(
         programInfo.uniformLocations.pointSize,
         epicCanvas.pointSize
+      )
+    }
+    if(programInfo.uniformLocations.shininess!=-1)
+    {
+      gl.uniform1f(
+        programInfo.uniformLocations.shininess,
+        shape.shininess
+      )
+    }
+    if(programInfo.uniformLocations.lightViewMatrix!=-1)
+    {
+      gl.uniformMatrix4fv(
+        programInfo.uniformLocations.lightViewMatrix,
+        false,
+        epicCanvas.lightViewMatrix
+      )
+    }
+    
+    if(programInfo.uniformLocations.lightProjectionMatrix!=-1)
+    {
+      gl.uniformMatrix4fv(
+        programInfo.uniformLocations.lightProjectionMatrix,
+        false,
+        epicCanvas.lightProjectionMatrix
       )
     }
     
