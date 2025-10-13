@@ -1292,7 +1292,7 @@ drawShape(programInfo,shape){
             programInfo.attribLocations.vertexPosition
         )
     }
-    if(programIngo.attribLocations.vertexColor && programInfo.attribLocations.vertexColor!=-1)
+    if(programInfo.attribLocations.vertexColor && programInfo.attribLocations.vertexColor!=-1)
     {
         const numComponents=4
         const type=gl.FLOAT
@@ -1353,7 +1353,7 @@ drawShape(programInfo,shape){
         )
     }
     gl.useProgram(programInfo.program) 
-    if(programInfo.uniformLocations.projectionMatrix!=-1)
+    if(  programInfo.uniformLocations.projectionMatrix  &&   programInfo.uniformLocations.projectionMatrix!=-1)
     {
       gl.uniformMatrix4fv(
         programInfo.uniformLocations.projectionMatrix,       
@@ -1361,7 +1361,7 @@ drawShape(programInfo,shape){
         projectionMatrix
       )
     }
-    if(programInfo.uniformLocations.modelMatrix!=-1)
+    if(  programInfo.uniformLocations.modelMatrix &&   programInfo.uniformLocations.modelMatrix!=-1)
     {
       gl.uniformMatrix4fv(
         programInfo.uniformLocations.modelMatrix, 
@@ -1369,7 +1369,7 @@ drawShape(programInfo,shape){
         modelMatrix
       )
     }
-    if(programInfo.uniformLocations.viewMatrix!=-1)
+    if(  programInfo.uniformLocations.viewMatrix &&  programInfo.uniformLocations.viewMatrix!=-1)
     {
       gl.uniformMatrix4fv(
         programInfo.uniformLocations.viewMatrix, 
@@ -1377,7 +1377,7 @@ drawShape(programInfo,shape){
         viewMatrix
       )
     }
-    if(programInfo.uniformLocations.normalMatrix!=-1)
+    if( programInfo.uniformLocations.normalMatrix  &&  programInfo.uniformLocations.normalMatrix!=-1)
     {
       gl.uniformMatrix4fv(
         programInfo.uniformLocations.normalMatrix,
@@ -1385,56 +1385,56 @@ drawShape(programInfo,shape){
         normalMatrix
       )
     }
-    if(programInfo.uniformLocations.cameraPosition!=-1)
+    if(  programInfo.uniformLocations.cameraPosition &&  programInfo.uniformLocations.cameraPosition!=-1)
     {
       gl.uniform3fv(
         programInfo.uniformLocations.cameraPosition,
         new Float32Array(epicCanvas.cameraPosition)
       )
     }
-    if(programInfo.uniformLocations.ambientLight!=-1)
+    if(   programInfo.uniformLocations.ambientLight &&  programInfo.uniformLocations.ambientLight!=-1)
     {
       gl.uniform3fv(
         programInfo.uniformLocations.ambientLight,
         new Float32Array(epicCanvas.ambientColor)
       )
     }
-    if(programInfo.uniformLocations.directionalLightColor!=-1)
+    if(  programInfo.uniformLocations.directionalLightColor   &&   programInfo.uniformLocations.directionalLightColor!=-1)
     {
       gl.uniform3fv(
         programInfo.uniformLocations.directionalLightColor, 
         new Float32Array(epicCanvas.directionalColor)
       )
     }
-    if(programInfo.uniformLocations.directionalVector!=-1)
+    if( programInfo.uniformLocations.directionalVector  &&    programInfo.uniformLocations.directionalVector!=-1)
     {
       gl.uniform3fv(
         programInfo.uniformLocations.directionalVector,
         new Float32Array(epicCanvas.directionalVector)
       )
     }
-    if(programInfo.uniformLocations.pointLightPosition!=-1)
+    if( programInfo.uniformLocations.pointLightPosition &&   programInfo.uniformLocations.pointLightPosition!=-1)
     {
       gl.uniform3fv(
         programInfo.uniformLocations.pointLightPosition, 
         new Float32Array(epicCanvas.pointLightPosition)
       )
     }
-    if(programInfo.uniformLocations.pointLightColor!=-1)
+    if( programInfo.uniformLocations.pointLightColor  &&    programInfo.uniformLocations.pointLightColor!=-1)
     {
       gl.uniform3fv(
         programInfo.uniformLocations.pointLightColor,
         new Float32Array(epicCanvas.pointLightColor)
       )
     }
-    if(programInfo.uniformLocations.pointSize!=-1)
+    if( programInfo.uniformLocations.pointSize   &&  programInfo.uniformLocations.pointSize!=-1)
     {
       gl.uniform1f(
         programInfo.uniformLocations.pointSize,
         epicCanvas.pointSize
       )
     }
-    if(programInfo.uniformLocations.shininess!=-1)
+    if(  programInfo.uniformLocations.shininess  &&  programInfo.uniformLocations.shininess!=-1)
     {
       gl.uniform1f(
         programInfo.uniformLocations.shininess,
