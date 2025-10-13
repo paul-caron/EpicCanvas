@@ -11,10 +11,9 @@ uniform vec3 pointLightColor;
 uniform vec3 directionalLightColor;
 uniform vec3 directionalVector;
 uniform vec3 ambientLight;
-//uniform float shininess;
+uniform float shininess;
 
 void main() {
-	float shininess = 112.0;
     vec3 normal = normalize(vNormal);
     vec3 lightDir = normalize(pointLightPosition - vWorldPosition);
     vec3 reflectDir = reflect(-lightDir, normal);
