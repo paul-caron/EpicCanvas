@@ -1441,6 +1441,7 @@ drawShape(programInfo,shape){
         shape.shininess
       )
     }
+    /*
     if(programInfo.uniformLocations.lightViewMatrix!=-1)
     {
       gl.uniformMatrix4fv(
@@ -1457,7 +1458,7 @@ drawShape(programInfo,shape){
         false,
         epicCanvas.lightProjectionMatrix
       )
-    }
+    }*/
     
     {
         const offset=0
