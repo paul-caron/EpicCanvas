@@ -237,6 +237,11 @@ setLightProjectionMatrix(w=10, h=10, near=0.1, far=20){
     mat4.ortho(lightProjectionMatrix, -w, w, -h, h, near, far)
     this.matrices.lightProjectionMatrix = lightProjectionMatrix
 }
+setLightViewMatrix(pos, target, up){
+    const lightViewMatrix = mat4.create()
+    mat4.lookAt(lightViewMatrix, pos, target, up)
+    this.matrices.lightViewMatrix = lightViewMatrix
+}
 
 updateNormalMatrix(){
     let normalMatrix3x3 = mat3.create();
@@ -1451,7 +1456,7 @@ drawShape(programInfo,shape){
       gl.uniformMatrix4fv(
         programInfo.uniformLocations.lightViewMatrix,
         false,
-        epicCanvas.lightViewMatrix
+        epicCanvas.matrices.lightViewMatrix
       )
     }
     
