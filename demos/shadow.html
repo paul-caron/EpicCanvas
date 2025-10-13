@@ -41,22 +41,23 @@ let depthTexture;
 
 function render() {
 	try{
-    // depthRender
+    // framebufferRender
     {
     let gl =   epicCanvas.gl;
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-    gl.viewport(0, 0, shadowMapSize, shadowMapSize);
-     //render scene
-     {
+	  {
+        //render scene
+        gl.viewport(0, 0, shadowMapSize, shadowMapSize);
         epicCanvas.clearScreen();
         epicCanvas.drawShape(depthProgram, model);
+		//end render scene
       }
-      //end render scene
+      
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.viewport(0, 0, epicCanvas.canvas.width, epicCanvas.canvas.height);
     }
-    // end depthRender
-    //todo: epicCanvas.depthRender(depthFramebuffer, size, renderFunction);
+    // end framebufferRender
+    //todo: epicCanvas.framebufferRender(framebuffer, renderFunction);
 
     // final render
    epicCanvas.setTexture(depthTexture);
