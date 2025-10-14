@@ -1516,7 +1516,7 @@ rotateViewMatrix(angleInRadians, axis) {
 }
 
 
-translateViewMatrix(shape, translation) {
+translateViewMatrix(translation) {
     const { viewMatrix } = this.matrices;
     
     // Create a temporary matrix for translation
@@ -1531,7 +1531,7 @@ translateViewMatrix(shape, translation) {
     this.updateCameraPosition()
 }
 
-scaleViewMatrix(shape, scale) {
+scaleViewMatrix(scale) {
     const { viewMatrix } = this.matrices;
     
     // Create a temporary matrix for scaling
