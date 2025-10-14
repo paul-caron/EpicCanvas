@@ -1499,40 +1499,28 @@ drawShape(programInfo,shape){
     }
 }
 
+
+
 moveShapeTo(shape, worldPosition) {
     const currentModel = shape.matrices.modelMatrix;
     const currentPosition = [currentModel[12], currentModel[13], currentModel[14]];
     
-    // Extract non-uniform scales
-    const sx = vec3.length([currentModel[0], currentModel[4], currentModel[8]]);
-    const sy = vec3.length([currentModel[1], currentModel[5], currentModel[9]]);
-    const sz = vec3.length([currentModel[2], currentModel[6], currentModel[10]]);
+    // Calculate translation delta (same as your translate approach)
+    const deltaTranslation = vec3.create();
+    vec3.sub(deltaTranslation, worldPosition, currentPosition);
     
-    // Create scale matrix
-    const scaleMatrix = mat4.create();
-    mat4.fromScaling(scaleMatrix, [sx, sy, sz]);
-    
-    // Extract rotation (remove scale and translation)
-    const invScaleMatrix = mat4.create();
-    mat4.invert(invScaleMatrix, scaleMatrix);
-    
-    const rotationOnly = mat4.create();
-    mat4.copy(rotationOnly, currentModel);
-    rotationOnly[12] = 0; rotationOnly[13] = 0; rotationOnly[14] = 0;
-    mat4.multiply(rotationOnly, invScaleMatrix, rotationOnly);
-    
-    // Create new translation
+    // Create translation matrix with delta
     const translationMatrix = mat4.create();
-    mat4.fromTranslation(translationMatrix, worldPosition);
+    mat4.fromTranslation(translationMatrix, deltaTranslation);
     
-    // Recompose: scale * rotation * translation
-    mat4.multiply(shape.matrices.modelMatrix, scaleMatrix, rotationOnly);
-    mat4.multiply(shape.matrices.modelMatrix, shape.matrices.modelMatrix, translationMatrix);
+    // Apply translation using your pattern: newTranslation * existingModel
+    mat4.multiply(shape.matrices.modelMatrix, translationMatrix, shape.matrices.modelMatrix);
     
-    // Update normal matrix
+    // Update normal matrix (same as your translate function)
     mat4.invert(shape.matrices.normalMatrix, shape.matrices.modelMatrix);
     mat4.transpose(shape.matrices.normalMatrix, shape.matrices.normalMatrix);
 }
+
 
 
 
@@ -1540,7 +1528,7 @@ makeShapeLookAt(shape, targetPosition, upVector = [0, 1, 0]) {
     const currentModel = shape.matrices.modelMatrix;
     const currentPosition = [currentModel[12], currentModel[13], currentModel[14]];
     
-    // Extract non-uniform scales
+    // Extract non-uniform scales from current model
     const sx = vec3.length([currentModel[0], currentModel[4], currentModel[8]]);
     const sy = vec3.length([currentModel[1], currentModel[5], currentModel[9]]);
     const sz = vec3.length([currentModel[2], currentModel[6], currentModel[10]]);
@@ -1549,112 +1537,41 @@ makeShapeLookAt(shape, targetPosition, upVector = [0, 1, 0]) {
     const scaleMatrix = mat4.create();
     mat4.fromScaling(scaleMatrix, [sx, sy, sz]);
     
-    // Create direction to target
+    // Calculate direction vector
     const direction = vec3.create();
     vec3.sub(direction, targetPosition, currentPosition);
     vec3.normalize(direction, direction);
     
-    // Create look-at rotation using lookAt + invert
-    const tempView = mat4.create();
-    mat4.lookAt(tempView, [0, 0, 0], direction, upVector);
-    const newRotation = mat4.create();
-    mat4.invert(newRotation, tempView);
+    // Create look-at view matrix from origin to direction
+    const viewMatrix = mat4.create();
+    mat4.lookAt(viewMatrix, [0, 0, 0], direction, upVector);
     
-    // Create translation
+    // Invert to get object-to-world rotation matrix
+    const rotationMatrix = mat4.create();
+    mat4.invert(rotationMatrix, viewMatrix);
+    rotationMatrix[12] = 0; // Remove translation
+    rotationMatrix[13] = 0;
+    rotationMatrix[14] = 0;
+    
+    // Create translation back to current position (to match your translateModelMatrix pattern)
     const translationMatrix = mat4.create();
     mat4.fromTranslation(translationMatrix, currentPosition);
     
-    // Recompose: scale * newRotation * translation
-    mat4.multiply(shape.matrices.modelMatrix, scaleMatrix, newRotation);
-    mat4.multiply(shape.matrices.modelMatrix, shape.matrices.modelMatrix, translationMatrix);
+    // Rebuild model matrix: translation * rotation * scale
+    // This matches your translateModelMatrix post-multiplication pattern
+    const tempMatrix = mat4.create();
+    mat4.multiply(tempMatrix, rotationMatrix, scaleMatrix); // rotation * scale
+    mat4.multiply(shape.matrices.modelMatrix, translationMatrix, tempMatrix); // translation * (rotation * scale)
     
-    // Update normal matrix
+    // Update normal matrix (same as your translate function)
     mat4.invert(shape.matrices.normalMatrix, shape.matrices.modelMatrix);
     mat4.transpose(shape.matrices.normalMatrix, shape.matrices.normalMatrix);
 }
 
 
 
-rotateShapeOnItself(shape, angle, axis) {
-    const currentModel = shape.matrices.modelMatrix;
-    const worldPosition = [currentModel[12], currentModel[13], currentModel[14]];
-    
-    // Extract scales
-    const sx = vec3.length([currentModel[0], currentModel[4], currentModel[8]]);
-    const sy = vec3.length([currentModel[1], currentModel[5], currentModel[9]]);
-    const sz = vec3.length([currentModel[2], currentModel[6], currentModel[10]]);
-    
-    // Create scale matrix
-    const scaleMatrix = mat4.create();
-    mat4.fromScaling(scaleMatrix, [sx, sy, sz]);
-    
-    // Extract current rotation
-    const invScaleMatrix = mat4.create();
-    mat4.invert(invScaleMatrix, scaleMatrix);
-    
-    const currentRotation = mat4.create();
-    mat4.copy(currentRotation, currentModel);
-    currentRotation[12] = 0; currentRotation[13] = 0; currentRotation[14] = 0;
-    mat4.multiply(currentRotation, invScaleMatrix, currentRotation);
-    
-    // Create new rotation
-    const rotationMatrix = mat4.create();
-    mat4.fromAxisRotation(rotationMatrix, axis, angle);
-    
-    // Combine rotations
-    const combinedRotation = mat4.create();
-    mat4.multiply(combinedRotation, currentRotation, rotationMatrix);
-    
-    // Recompose
-    mat4.multiply(shape.matrices.modelMatrix, scaleMatrix, combinedRotation);
-    const translationMatrix = mat4.create();
-    mat4.fromTranslation(translationMatrix, worldPosition);
-    mat4.multiply(shape.matrices.modelMatrix, shape.matrices.modelMatrix, translationMatrix);
-    
-    // Update normal matrix
-    mat4.invert(shape.matrices.normalMatrix, shape.matrices.modelMatrix);
-    mat4.transpose(shape.matrices.normalMatrix, shape.matrices.normalMatrix);
-}
 
-scaleShapeOnItself(shape, scaleFactors) {
-    const currentModel = shape.matrices.modelMatrix;
-    const worldPosition = [currentModel[12], currentModel[13], currentModel[14]];
-    
-    // Extract current scales
-    const currentSx = vec3.length([currentModel[0], currentModel[4], currentModel[8]]);
-    const currentSy = vec3.length([currentModel[1], currentModel[5], currentModel[9]]);
-    const currentSz = vec3.length([currentModel[2], currentModel[6], currentModel[10]]);
-    
-    // Apply multiplicative scaling
-    const newSx = currentSx * scaleFactors[0];
-    const newSy = currentSy * scaleFactors[1];
-    const newSz = currentSz * scaleFactors[2];
-    
-    // Create new scale matrix
-    const scaleMatrix = mat4.create();
-    mat4.fromScaling(scaleMatrix, [newSx, newSy, newSz]);
-    
-    // Extract rotation
-    const currentScaleMatrix = mat4.create();
-    mat4.fromScaling(currentScaleMatrix, [currentSx, currentSy, currentSz]);
-    const invCurrentScale = mat4.create();
-    mat4.invert(invCurrentScale, currentScaleMatrix);
-    
-    const rotationOnly = mat4.create();
-    mat4.copy(rotationOnly, currentModel);
-    rotationOnly[12] = 0; rotationOnly[13] = 0; rotationOnly[14] = 0;
-    mat4.multiply(rotationOnly, invCurrentScale, rotationOnly);
-    
-    // Recompose
-    mat4.multiply(shape.matrices.modelMatrix, scaleMatrix, rotationOnly);
-    const translationMatrix = mat4.create();
-    mat4.fromTranslation(translationMatrix, worldPosition);
-    mat4.multiply(shape.matrices.modelMatrix, shape.matrices.modelMatrix, translationMatrix);
-    
-    // Update normal matrix
-    mat4.invert(shape.matrices.normalMatrix, shape.matrices.modelMatrix);
-    mat4.transpose(shape.matrices.normalMatrix, shape.matrices.normalMatrix);
-}
+
 
 getWorldPosition(shape) {
     // For origin transformation, result is just the last column of model matrix
