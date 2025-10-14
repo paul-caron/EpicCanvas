@@ -1499,6 +1499,117 @@ drawShape(programInfo,shape){
     }
 }
 
+
+rotateViewMatrix(angleInRadians, axis) {
+    const { viewMatrix } = this.matrices;
+    
+    // Create a temporary matrix for rotation
+    const rotationMatrix = mat4.create();
+    
+    // Apply rotation to the rotation matrix based on axis and angle
+    mat4.rotate(rotationMatrix, mat4.create(), angleInRadians, axis);
+    
+    // Update modelMatrix by multiplying with rotation
+    mat4.multiply(viewMatrix, rotationMatrix, viewMatrix);
+    
+    this.updateCameraPosition()
+}
+
+
+translateViewMatrix(shape, translation) {
+    const { viewMatrix } = this.matrices;
+    
+    // Create a temporary matrix for translation
+    const translationMatrix = mat4.create();
+    
+    // Apply translation to the translation matrix
+    mat4.translate(translationMatrix, mat4.create(), translation);
+    
+    // Update modelMatrix by multiplying with translation
+    mat4.multiply(viewMatrix, translationMatrix, viewMatrix);
+    
+    this.updateCameraPosition()
+}
+
+scaleViewMatrix(shape, scale) {
+    const { viewMatrix } = this.matrices;
+    
+    // Create a temporary matrix for scaling
+    const scaleMatrix = mat4.create()
+    
+    // Apply scaling to the scale matrix
+    mat4.scale(scaleMatrix, mat4.create(), scale)
+    
+    // Update modelMatrix by multiplying with scale
+    mat4.multiply(viewMatrix, scaleMatrix, viewMatrix)
+    
+    this.updateCameraPosition()
+}
+
+rotateModelMatrix(shape, angleInRadians, axis) {
+    const { modelMatrix, normalMatrix } = shape.matrices;
+    
+    // Create a temporary matrix for rotation
+    const rotationMatrix = mat4.create();
+    
+    // Apply rotation to the rotation matrix based on axis and angle
+    mat4.rotate(rotationMatrix, mat4.create(), angleInRadians, axis);
+    
+    // Update modelMatrix by multiplying with rotation
+    mat4.multiply(modelMatrix, rotationMatrix, modelMatrix);
+    
+    // Update normalMatrix (inverse transpose of modelMatrix)
+    mat4.invert(normalMatrix, modelMatrix);
+    mat4.transpose(normalMatrix, normalMatrix);
+    
+    // Update the shape's matrices
+    shape.matrices.modelMatrix = modelMatrix;
+    shape.matrices.normalMatrix = normalMatrix;
+}
+
+
+translateModelMatrix(shape, translation) {
+    const { modelMatrix, normalMatrix } = shape.matrices;
+    
+    // Create a temporary matrix for translation
+    const translationMatrix = mat4.create();
+    
+    // Apply translation to the translation matrix
+    mat4.translate(translationMatrix, mat4.create(), translation);
+    
+    // Update modelMatrix by multiplying with translation
+    mat4.multiply(modelMatrix, translationMatrix, modelMatrix);
+    
+    // Update normalMatrix (inverse transpose of modelMatrix)
+    mat4.invert(normalMatrix, modelMatrix);
+    mat4.transpose(normalMatrix, normalMatrix);
+    
+    // Update the shape's matrices
+    shape.matrices.modelMatrix = modelMatrix;
+    shape.matrices.normalMatrix = normalMatrix;
+}
+
+scaleModelMatrix(shape, scale) {
+    const { modelMatrix, normalMatrix } = shape.matrices;
+    
+    // Create a temporary matrix for scaling
+    const scaleMatrix = mat4.create();
+    
+    // Apply scaling to the scale matrix
+    mat4.scale(scaleMatrix, mat4.create(), scale);
+    
+    // Update modelMatrix by multiplying with scale
+    mat4.multiply(modelMatrix, scaleMatrix, modelMatrix);
+    
+    // Update normalMatrix (inverse transpose of modelMatrix)
+    mat4.invert(normalMatrix, modelMatrix);
+    mat4.transpose(normalMatrix, normalMatrix);
+    
+    // Update the shape's matrices
+    shape.matrices.modelMatrix = modelMatrix;
+    shape.matrices.normalMatrix = normalMatrix;
+}
+
 }
 
 function translate(shape,x,y,z){
@@ -1695,6 +1806,7 @@ function scaleToUnitSize(shape){
     scale(shape, 1/max, 1/max, 1/max)
 }
 
+//deprecated transform functions, moved to EpicCanvas class
 function rotateModelMatrix(shape, angleInRadians, axis) {
     const { modelMatrix, normalMatrix } = shape.matrices;
     
