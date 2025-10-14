@@ -1499,6 +1499,16 @@ drawShape(programInfo,shape){
     }
 }
 
+getWorldPosition(shape) {
+    // For origin transformation, result is just the last column of model matrix
+    const modelMatrix = shape.matrices.modelMatrix;
+    return [
+        modelMatrix[12], // tx
+        modelMatrix[13], // ty
+        modelMatrix[14], // tz
+        modelMatrix[15]  // tw (usually 1)
+    ];
+}
 
 rotateViewMatrix(angleInRadians, axis) {
     const { viewMatrix } = this.matrices;
