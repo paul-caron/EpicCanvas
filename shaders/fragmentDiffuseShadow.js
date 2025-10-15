@@ -7,9 +7,9 @@ varying vec4 vColor;
 varying vec3 vViewDirection;
 varying vec4 vLightSpacePos;
 
-uniform vec3 directionalLightColor;
-uniform vec3 directionalVector;
-uniform vec3 ambientLight;
+uniform vec3 uDirectionalLightColor;
+uniform vec3 uDirectionalVector;
+uniform vec3 uAmbientLight;
 uniform sampler2D uShadowMap;
 
 float computeShadow(vec4 lightSpacePos) {
@@ -24,15 +24,15 @@ float computeShadow(vec4 lightSpacePos) {
 
 void main() {
     vec3 normal = normalize(vNormal);
-    vec3 lightDir = normalize(directionalVector);
+    vec3 lightDir = normalize(uDirectionalVector);
 
     // Ambient
-    vec3 ambient = ambientLight * vColor.rgb;
+    vec3 ambient = uAmbientLight * vColor.rgb;
 
     // Diffuse with shadow
     float diffuseIntensity = max(dot(normal, lightDir), 0.0);
     float shadow = computeShadow(vLightSpacePos);
-    vec3 diffuse = diffuseIntensity * directionalLightColor * vColor.rgb * shadow;
+    vec3 diffuse = diffuseIntensity * uDirectionalLightColor * vColor.rgb * shadow;
 
     // Combine
     vec3 finalColor = ambient + diffuse;
