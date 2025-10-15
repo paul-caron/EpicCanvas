@@ -1499,7 +1499,9 @@ drawShape(programInfo,shape){
     }
 }
 
-getCameraForward(viewMatrix) {
+getCameraForward() {
+    const viewMatrix = this.matrices.viewMatrix
+    
     // Fast extraction: negate row 2 (Z-axis) of view matrix
     const forward = vec3.fromValues(
         -viewMatrix[8],  // m20
@@ -1509,7 +1511,7 @@ getCameraForward(viewMatrix) {
     
     // Normalize in-place
     vec3.normalize(forward, forward);
-    return forward;
+    return Array.from(forward)
 }
 
 rotateShapeOnItself(shape, angle, axis) {
