@@ -1250,19 +1250,19 @@ makeProgram(vsSource, fsSource){
             shaderProgram,'uSampler'
         ),
         ambientLight:gl.getUniformLocation(
-            shaderProgram, 'ambientLight'
+            shaderProgram, 'uAmbientLight'
         ),
         directionalLightColor:gl.getUniformLocation(
-            shaderProgram, 'directionalLightColor'
+            shaderProgram, 'uDirectionalLightColor'
         ),
         directionalVector:gl.getUniformLocation(
-            shaderProgram, 'directionalVector'
+            shaderProgram, 'uDirectionalVector'
         ),
         pointLightPosition:gl.getUniformLocation(
-            shaderProgram, 'pointLightPosition'
+            shaderProgram, 'uPointLightPosition'
         ),
         pointLightColor:gl.getUniformLocation(
-            shaderProgram, 'pointLightColor'
+            shaderProgram, 'uPointLightColor'
         ),
         pointSize: gl.getUniformLocation(
             shaderProgram, 'uPointSize'
@@ -1280,7 +1280,7 @@ makeProgram(vsSource, fsSource){
             shaderProgram, 'uLightProjectionMatrix'
         ),
         shininess: gl.getUniformLocation(
-            shaderProgram, 'shininess'
+            shaderProgram, 'uShininess'
         ),
     },
 }
