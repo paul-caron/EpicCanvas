@@ -816,6 +816,7 @@ setTexture(texture){
     )
 }
 
+/*
 copyTexture(from, to, from_type, to_type, width, height){
     const fb = this.gl.createFramebuffer()
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, fb)
@@ -845,6 +846,7 @@ copyTexture(from, to, from_type, to_type, width, height){
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null)
     this.gl.deleteFramebuffer(fb)
 }
+*/
 
 createEmptyCubeMap(width) {
     // Create the cubemap texture
