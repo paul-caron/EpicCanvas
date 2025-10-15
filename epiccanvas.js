@@ -406,7 +406,98 @@ loadTextures(URLs){
     }
 }
 
+createTexture(width, height, options = {}) {
+    if (width <= 0 || height <= 0) {
+        throw new Error("Texture dimensions must be positive");
+    }
 
+    const maxSize = this.gl.getParameter(this.gl.MAX_TEXTURE_SIZE);
+    if (width > maxSize || height > maxSize) {
+        throw new Error(`Texture dimensions (${width}x${height}) exceed maximum size (${maxSize})`);
+    }
+
+    const texture = this.gl.createTexture();
+    this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+    
+    // Default parameters for render targets
+    const defaults = {
+        wrapS: this.gl.CLAMP_TO_EDGE,
+        wrapT: this.gl.CLAMP_TO_EDGE,
+        minFilter: this.gl.LINEAR,
+        magFilter: this.gl.LINEAR
+    };
+    
+    const params = { ...defaults, ...options };
+    
+    // Allocate empty texture storage
+    this.gl.texImage2D(
+        this.gl.TEXTURE_2D,
+        0,
+        this.gl.RGBA,
+        width,
+        height,
+        0,
+        this.gl.RGBA,
+        this.gl.UNSIGNED_BYTE,
+        null
+    );
+    
+    // Set texture parameters
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, params.minFilter);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, params.magFilter);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, params.wrapS);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, params.wrapT);
+    
+    this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+    return texture;
+}
+
+createFramebuffer(texture, width, height) {
+    if (!texture) throw new Error("Texture is required");
+    if (width <= 0 || height <= 0) throw new Error("Dimensions must be positive");
+
+    const framebuffer = this.gl.createFramebuffer();
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, framebuffer);
+    
+    // Color attachment
+    this.gl.framebufferTexture2D(
+        this.gl.FRAMEBUFFER,
+        this.gl.COLOR_ATTACHMENT0,
+        this.gl.TEXTURE_2D,
+        texture,
+        0
+    );
+
+    // ALWAYS create depth buffer
+    const depthBuffer = this.gl.createRenderbuffer();
+    this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, depthBuffer);
+    this.gl.renderbufferStorage(
+        this.gl.RENDERBUFFER,
+        this.gl.DEPTH_COMPONENT16,
+        width,
+        height
+    );
+    this.gl.framebufferRenderbuffer(
+        this.gl.FRAMEBUFFER,
+        this.gl.DEPTH_ATTACHMENT,
+        this.gl.RENDERBUFFER,
+        depthBuffer
+    );
+    this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, null);
+
+    // Validate
+    const status = this.gl.checkFramebufferStatus(this.gl.FRAMEBUFFER);
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+    
+    if (status !== this.gl.FRAMEBUFFER_COMPLETE) {
+        this.gl.deleteFramebuffer(framebuffer);
+        this.gl.deleteRenderbuffer(depthBuffer);
+        throw new Error(`Framebuffer incomplete: ${status}`);
+    }
+
+    // Return ONLY framebuffer - depthBuffer managed internally
+    return framebuffer;
+}
 
 loadTexture(url, options = {}) {
     const {minFilter = "linear", magFilter = "linear", mipmapFilter, anisotropy} = options;
