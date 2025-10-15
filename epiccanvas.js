@@ -1504,8 +1504,8 @@ getCameraForward() {
     
     // Fast extraction: negate row 2 (Z-axis) of view matrix
     const forward = vec3.fromValues(
-        -viewMatrix[8],  // m20
-        -viewMatrix[9],  // m21  
+        viewMatrix[8],  // m20
+        viewMatrix[9],  // m21  
         -viewMatrix[10]  // m22
     );
     
