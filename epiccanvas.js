@@ -2089,6 +2089,9 @@ function scaleToUnitSize(shape){
     scale(shape, 1/max, 1/max, 1/max)
 }
 
+
+
+/*
 //deprecated transform functions, moved to EpicCanvas class
 function rotateModelMatrix(shape, angleInRadians, axis) {
     const { modelMatrix, normalMatrix } = shape.matrices;
@@ -2152,4 +2155,4 @@ function scaleModelMatrix(shape, scale) {
     // Update the shape's matrices
     shape.matrices.modelMatrix = modelMatrix;
     shape.matrices.normalMatrix = normalMatrix;
-}
+}*/
