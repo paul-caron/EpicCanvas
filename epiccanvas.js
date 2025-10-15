@@ -205,6 +205,13 @@ constructor(width,height,container){
     this._zNear=0.1
     this._zFar=100.0
     this.matrices=this.getMatrices()
+
+    this.gl.clearDepth(1.0)
+    this.gl.enable(this.gl.DEPTH_TEST)
+    this.gl.depthFunc(this.gl.LEQUAL)
+    this.gl.enable(this.gl.BLEND)
+    this.gl.blendFunc(this.gl.SRC_ALPHA,this.gl.ONE_MINUS_SRC_ALPHA)
+    
 }
 createCanvas(width,height,container){
     this.canvas=document.createElement("canvas")
@@ -367,11 +374,6 @@ set aspectRatio(newAspectRatio){
 }
 clearScreen(){
     this.gl.clearColor(...this.clearColor)
-    this.gl.clearDepth(1.0)
-    this.gl.enable(this.gl.DEPTH_TEST)
-    this.gl.depthFunc(this.gl.LEQUAL)
-    this.gl.enable(this.gl.BLEND)
-    this.gl.blendFunc(this.gl.SRC_ALPHA,this.gl.ONE_MINUS_SRC_ALPHA)
     this.gl.clear(this.gl.COLOR_BUFFER_BIT|    
                   this.gl.DEPTH_BUFFER_BIT)
 }
