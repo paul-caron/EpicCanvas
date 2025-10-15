@@ -26,14 +26,14 @@
 	<div id="log"></div>
     <!-- dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-15/epiccanvas.js" crossorigin='anonymous'></script>
-    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-15/primitives/squaremesh.js" crossorigin='anonymous'></script>
-    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-15/primitives/icosahedron.js" crossorigin='anonymous'></script>
-    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-15/primitives/tree.js" crossorigin='anonymous'></script>
-    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-15/shaders/vertexDiffuseShadow.js" crossorigin='anonymous'></script>
-    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-15/shaders/fragmentDiffuseShadow.js" crossorigin='anonymous'></script>
-    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-15/shaders/vertexDepth.js" crossorigin='anonymous'></script>
-    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-15/shaders/fragmentDepth.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-21/epiccanvas.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-21/primitives/squaremesh.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-21/primitives/icosahedron.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-21/primitives/tree.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-21/shaders/vertexDiffuseShadow.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-21/shaders/fragmentDiffuseShadow.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-21/shaders/vertexDepth.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-21/shaders/fragmentDepth.js" crossorigin='anonymous'></script>
 
     <script>
         //globals
@@ -54,24 +54,17 @@
             }
             oldt = t;
             try {
-                // depth map
-                {
-                    let gl = epicCanvas.gl;
-                    gl.bindFramebuffer(gl.FRAMEBUFFER, depthFramebuffer);
-                    gl.viewport(0, 0, shadowMapSize, shadowMapSize);
-                    //render scene
-                    {
-                        epicCanvas.clearScreen();
-                        epicCanvas.drawShape(depthProgram, model);
-                        epicCanvas.drawShape(depthProgram, moon);
-                        epicCanvas.drawShape(depthProgram, tree);
-                    }
-                    //end render scene
-                    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-                    gl.viewport(0, 0, epicCanvas.canvas.width, epicCanvas.canvas.height);
-                }
-                // end depthMap
-
+                
+                // depth texture render for shadow program
+                epicCanvas.bindFramebuffer(depthFramebuffer);
+                epicCanvas.setViewport(0, 0, shadowMapSize, shadowMapSize);
+                epicCanvas.clearScreen();
+                epicCanvas.drawShape(depthProgram, model);
+                epicCanvas.drawShape(depthProgram, moon);
+                epicCanvas.drawShape(depthProgram, tree);
+                epicCanvas.unbindFramebuffer();
+                epicCanvas.setViewport(0, 0, epicCanvas.canvas.width, epicCanvas.canvas.height);
+                
                 // final render of models
                 epicCanvas.setTexture(depthTexture);
                 epicCanvas.clearScreen();
@@ -111,6 +104,7 @@
 
                 // create variety of objects
                 floor = SquareMesh(epicCanvas);
+                floor.mode = epicCanvas.gl.LINE_LOOP;
                 epicCanvas.scaleModelMatrix(floor, [7,7,7])
                 epicCanvas.rotateModelMatrix(floor, -Math.PI/2, [1,0,0]);
                 epicCanvas.translateModelMatrix(floor, [0,-0.6,0])
@@ -151,7 +145,7 @@
                 // the difference between the two lightPos and target vector should be paralel to directional light vector
                 const lightPos =  [0, 5, 5]  // should be parallel to epicCanvas.directionalVector, ideally in a nice place to project close to the model
                 const target = [0, 0, 0]; //this vector should be in parallel to epicCanvas.directionalVector
-                const up = [0, 1,0]
+                const up = [0, 1, 0]
                 epicCanvas.setLightViewMatrix(lightPos, target, up)
                 epicCanvas.setLightProjectionMatrix(10, 10, 0.1, 20)
                 
