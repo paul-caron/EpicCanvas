@@ -164,7 +164,7 @@
                 epicCanvas.reloadBufferData(model);
                 epicCanvas.translateModelMatrix(model, [0,0,-4])
                 epicCanvas.moveShapeTo(model, [0,0,-4])
-                model.shininess = 30;
+                
                 requestAnimationFrame(render);
             } catch(e) {
                 alert("error in main:"+e);
