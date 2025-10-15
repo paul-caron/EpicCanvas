@@ -378,6 +378,16 @@ clearScreen(){
                   this.gl.DEPTH_BUFFER_BIT)
 }
 
+bindFramebuffer(framebuffer){
+   const gl = this.gl;
+   gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+}
+
+unbindFramebuffer(framebuffer){
+   const gl = this.gl;
+   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+}
+    
 regenerateMipmaps(texture, width, height) {
     if (!texture) {
         throw new Error("Texture is required");
