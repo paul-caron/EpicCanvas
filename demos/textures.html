@@ -4,145 +4,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+    *{
+    	margin:0;padding:0;
+    }
+    
+    #fps {
+    	position: absolute; top:0;left:0;z-index:2;
+    }
+    </style>
  </head>
 <body>
+	<div id="fps"></div>
     <!-- dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.28/epiccanvas.js" crossorigin='anonymous'></script>
-    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.28/primitives/cube.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-21/epiccanvas.js" crossorigin='anonymous'></script>
+    
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-21/shaders/vertexPhongTexture.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-21/shaders/fragmentPhongTexture.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-21/primitives/cube.js" crossorigin='anonymous'></script>
 
 <script>
-const vsSource = `
-attribute vec4 aVertexPosition;
-attribute vec4 aVertexNormal;
-attribute vec2 aTextureCoord;
-
-uniform mat4 uModelMatrix;
-uniform mat4 uViewMatrix;
-uniform mat4 uProjectionMatrix;
-uniform mat4 uNormalMatrix;
-uniform vec3 uCameraPosition;
-
-varying vec3 vNormal;
-varying vec3 vWorldPosition;
-varying vec2 vTextureCoord;
-varying vec3 vViewDirection;
-
-void main() {
-    vec4 worldPosition = uModelMatrix * aVertexPosition;
-    vWorldPosition = worldPosition.xyz;
-    vNormal = normalize(uNormalMatrix * aVertexNormal).xyz;
-    vViewDirection = normalize(uCameraPosition - worldPosition.xyz);
-    vTextureCoord = aTextureCoord;
-    gl_Position = uProjectionMatrix * uViewMatrix * worldPosition;
-}
-
-`;
 
 
-const fsSource = `
-precision mediump float;
 
-varying vec3 vNormal;
-varying vec3 vWorldPosition;
-varying vec3 vViewDirection;
-varying vec2 vTextureCoord;
-
-uniform sampler2D uSampler;
-uniform vec3 pointLightPosition;
-uniform vec3 pointLightColor;
-uniform vec3 directionalLightColor;
-uniform vec3 directionalVector;
-uniform vec3 ambientLight;
-//uniform float shininess;
-
-void main() {
-	float shininess = 112.0;
-    vec3 normal = normalize(vNormal);
-    vec3 lightDir = normalize(pointLightPosition - vWorldPosition);
-    vec3 reflectDir = reflect(-lightDir, normal);
-    vec3 viewDir = normalize(vViewDirection);
-    vec4 textureColor = texture2D(uSampler, vTextureCoord);
-
-    // Ambient
-    vec3 ambient = ambientLight * textureColor.rgb;
-    
-    // Directional
-    float directionalLightIntensity=max(dot(normal, directionalVector),0.0);
-    vec3 directional = directionalLightIntensity * directionalLightColor * textureColor.rgb;
-
-    // Diffuse
-    float diff = max(dot(normal, lightDir), 0.0);
-    vec3 diffuse = pointLightColor * diff * textureColor.rgb;
-
-    // Specular
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
-    vec3 specular = pointLightColor * spec * textureColor.rgb;
-
-    // Combine
-    vec3 finalColor = ambient + diffuse + specular + directional;
-    gl_FragColor = vec4(finalColor, textureColor.a);
-}
-`;
 
 // Globals
-let s, w, h, epicCanvas, program, texture, texture2;
+let s, w, h, ec, program, texture, texture2, fb, fps;
 
 const textureRenderingFunction = () => {
-    epicCanvas.clearColor = [0.5, 0.7, 0.8, 1]; // Green clear color
-    epicCanvas.clearScreen();
-    epicCanvas.setTexture(texture2);
-    epicCanvas.drawShape(program, s);
+	ec.aspectRatio = 1;
+    ec.clearColor = [0.5, 0.7, 0.8, 1];
+    ec.clearScreen();
+    ec.setTexture(texture2);
+    ec.drawShape(program, s);
 };
 
+let oldt = 0;
 const loop = (t) => {
+	dt = t - oldt; 
+	oldt = t;
+	fps.innerText = ""+(1/dt*1000).toFixed(2);
+	
+	// Main Render
+	ec.setViewport(0,0,w,h)
+	ec.aspectRatio = w/h
     rotateY(s, 0.01);
     rotateZ(s, Math.sin(t/2000)* 0.01);
-    epicCanvas.reloadBufferData(s);
-    epicCanvas.clearColor = [0.7, 0.5, 0.8, 1.0];
-    epicCanvas.clearScreen();
-    epicCanvas.setTexture(texture);
-    epicCanvas.drawShape(program, s);
-    epicCanvas.renderToTexture(texture, w, h, textureRenderingFunction);
-    const error = epicCanvas.gl.getError();
-    if (error !== epicCanvas.gl.NO_ERROR) {
-        console.error("WebGL error in loop:", error);
-    }
+    ec.reloadBufferData(s);
+    ec.clearColor = [0.7, 0.5, 0.8, 1.0];
+    ec.clearScreen();
+    ec.setTexture(texture);
+    ec.drawShape(program, s);
+    
+    // Option 1:
+    //Texture rendering
+    ec.bindFramebuffer(fb);
+    ec.setViewport(0,0,512,512)
+    textureRenderingFunction();
+    ec.unbindFramebuffer();
+    ec.regenerateMipmaps(texture, 512, 512)
+    //End of texture rendering
+
+    // Option 2:
+    // this line of code below is almost equivalent to above texture rendering code, except it creates and destroys a framebuffer everytime, little slower (maybe)
+    // ec.renderToTexture(texture, 512, 512, textureRenderingFunction);
+    
     requestAnimationFrame(loop);
 };
 
+
 const main = () => {
     try {
+    	fps = document.querySelector("#fps");
+    
         // Create canvas
         const size = Math.min(innerWidth, innerHeight);
-        const width = w = size;
-        const height = h = size;
-        epicCanvas = new EpicCanvas(width, height, "body");
+        const width = w =  innerWidth;//size;
+        const height = h = innerHeight;//size;
+        ec = new EpicCanvas(width, height, "body");
 
         // Set up camera
-        epicCanvas.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0]);
+        ec.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0]);
+        ec.fieldOfView = Math.PI/3
+        ec.aspectRatio = w/h
 
         // Create shader program
-        program = epicCanvas.makeProgram(vsSource, fsSource);
+        program = ec.makeProgram(vsPhongTexture, fsPhongTexture);
 
         // Create a cube
-        s = Cube(epicCanvas);
+        s = Cube(ec);
 
         // Create and initialize texture
-        texture = epicCanvas.loadTexture(null);
-        texture2 = epicCanvas.loadTexture(null)
+        texture =  ec.createTexture(512,512); // epicCanvas.loadTexture(null);
+        texture2 =  ec.loadTexture(null)
+        
+        // Create framebuffer
+        fb = ec.createFramebuffer(texture, 512,512);
 
-        // Check for WebGL errors
-        const error = epicCanvas.gl.getError();
-        if (error !== epicCanvas.gl.NO_ERROR) {
-            console.error("WebGL error after initial render:", error);
-        }
-        epicCanvas.ambientColor = [0.25,0.25,0.125];
-//epicCanvas.directionalColor = [0.5,0.5,1.0]
-//epicCanvas.directionalVector = [0,0.7,0.7] //direction the light comes from
-epicCanvas.pointLightColor = [0.2,0.45,0.75]
-epicCanvas.pointLightPosition = [0,1.5,5]
-
+        // Lighting setup
+        ec.ambientColor = [0.25,0.25,0.125];
+        ec.directionalColor = [0.5,0.5,0.0]
+        ec.directionalVector = [0,0.7,0.7] //direction the light comes from
+        ec.pointLightColor = [0.2,0.45,0.75]
+        ec.pointLightPosition = [0,1.5,5]
 
         // Start the loop
         requestAnimationFrame(loop);
