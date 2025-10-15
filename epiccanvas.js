@@ -1499,7 +1499,38 @@ drawShape(programInfo,shape){
     }
 }
 
-
+rotateShapeOnItself(shape, angle, axis) {
+    const currentModel = shape.matrices.modelMatrix;
+    
+    // Extract current translation (world position)
+    const translation = [currentModel[12], currentModel[13], currentModel[14]];
+    
+    // Step 1: Translate to origin (undo world position)
+    const invTranslationMatrix = mat4.create();
+    mat4.fromTranslation(invTranslationMatrix, [-translation[0], -translation[1], -translation[2]]);
+    
+    // Step 2: Create rotation matrix around local origin
+    const rotationMatrix = mat4.create();
+    mat4.fromRotation(rotationMatrix, angle, axis);
+    
+    // Step 3: Translate back to world position
+    const translationMatrix = mat4.create();
+    mat4.fromTranslation(translationMatrix, translation);
+    
+    // Step 4: Apply transformation: translateBack * rotate * translateToOrigin * existingModel
+    const temp1 = mat4.create();
+    mat4.multiply(temp1, invTranslationMatrix, shape.matrices.modelMatrix);
+    
+    const temp2 = mat4.create();
+    mat4.multiply(temp2, rotationMatrix, temp1);
+    
+    mat4.multiply(shape.matrices.modelMatrix, translationMatrix, temp2);
+    
+    // Update normal matrix
+    mat4.invert(shape.matrices.normalMatrix, shape.matrices.modelMatrix);
+    mat4.transpose(shape.matrices.normalMatrix, shape.matrices.normalMatrix);
+}
+       
 
 moveShapeTo(shape, worldPosition) {
     const currentModel = shape.matrices.modelMatrix;
