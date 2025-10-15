@@ -234,10 +234,10 @@ getMatrices(){
         this._zNear,
         this._zFar)
         
-    const modelMatrix = mat4.create()
+   // const modelMatrix = mat4.create()
     const viewMatrix = mat4.create()
-    const normalMatrix=mat4.create()
-    return {projectionMatrix, modelMatrix, viewMatrix, normalMatrix}
+   // const normalMatrix=mat4.create()
+    return {projectionMatrix, viewMatrix}
 }
 setLightProjectionMatrix(w=10, h=10, near=0.1, far=20){
     const lightProjectionMatrix = mat4.create()
@@ -249,7 +249,7 @@ setLightViewMatrix(pos, target, up){
     mat4.lookAt(lightViewMatrix, pos, target, up)
     this.matrices.lightViewMatrix = lightViewMatrix
 }
-
+/*
 updateNormalMatrix(){
     let normalMatrix3x3 = mat3.create();
     mat3.fromMat4(normalMatrix3x3, this.matrices.modelMatrix);
@@ -268,7 +268,7 @@ updateNormalMatrix(){
     normalMatrix4x4[9] = normalMatrix3x3Final[7];
     normalMatrix4x4[10] = normalMatrix3x3Final[8];
     this.matrices.normalMatrix = normalMatrix4x4;
-}
+}*/
 updateCameraPosition() {
   let invView = mat4.create()
   mat4.invert(invView, this.matrices.viewMatrix)
@@ -307,7 +307,7 @@ lookPitchYaw(eyePositionVec3, pitch, yaw){
     
     return [center, up]
 }
-
+/*
 rotateMatrix(m,angle,vec3){
     let update = false
     mat4.rotate(m,m,angle,vec3)
@@ -334,7 +334,7 @@ scaleMatrix(m,vec3){
     if(m == this.matrices.modelMatrix ){
         this.updateNormalMatrix()
     }
-}
+}*/
     
 set fieldOfView(angle){
     this._fieldOfView = angle
