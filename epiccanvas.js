@@ -378,6 +378,56 @@ clearScreen(){
                   this.gl.DEPTH_BUFFER_BIT)
 }
 
+regenerateMipmaps(texture, width, height) {
+    if (!texture) {
+        throw new Error("Texture is required");
+    }
+
+    const gl = this.gl;
+    
+    // Internal power-of-2 check
+    function isPowerOf2(value) {
+        return (value & (value - 1)) === 0;
+    }
+    
+    // Check if texture is power-of-2
+    let isPOT = false;
+    
+    if (width && height) {
+        // Validate provided dimensions
+        if (width <= 0 || height <= 0) {
+            throw new Error("Width and height must be positive");
+        }
+        isPOT = isPowerOf2(width) && isPowerOf2(height);
+    } else {
+        // Query texture size and check POT
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        width = gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_WIDTH);
+        height = gl.getTexParameter(gl.TEXTURE_2D, gl.TEXTURE_HEIGHT);
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        
+        if (width <= 0 || height <= 0) {
+            throw new Error("Texture has invalid dimensions");
+        }
+        isPOT = isPowerOf2(width) && isPowerOf2(height);
+    }
+    
+    if (!isPOT) {
+        console.warn(`Cannot generate mipmaps for non-POT texture ${width}x${height}`);
+        return false;
+    }
+    
+    // Ensure proper min filter for mipmaps
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    
+    // Generate mipmaps
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    
+    return true;
+}
+
 createDepthTexture(width, height) {
     const gl = this.gl
     gl.getExtension('WEBGL_depth_texture')
