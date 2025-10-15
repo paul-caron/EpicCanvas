@@ -335,6 +335,11 @@ scaleMatrix(m,vec3){
         this.updateNormalMatrix()
     }
 }*/
+
+
+setViewport(x, y, width, height) {
+    this.gl.viewport(x, y, width, height);
+}
     
 set fieldOfView(angle){
     this._fieldOfView = angle
