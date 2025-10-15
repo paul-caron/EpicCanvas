@@ -36,6 +36,7 @@ This will create an EpicCanvas object which contains the following important pro
 * gl: a webGL context
 * and more! simply *** EPIC ***
 
+
 # Loading Textures
 Textures can be loaded into the EpicCanvas with either one of these methods:
 * loadTexture(url, options): loads one texture
@@ -56,6 +57,13 @@ const options = {
 }
 
 epicCanvas.loadTexture(url, options)
+```
+
+# Creating Empty Texture
+
+```
+epicCanvas.createTexture(width, height);
+
 ```
 
 # Set Texture
