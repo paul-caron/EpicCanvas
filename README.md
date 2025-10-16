@@ -84,6 +84,16 @@ Creates a new EpicCanvas and appends the canvas to the specified container.
 
 ---
 
+### Framebuffer Methods
+- **bindFramebuffer(framebuffer)**
+  Binds the Framebuffer, redirecting the drawn stuff to its attached texture.
+- **unbindFramebuffer()**
+  The output goes bacl onto main canvas, as usual.
+
+---
+
+
+
 ### Model Loading
 
 - **loadObj(url)**  
