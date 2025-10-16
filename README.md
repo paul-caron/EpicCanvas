@@ -22,7 +22,7 @@ Creates a new EpicCanvas and appends the canvas to the specified container.
   The WebGL context.
 
 - **cameraPosition**  
-  Current camera position as a `[x, y, z]` array.
+  Current camera position as a `[x, y, z]` array. Getter only.
 
 ---
 
@@ -140,7 +140,7 @@ Creates a new EpicCanvas and appends the canvas to the specified container.
   Sets view matrix with pitch and yaw angles.
 
 - **cameraPosition**  
-  Gets the camera position.
+  Gets the camera position. Getter property.
 
 - **getCameraForward()**  
   Returns the normalized forward direction vector of the camera.
