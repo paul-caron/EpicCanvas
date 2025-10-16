@@ -433,7 +433,75 @@ setDepthTexture(depthTexture){
         depthTexture
     )
 }
- 
+    
+renderToDepthTexture(depthTexture, textureWidth, textureHeight, drawFunction, ...drawFunctionParameters) {
+    if (textureWidth <= 0 || textureHeight <= 0) {
+        throw new Error("Texture dimensions must be positive");
+    }
+    const maxSize = this.gl.getParameter(this.gl.MAX_TEXTURE_SIZE);
+    if (textureWidth > maxSize || textureHeight > maxSize) {
+        throw new Error(`Texture dimensions (${textureWidth}x${textureHeight}) exceed maximum size (${maxSize})`);
+    }
+
+    const gl = this.gl;
+    
+    // Ensure the depth texture is properly sized
+    gl.bindTexture(gl.TEXTURE_2D, depthTexture);
+    gl.texImage2D(
+        gl.TEXTURE_2D,
+        0, // level
+        gl.DEPTH_COMPONENT, // internalFormat
+        textureWidth,
+        textureHeight,
+        0, // border
+        gl.DEPTH_COMPONENT, // format
+        gl.UNSIGNED_INT, // type (or UNSIGNED_SHORT for some implementations)
+        null // No initial data
+    );
+
+    // Create framebuffer
+    const fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    
+    // Attach depth texture to DEPTH_ATTACHMENT (no color attachment needed)
+    gl.framebufferTexture2D(
+        gl.FRAMEBUFFER,
+        gl.DEPTH_ATTACHMENT,
+        gl.TEXTURE_2D,
+        depthTexture,
+        0
+    );
+
+    // Check framebuffer status
+    const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+    if (status !== gl.FRAMEBUFFER_COMPLETE) {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        gl.deleteFramebuffer(fb);
+        throw new Error(`Depth framebuffer is not complete: ${status}`);
+    }
+
+    // Set viewport for depth texture resolution
+    const originalViewport = gl.getParameter(gl.VIEWPORT);
+    gl.viewport(0, 0, textureWidth, textureHeight);
+
+    // Disable color writes (we only want depth)
+    gl.colorMask(false, false, false, false);
+    
+    // Clear depth buffer
+    gl.clearDepth(1.0);
+    gl.clear(gl.DEPTH_BUFFER_BIT);
+
+    // Render to depth texture
+    drawFunction(...drawFunctionParameters);
+
+    // Restore color writes and viewport
+    gl.colorMask(true, true, true, true);
+    gl.viewport(originalViewport[0], originalViewport[1], originalViewport[2], originalViewport[3]);
+
+    // Clean up
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.deleteFramebuffer(fb);
+}
 
 loadTextures(URLs){
     for(const u of URLs){
