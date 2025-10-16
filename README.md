@@ -49,7 +49,7 @@ Creates a new EpicCanvas and appends the canvas to the specified container.
   Renders to a texture using the provided function.
 
 ---
-### Depth Texture & Framebuffer Methods
+### Depth Texture Methods
 
 - **createDepthTexture(width, height)**  
   Creates a depth texture of given size for use in shadow mapping or depth rendering.
