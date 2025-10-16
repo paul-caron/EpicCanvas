@@ -426,6 +426,15 @@ createDepthFramebuffer(depthTexture){
     return framebuffer
 }
 
+setDepthTexture(depthTexture){
+    this.gl.activeTexture(this.gl.TEXTURE0)
+    this.gl.bindTexture(
+        this.gl.TEXTURE_2D,
+        depthTexture
+    )
+}
+ 
+
 loadTextures(URLs){
     for(const u of URLs){
         this.loadTexture(u)
