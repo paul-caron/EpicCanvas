@@ -165,11 +165,11 @@ Creates a new EpicCanvas and appends the canvas to the specified container.
 
 ### Depth Shader & Shadow Mapping
 
-- **setLightView(eye, center, up)**  
+- **setLightViewMatrix(pos, target, up)**  
   Sets the view matrix for the light source, used in shadow/depth shaders.
 
-- **setLightDirection(direction)**  
-  Sets the direction vector for the light source in depth/shadow shaders.
+- **setLightProjectionMatrix(w=10, h=10, near=0.1, far=20)**  
+  Sets the projection matrix for the light source, typically used for shadow mapping.
 
 ---
 
