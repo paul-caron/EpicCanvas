@@ -163,6 +163,9 @@ Creates a new EpicCanvas and appends the canvas to the specified container.
 - **getWorldPosition(shape, vertexIndex?)**  
   Returns the world coordinates of the shape’s origin or a specific vertex (after transforms).
 
+- **makeShapeLookAt(shape, eye, center, up)**  
+  Sets the model matrix of the shape so that it "looks at" a target position, similar to camera lookAt but for models.
+
 ---
 
 ## Transformation Methods
