@@ -427,7 +427,7 @@ createDepthFramebuffer(depthTexture){
 }
 
 setDepthTexture(depthTexture){
-    this.gl.activeTexture(this.gl.TEXTURE0)
+    this.gl.activeTexture(this.gl.TEXTURE2)
     this.gl.bindTexture(
         this.gl.TEXTURE_2D,
         depthTexture
@@ -1095,9 +1095,10 @@ renderToCubeMapFace(cubemap, face, faceWidth, faceHeight, drawFunction, ...drawF
 }
 
 setCubeMap(cubemap){
-    this.gl.activeTexture(this.gl.TEXTURE0)
+    this.gl.activeTexture(this.gl.TEXTURE1)
     this.gl.bindTexture(this.gl.TEXTURE_CUBE_MAP, cubemap)
 }
+
 loadSTL(url) {
     return new Promise((resolve, reject) => {
         fetch(url)
@@ -1658,6 +1659,18 @@ drawShape(programInfo,shape){
         false,
         epicCanvas.matrices.lightProjectionMatrix
       )
+    }
+    
+    if (programInfo.uniformLocations.sampler && programInfo.uniformLocations.sampler !== -1) {
+        this.gl.uniform1i(programInfo.uniformLocations.sampler, 0); // TEXTURE0 for 2D textures
+    }
+    
+    if (programInfo.uniformLocations.cubeMap && programInfo.uniformLocations.cubeMap !== -1) {
+        this.gl.uniform1i(programInfo.uniformLocations.cubeMap, 1); // TEXTURE1 for cubemaps
+    }
+    
+    if (programInfo.uniformLocations.shadowMap && programInfo.uniformLocations.shadowMap !== -1) {
+        this.gl.uniform1i(programInfo.uniformLocations.shadowMap, 2); // TEXTURE2 for depth textures
     }
     
     {
