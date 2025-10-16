@@ -140,7 +140,7 @@ Creates a new EpicCanvas and appends the canvas to the specified container.
   Sets view matrix with pitch and yaw angles.
 
 - **cameraPosition**  
-  Gets or sets the camera position.
+  Gets the camera position.
 
 ---
 
