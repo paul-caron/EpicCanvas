@@ -16,6 +16,6 @@ void main() {
   vec3 worldNormal = normalize(v_worldNormal);
   vec3 eyeToSurfaceDir = normalize(v_worldPosition - uCameraPosition);
   vec3 direction = reflect(eyeToSurfaceDir,worldNormal);
-  gl_FragColor = textureCube(uSampler, direction) ;
+  gl_FragColor = textureCube(uCubeMap, direction) ;
 }
 `;
