@@ -268,5 +268,5 @@ This library uses [gl-matrix.js](https://cdnjs.cloudflare.com/ajax/libs/gl-matri
 
 ## Notes
 
-- All coordinates, colors, and texture values should be floats between 0.0 and 1.0.
+- All colors, and texture values should be floats between 0.0 and 1.0.
 - This library is in early development. API may change.
