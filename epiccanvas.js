@@ -234,9 +234,9 @@ getMatrices(){
         this._zNear,
         this._zFar)
         
-   // const modelMatrix = mat4.create()
+   
     const viewMatrix = mat4.create()
-   // const normalMatrix=mat4.create()
+   
     return {projectionMatrix, viewMatrix}
 }
 setLightProjectionMatrix(w=10, h=10, near=0.1, far=20){
@@ -249,26 +249,7 @@ setLightViewMatrix(pos, target, up){
     mat4.lookAt(lightViewMatrix, pos, target, up)
     this.matrices.lightViewMatrix = lightViewMatrix
 }
-/*
-updateNormalMatrix(){
-    let normalMatrix3x3 = mat3.create();
-    mat3.fromMat4(normalMatrix3x3, this.matrices.modelMatrix);
-    let inverseMatrix3x3 = mat3.create();
-    mat3.invert(inverseMatrix3x3, normalMatrix3x3);
-    let normalMatrix3x3Final = mat3.create();
-    mat3.transpose(normalMatrix3x3Final, inverseMatrix3x3);
-    let normalMatrix4x4 = mat4.create();
-    normalMatrix4x4[0] = normalMatrix3x3Final[0];
-    normalMatrix4x4[1] = normalMatrix3x3Final[1];
-    normalMatrix4x4[2] = normalMatrix3x3Final[2];
-    normalMatrix4x4[4] = normalMatrix3x3Final[3];
-    normalMatrix4x4[5] = normalMatrix3x3Final[4];
-    normalMatrix4x4[6] = normalMatrix3x3Final[5];
-    normalMatrix4x4[8] = normalMatrix3x3Final[6];
-    normalMatrix4x4[9] = normalMatrix3x3Final[7];
-    normalMatrix4x4[10] = normalMatrix3x3Final[8];
-    this.matrices.normalMatrix = normalMatrix4x4;
-}*/
+
 updateCameraPosition() {
   let invView = mat4.create()
   mat4.invert(invView, this.matrices.viewMatrix)
@@ -307,34 +288,6 @@ lookPitchYaw(eyePositionVec3, pitch, yaw){
     
     return [center, up]
 }
-/*
-rotateMatrix(m,angle,vec3){
-    let update = false
-    mat4.rotate(m,m,angle,vec3)
-    if(m == this.matrices.viewMatrix ){
-        this.updateCameraPosition()
-    }
-    if(m == this.matrices.modelMatrix ){
-        this.updateNormalMatrix()
-    }
-}
-translateMatrix(m,vec3){
-    let update = false
-    mat4.translate(m,m,vec3)
-    if(m == this.matrices.viewMatrix ){
-        this.updateCameraPosition()
-    }
-}
-scaleMatrix(m,vec3){
-    let update = false
-    mat4.scale(m,m,vec3)
-    if(m == this.matrices.viewMatrix ){
-        this.updateCameraPosition()
-    }
-    if(m == this.matrices.modelMatrix ){
-        this.updateNormalMatrix()
-    }
-}*/
 
 
 setViewport(x, y, width, height) {
@@ -821,37 +774,7 @@ setTexture(texture){
     )
 }
 
-/*
-copyTexture(from, to, from_type, to_type, width, height){
-    const fb = this.gl.createFramebuffer()
-    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, fb)
-    const attachmentPoint = this.gl.COLOR_ATTACHMENT0
-    this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, attachmentPoint, from_type, from, 0)
-    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, fb)
-    
-    const target = to_type
-    const level = 0
-    const internalFormat = this.gl.RGBA
-    const x = 0
-    const y = 0
-    const border = 0
-    
-    this.gl.bindTexture(to_type, to)
-    this.gl.copyTexImage2D(target, level, internalFormat, x, y, width, height, border)
-    
-    function isPowerOf2(value){
-        return (value&(value-1)) == 0
-    }
-    
-    if(isPowerOf2(width)&&isPowerOf2(height)){
-        this.gl.generateMipmap(to_type)
-    }
-    
-    this.gl.bindTexture(to_type, null)
-    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null)
-    this.gl.deleteFramebuffer(fb)
-}
-*/
+
 
 createEmptyCubeMap(width) {
     // Create the cubemap texture
@@ -2096,70 +2019,3 @@ function scaleToUnitSize(shape){
     scale(shape, 1/max, 1/max, 1/max)
 }
 
-
-
-/*
-//deprecated transform functions, moved to EpicCanvas class
-function rotateModelMatrix(shape, angleInRadians, axis) {
-    const { modelMatrix, normalMatrix } = shape.matrices;
-    
-    // Create a temporary matrix for rotation
-    const rotationMatrix = mat4.create();
-    
-    // Apply rotation to the rotation matrix based on axis and angle
-    mat4.rotate(rotationMatrix, mat4.create(), angleInRadians, axis);
-    
-    // Update modelMatrix by multiplying with rotation
-    mat4.multiply(modelMatrix, rotationMatrix, modelMatrix);
-    
-    // Update normalMatrix (inverse transpose of modelMatrix)
-    mat4.invert(normalMatrix, modelMatrix);
-    mat4.transpose(normalMatrix, normalMatrix);
-    
-    // Update the shape's matrices
-    shape.matrices.modelMatrix = modelMatrix;
-    shape.matrices.normalMatrix = normalMatrix;
-}
-
-
-function translateModelMatrix(shape, translation) {
-    const { modelMatrix, normalMatrix } = shape.matrices;
-    
-    // Create a temporary matrix for translation
-    const translationMatrix = mat4.create();
-    
-    // Apply translation to the translation matrix
-    mat4.translate(translationMatrix, mat4.create(), translation);
-    
-    // Update modelMatrix by multiplying with translation
-    mat4.multiply(modelMatrix, translationMatrix, modelMatrix);
-    
-    // Update normalMatrix (inverse transpose of modelMatrix)
-    mat4.invert(normalMatrix, modelMatrix);
-    mat4.transpose(normalMatrix, normalMatrix);
-    
-    // Update the shape's matrices
-    shape.matrices.modelMatrix = modelMatrix;
-    shape.matrices.normalMatrix = normalMatrix;
-}
-
-function scaleModelMatrix(shape, scale) {
-    const { modelMatrix, normalMatrix } = shape.matrices;
-    
-    // Create a temporary matrix for scaling
-    const scaleMatrix = mat4.create();
-    
-    // Apply scaling to the scale matrix
-    mat4.scale(scaleMatrix, mat4.create(), scale);
-    
-    // Update modelMatrix by multiplying with scale
-    mat4.multiply(modelMatrix, scaleMatrix, modelMatrix);
-    
-    // Update normalMatrix (inverse transpose of modelMatrix)
-    mat4.invert(normalMatrix, modelMatrix);
-    mat4.transpose(normalMatrix, normalMatrix);
-    
-    // Update the shape's matrices
-    shape.matrices.modelMatrix = modelMatrix;
-    shape.matrices.normalMatrix = normalMatrix;
-}*/
