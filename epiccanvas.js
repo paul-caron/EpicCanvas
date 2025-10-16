@@ -298,8 +298,8 @@ get cameraPosition() {
     return this._cameraPosition
 }
 
-set cameraPosition() {
-    //throw
+set cameraPosition(value) {
+    throw new Error('cameraPosition cannot be set, only get. you may want to use 'lookAt'")
 }
     
 set fieldOfView(angle){
