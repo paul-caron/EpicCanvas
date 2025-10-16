@@ -122,6 +122,10 @@ Creates a new EpicCanvas and appends the canvas to the specified container.
 - **window(startWidthRatio, startHeightRatio, widthRatio, heightRatio)**  
   Returns a function to set a scissored viewport region.
 
+- **setViewport(x, y, width, height)**  
+  Sets the WebGL viewport to the specified region within the canvas.  
+  Useful for rendering to a specific area of the canvas, e.g., for split-screen or picture-in-picture effects.
+
 ---
 
 ### Camera Methods
