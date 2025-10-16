@@ -189,7 +189,7 @@ constructor(width,height,container){
     this.canvas
     this.gl
     this.matrices
-    this.cameraPosition = [0,0,0]
+    this._cameraPosition = [0,0,0]
     this.createCanvas(width,height,container)
     this.clearColor=[0.0,0.0,0.0,1.0]
     this.ambientColor=[0,0,0]
@@ -292,6 +292,14 @@ lookPitchYaw(eyePositionVec3, pitch, yaw){
 
 setViewport(x, y, width, height) {
     this.gl.viewport(x, y, width, height);
+}
+
+get cameraPosition() {
+    return this._cameraPosition
+}
+
+set cameraPosition() {
+    //throw
 }
     
 set fieldOfView(angle){
