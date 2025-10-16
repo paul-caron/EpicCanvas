@@ -142,6 +142,9 @@ Creates a new EpicCanvas and appends the canvas to the specified container.
 - **cameraPosition**  
   Gets the camera position.
 
+- **getCameraForward()**  
+  Returns the normalized forward direction vector of the camera.
+
 ---
 
 ### Lighting Properties
@@ -195,9 +198,6 @@ Creates a new EpicCanvas and appends the canvas to the specified container.
 - **getWorldPosition(shape, vertexIndex?)**  
   Returns the world coordinates of the shape’s origin or a specific vertex (after transforms).
 
-- **makeShapeLookAt(shape, eye, center, up)**  
-  Sets the model matrix of the shape so that it "looks at" a target position, similar to camera lookAt but for models.
-
 ---
 
 ## Transformation Methods
@@ -207,6 +207,9 @@ EpicCanvas provides transformation methods for model matrix, view matrix, and di
 ### Model Matrix Transformations  
 _Apply transformations through the model matrix for rendering._
 
+- **makeShapeLookAt(shape, eye, center, up)**  
+  Sets the model matrix of the shape so that it "looks at" a target position, similar to camera lookAt but for models.
+
 - **translateModelMatrix(shape, [x, y, z])**  
   Applies translation to the model matrix.
 
@@ -215,6 +218,12 @@ _Apply transformations through the model matrix for rendering._
 
 - **scaleModelMatrix(shape, [x, y, z])**  
   Applies scaling to the model matrix.
+
+- **moveShapeTo(shape, [x, y, z])**  
+  Moves the shape’s model matrix so its origin is at `[x, y, z]`.
+
+- **rotateShapeOnItself(shape, angle, [x, y, z])**  
+  Rotates the shape around its own origin (local axis).
 
 ### View Matrix Transformations  
 _Apply transformations through the view matrix for rendering._
