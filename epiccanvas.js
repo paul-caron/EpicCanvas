@@ -253,15 +253,15 @@ setLightViewMatrix(pos, target, up){
 updateCameraPosition() {
   let invView = mat4.create()
   mat4.invert(invView, this.matrices.viewMatrix)
-  this.cameraPosition = [invView[12], invView[13], invView[14] ]
+  this._cameraPosition = [invView[12], invView[13], invView[14] ]
 }
 
 lookAt(eyePositionVec3, centerVec3, upVec3){
-    this.cameraPosition = [...eyePositionVec3]
+    this._cameraPosition = [...eyePositionVec3]
     mat4.lookAt(this.matrices.viewMatrix, eyePositionVec3, centerVec3, upVec3)
 }
 lookFront(eyePositionVec3, yawAngle){
-    this.cameraPosition = [...eyePositionVec3]
+    this._cameraPosition = [...eyePositionVec3]
     const directionVec3 = vec3.create()
     directionVec3[0] = Math.cos(yawAngle)
     directionVec3[1] = 0
@@ -270,7 +270,7 @@ lookFront(eyePositionVec3, yawAngle){
     this.lookAt(eyePositionVec3,directionVec3,[0,1,0])
 }
 lookPitchYaw(eyePositionVec3, pitch, yaw){
-    this.cameraPosition = [...eyePositionVec3]
+    this._cameraPosition = [...eyePositionVec3]
     const center = [...eyePositionVec3]
     const xzRadius = Math.cos(pitch)
     center[1] += Math.sin(pitch)
