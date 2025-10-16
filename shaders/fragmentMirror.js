@@ -7,7 +7,7 @@ varying vec3 v_worldPosition;
 varying vec3 v_worldNormal;
  
 // The texture.
-uniform samplerCube uSampler;
+uniform samplerCube uCubeMap;
  
 // The position of the camera
 uniform vec3 uCameraPosition;
