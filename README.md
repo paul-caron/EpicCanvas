@@ -80,13 +80,10 @@ epicCanvas.drawShape(programInfo, shape1)
 epicCanvas.setTexture(texture2)
 epicCanvas.drawShape(programInfo, shape2)
 ```
+# Creating a Texture Framebuffer
 
-# Update Texture
-
-A texture that has already been loaded can be updated with the updateTexture method.
-Pass it the texture handle you would like to update and a URL.
 ```js
-epicCanvas.updateTexture(texture, url)
+epicCanvas.createFramebuffer(texture, width, height);
 ```
 
 # Render Onto A 2D Texture
