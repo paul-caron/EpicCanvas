@@ -49,6 +49,24 @@ Creates a new EpicCanvas and appends the canvas to the specified container.
   Renders to a texture using the provided function.
 
 ---
+### Depth Texture & Framebuffer Methods
+
+- **createDepthTexture(width, height)**  
+  Creates a depth texture of given size for use in shadow mapping or depth rendering.
+
+- **createDepthFramebuffer(depthTexture, width, height)**  
+  Creates a framebuffer using a depth texture attachment for rendering depth maps.
+
+- **setDepthTexture(depthTexture)**  
+  Sets the active depth texture for reading or writing.
+
+- **renderToDepthTexture(depthTexture, width, height, renderFunc, ...args)**  
+  Renders to a depth texture using the provided function, typically for shadow mapping.
+
+---
+
+
+
 
 ### Cubemap Methods
 
