@@ -14,86 +14,15 @@
 <body>
     <!-- dependencies -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.28/epiccanvas.js" crossorigin='anonymous'></script>
-    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.23/primitives/sphere.js" crossorigin='anonymous'></script>
-    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v1.16.23/primitives/cube.js" crossorigin='anonymous'></script>
-
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-28/epiccanvas.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-28/primitives/sphere.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-28/primitives/cube.js" crossorigin='anonymous'></script>
+   <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-28/shaders/vertexMirror.js" crossorigin='anonymous'></script>
+   <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-28/shaders/fragmentMirror.js" crossorigin='anonymous'></script>
+   <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-28/shaders/vertexSkybox.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-28/shaders/fragmentSkybox.js" crossorigin='anonymous'></script>
 <script>
   
-const vsSource = `
-attribute vec4 aVertexPosition;
-attribute vec3 aVertexNormal;
- 
-uniform mat4 uProjectionMatrix;
-uniform mat4 uViewMatrix;
-uniform mat4 uModelMatrix;
- 
-varying vec3 v_worldPosition;
-varying vec3 v_worldNormal;
- 
-void main() {
-  // Multiply the position by the matrix.
-  gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * aVertexPosition;
- 
-  // send the view position to the fragment shader
-  v_worldPosition = (uModelMatrix * aVertexPosition).xyz;
- 
-  // orient the normals and pass to the fragment shader
-  v_worldNormal = mat3(uModelMatrix) * aVertexNormal.xyz;
-}
-    
-`;
-
-const fsSource = `
-
-precision highp float;
- 
-// Passed in from the vertex shader.
-varying vec3 v_worldPosition;
-varying vec3 v_worldNormal;
- 
-// The texture.
-uniform samplerCube uSampler;
- 
-// The position of the camera
-uniform vec3 uCameraPosition;
- 
-void main() {
-  vec3 worldNormal = normalize(v_worldNormal);
-  vec3 eyeToSurfaceDir = normalize(v_worldPosition - uCameraPosition);
-  vec3 direction = reflect(eyeToSurfaceDir,worldNormal);
-  gl_FragColor = textureCube(uSampler, direction) ;
-}
-
-`;
-
-//skybox
-const vsSource2 = `
-attribute vec4 aVertexPosition;
-uniform mat4 uViewMatrix;
-uniform mat4 uProjectionMatrix;
-
-varying vec3 vDirection;
-
-void main() {
-    // Only apply rotation part of ViewMatrix (remove translation)
-    mat4 viewRotation = mat4(mat3(uViewMatrix));
-
-    vec4 direction = viewRotation * aVertexPosition;
-    vDirection = direction.xyz;
-
-    gl_Position = uProjectionMatrix * viewRotation * vec4(direction.xyz, 1.0);
-}`;
-
-
-const fsSource2 = `
-precision highp float;
-uniform samplerCube uCubeMap;
-varying vec3 vDirection;
-
-void main() {
-    gl_FragColor = textureCube(uCubeMap, normalize(vDirection));
-}`;
 
 
 
@@ -112,10 +41,10 @@ const loop = (t) => {
     if (error !== epicCanvas.gl.NO_ERROR) {
         console.error("WebGL error in loop:", error);
     }
-    epicCanvas.rotateMatrix(epicCanvas.matrices.viewMatrix, 0.01, [1,0,1]);
-  epicCanvas.rotateMatrix(epicCanvas.matrices.viewMatrix, Math.sin(t/1000)*(0.01), [0,0,1]);
+    const [x,z] = [Math.cos(t/3000), Math.sin(t/3000)]
+    epicCanvas.lookAt([6*x,0,6*z],[0,0,0],[0,1,0])
   
-  requestAnimationFrame(loop);
+    requestAnimationFrame(loop);
 };
 
 const main = async () => {
@@ -131,8 +60,8 @@ const main = async () => {
         epicCanvas.fieldOfView = Math.PI / 3
         
         // Create shader programs
-        program = epicCanvas.makeProgram(vsSource, fsSource);
-        program2 = epicCanvas.makeProgram(vsSource2, fsSource2);
+        program = epicCanvas.makeProgram(vsMirror, fsMirror);
+        program2 = epicCanvas.makeProgram(vsSkybox, fsSkybox);
 
         // Create a sphere
         sphere = Sphere(epicCanvas, 55);
@@ -173,4 +102,3 @@ onload = main;
 </script>
 </body>
 </html>
-
