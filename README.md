@@ -205,6 +205,9 @@ Creates a new EpicCanvas and appends the canvas to the specified container.
 - **setNormals(shape)**  
   Calculates & sets normals for a shape (gl.TRIANGLES mode).
 
+- **setColor(shape, [r,g,b,a])**
+  Sets vertices color
+
 - **getWorldPosition(shape, vertexIndex?)**  
   Returns the world coordinates of the shape’s origin or a specific vertex (after transforms).
 
