@@ -861,7 +861,7 @@ setTexture(texture){
 
 
 
-createEmptyCubeMap(width) {
+createCubeMap(width) {
     // Create the cubemap texture
     const texture = this.gl.createTexture();
     this.gl.bindTexture(this.gl.TEXTURE_CUBE_MAP, texture);
