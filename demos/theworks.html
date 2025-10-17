@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+        }
+        canvas {
+            
+        }
+        #log {
+        	z-index: 2;
+            position: absolute;
+            top:0;
+            left:0;
+            color:white;
+        }
+    </style>
+</head>
+<body>
+	<div id="log"></div>
+    <!-- dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-29/epiccanvas.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-26/primitives/cube.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-26/primitives/squaremesh.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-26/primitives/icosahedron.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-26/primitives/tree.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-29/shaders/vertexDiffuseShadowTexture.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-29/shaders/fragmentDiffuseShadowTexture.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-29/shaders/vertexDiffuseShadow.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-29/shaders/fragmentDiffuseShadow.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-29/shaders/vertexDepth.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-29/shaders/fragmentDepth.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-29/shaders/vertexSkybox.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-29/shaders/fragmentSkybox.js" crossorigin='anonymous'></script>
+
+    <script>
+    	
+    function setColor(shape, colorRGBA){
+    	shape.colors = []
+    	for(let i=0;i<shape.vertices.length;i+=4){
+    	    shape.colors.push(...colorRGBA);
+        }
+    }
+    
+    
+        //globals
+        let floor, tree, moon, model, epicCanvas, program, shadowProgram, shadowTextureProgram, depthProgram, skyboxProgram, grassTexture, boulderTexture, treeTexture, cubeMap;
+
+        let shadowMapSize = 4096
+        let depthFramebuffer;
+        let depthTexture;
+        
+        let debuglog, oldt=0
+        
+        function depthMappingScene(){
+        	epicCanvas.setViewport(0, 0, shadowMapSize, shadowMapSize);
+            epicCanvas.clearScreen();
+            epicCanvas.drawShape(depthProgram, model);
+            epicCanvas.drawShape(depthProgram, moon);
+            epicCanvas.drawShape(depthProgram, tree);
+        }
+
+        function render(t) {
+        	let dt = t-oldt;
+			// fps limiter
+            /*
+            if(1/dt*1000 > 95){
+            	requestAnimationFrame(render);
+                return;
+            }*/
+            oldt = t;
+            try {
+            	// Depth Mapping, Option 1: (reusing framebuffer)
+                epicCanvas.bindFramebuffer(depthFramebuffer);
+                depthMappingScene();
+                epicCanvas.unbindFramebuffer();
+                
+                // Depth Mapping, Option 2:
+                //epicCanvas.renderToDepthTexture(depthTexture, shadowMapSize, shadowMapSize, depthMappingScene);
+                
+                // final render of models
+                epicCanvas.setViewport(0, 0, epicCanvas.canvas.width, epicCanvas.canvas.height);
+                epicCanvas.clearScreen();
+                epicCanvas.setDepthTexture(depthTexture);
+                epicCanvas.setTexture(grassTexture);
+                epicCanvas.drawShape(shadowTextureProgram, floor);
+                epicCanvas.setTexture(boulderTexture);
+                epicCanvas.drawShape(shadowProgram, moon);
+                epicCanvas.setTexture(treeTexture);
+                epicCanvas.drawShape(shadowTextureProgram, tree);
+                epicCanvas.setCubeMap(cubeMap)
+                epicCanvas.drawShape(skyboxProgram, skybox);
+                  epicCanvas.drawShape(shadowProgram, model);
+                
+                // text debug display
+                debuglog = debuglog? debuglog : document.querySelector("#log");
+                debuglog.innerText= "fps:"+(1/dt*1000).toFixed(2)
+                
+                //update models
+                const [x,y,z] = epicCanvas.getWorldPosition(moon);
+                epicCanvas.rotateModelMatrix(model, dt*0.001, [0,1,0])
+                epicCanvas.rotateModelMatrix(moon, dt*0.002, [0,1,0])
+                epicCanvas.rotateShapeOnItself(moon, dt*-0.002, [0,1,0])
+                epicCanvas.rotateShapeOnItself(moon, dt*-0.002, [1,0,0])
+                epicCanvas.makeShapeLookAt(model, epicCanvas.getWorldPosition(moon).slice(0,3))
+                
+                epicCanvas.rotateShapeOnItself(model, t*-0.002, [1,0,0])
+                
+                //camera update
+                let [mx,my,mz] = epicCanvas.getWorldPosition(model);
+                epicCanvas.lookAt([mx, my, mz],[x,y,z],[0,1,0])
+                let [fx,fy,fz]= epicCanvas.getCameraForward();
+                epicCanvas.lookAt([mx-4*fx, my, mz-4*fz],[x,y,z],[0,1,0])
+                //epicCanvas.translateViewMatrix([-fx*2,-fy*2,-fz*2])
+
+                //loop
+                requestAnimationFrame(render);
+            } catch(e) {
+                alert(e)
+            }
+        }
+        
+        
+
+        const main = async () => {
+            try {
+            	const size = innerWidth<innerHeight?innerWidth:innerHeight;
+                // create canvas
+                const width = size;
+                const height = size;
+                epicCanvas = new EpicCanvas(width,height,"body");
+
+                // create variety of objects
+                floor = SquareMesh(epicCanvas);
+                epicCanvas.scaleModelMatrix(floor, [200,200,200])
+                epicCanvas.rotateModelMatrix(floor, -Math.PI/2, [1,0,0]);
+                epicCanvas.rotateModelMatrix(floor, Math.PI, [0,1,0]);
+                epicCanvas.translateModelMatrix(floor, [0,-0.6,0])
+
+                moon = Icosahedron(epicCanvas);
+                setColor(moon, [0.85,0.5,0.72,1]);
+                epicCanvas.reloadBufferData(moon);
+                epicCanvas.scaleModelMatrix(moon, [1,2.6,1])
+                epicCanvas.translateModelMatrix(moon, [-1,2,2])
+
+                tree = Tree(epicCanvas, 0.2, 4, 3, 3)
+                tree.colors = tree.colors.map(_=>1)
+                center(tree)
+                epicCanvas.rotateModelMatrix(tree, -Math.PI/2,[1,0,0]);
+                epicCanvas.translateModelMatrix(tree, [0,-0.6,0])
+                epicCanvas.reloadBufferData(tree)
+
+                // set clear color 
+                epicCanvas.clearColor = [0.2,0.4,0.5,1.0];
+
+                // setup the camera position, lookat center point, up vector.
+                epicCanvas.lookAt([0,0.5,8], [0,0.5,0], [0,1,0]);
+                epicCanvas.fieldOfView = Math.PI/3
+                epicCanvas.aspectRatio = width/height;
+
+                // create shader program
+                shadowProgram = epicCanvas.makeProgram(vsDiffuseShadow, fsDiffuseShadow);;
+                shadowTextureProgram = epicCanvas.makeProgram(vsDiffuseShadowTexture, fsDiffuseShadowTexture);;
+                depthProgram = epicCanvas.makeProgram(vsDepth, fsDepth);
+                skyboxProgram = epicCanvas.makeProgram(vsSkybox, fsSkybox);
+
+                //setup some lighting of 3 types
+                epicCanvas.ambientColor = [0.2,0.3,0.2];
+                epicCanvas.directionalColor = [0.8,0.7,0.7]
+                epicCanvas.directionalVector =[-0.7, 0.7, 0]    //direction the light comes from, should be normalized
+                
+                //depth tools
+                depthTexture = epicCanvas.createDepthTexture(shadowMapSize, shadowMapSize)
+                depthFramebuffer = epicCanvas.createDepthFramebuffer(depthTexture);
+
+                // Light matrices
+                // the difference between the two lightPos and target vector should be paralel to directional light vector
+                const lightPos =  [-5, 5, 0]  // should be parallel to epicCanvas.directionalVector, ideally in a nice place to project close to the model
+                const target = [0, 0, 0]; //this vector should be in parallel to epicCanvas.directionalVector
+                const up = [0, 1, 0]
+                epicCanvas.setLightViewMatrix(lightPos, target, up)
+                epicCanvas.setLightProjectionMatrix(10, 10, 0.1, 20)
+                
+                const url = "https://raw.githubusercontent.com/paul-caron/EpicCanvas/master/models/blackimp/black_imp.stl"
+                model = await epicCanvas.loadSTL(url);
+                setColor(model, [0.35,0.5,0.42,0.41]);
+                center(model);
+                rotateX(model, -Math.PI/2)
+                rotateY(model, Math.PI)
+                scaleToUnitSize(model)
+                epicCanvas.reloadBufferData(model);
+                epicCanvas.translateModelMatrix(model, [0,0,-4])
+                epicCanvas.moveShapeTo(model, [0,0,-4])
+                
+                //loading textures
+                grassTexture = epicCanvas.loadTexture("https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Grass_texture.jpg/1024px-Grass_texture.jpg")
+                boulderTexture = epicCanvas.loadTexture("https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Black_Mountain_Boulders_Close_Up.JPG/1024px-Black_Mountain_Boulders_Close_Up.JPG");
+                treeTexture = epicCanvas.loadTexture("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/A_close_up_shot_of_a_palm_tree_trunk_pattern_hd.jpg/960px-A_close_up_shot_of_a_palm_tree_trunk_pattern_hd.jpg");
+                
+                
+                // create skybox
+                skybox = Cube(epicCanvas);
+                scale(skybox, 50,50,50);
+                epicCanvas.reloadBufferData(skybox);
+        
+        
+                // load cube map
+               const prefix = "https://raw.githubusercontent.com/paul-caron/EpicCanvas/refs/heads/master/assets/cubemaps/citadella2/";
+
+               const URLs = [
+prefix + "posx.jpg",
+prefix + "negx.jpg",
+prefix + "posy.jpg",
+prefix + "negy.jpg",
+prefix + "posz.jpg",
+prefix + "negz.jpg",
+        ];
+                 cubeMap = await epicCanvas.loadCubeMap(URLs);
+
+
+                
+              
+                requestAnimationFrame(render);
+            } catch(e) {
+                alert("error in main:"+e);
+            }
+        }
+
+        onload = main;
+    </script>
+</body>
+</html>
