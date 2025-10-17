@@ -101,8 +101,13 @@
     <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-29/shaders/fragmentPhong.js" crossorigin='anonymous'></script>
 
     <script>
+    	const n = 3 // 1, 2 or 3 only for playable game
+    	const cellSize = 2;
+    	const gap = 0.05
+    	const step = cellSize + gap;
+    	const offset = (n - 1) * step / 2;
     	
-    function Rubik(ec, initBuffers = true){
+    function Rubik(ec, i, j, k, n, initBuffers = true){
     const vertices=[
         -1,-1,1,1,
         -1,1,1,1,
@@ -140,56 +145,62 @@
         -1,-1,-1,1,
         1,-1,1,1,
         1,-1,-1,1
-    ]
-    const colors=[
-        // Front face (White)
-        1.0,1.0,1.0,1.0,
-        1.0,1.0,1.0,1.0,
-        1.0,1.0,1.0,1.0,
-        1.0,1.0,1.0,1.0,
-        1.0,1.0,1.0,1.0,
-        1.0,1.0,1.0,1.0,
-        
-        // Right face (Red)
-        1.0,0.0,0.0,1.0,
-        1.0,0.0,0.0,1.0,
-        1.0,0.0,0.0,1.0,
-        1.0,0.0,0.0,1.0,
-        1.0,0.0,0.0,1.0,
-        1.0,0.0,0.0,1.0,
-        
-        // Back face (Yellow)
-        1.0,1.0,0.0,1.0,
-        1.0,1.0,0.0,1.0,
-        1.0,1.0,0.0,1.0,
-        1.0,1.0,0.0,1.0,
-        1.0,1.0,0.0,1.0,
-        1.0,1.0,0.0,1.0,
-        
-        // Left face (Orange)
-        1.0,0.5,0.0,1.0,
-        1.0,0.5,0.0,1.0,
-        1.0,0.5,0.0,1.0,
-        1.0,0.5,0.0,1.0,
-        1.0,0.5,0.0,1.0,
-        1.0,0.5,0.0,1.0,
-        
-        // Top face (Blue)
-        0.0,0.0,1.0,1.0,
-        0.0,0.0,1.0,1.0,
-        0.0,0.0,1.0,1.0,
-        0.0,0.0,1.0,1.0,
-        0.0,0.0,1.0,1.0,
-        0.0,0.0,1.0,1.0,
-        
-        // Bottom face (Green)
-        0.0,1.0,0.0,1.0,
-        0.0,1.0,0.0,1.0,
-        0.0,1.0,0.0,1.0,
-        0.0,1.0,0.0,1.0,
-        0.0,1.0,0.0,1.0,
-        0.0,1.0,0.0,1.0
-    ]
+    ];
+    let colors = new Array(36 * 4).fill(0); // all black initially
+    // Front face (White) if on front
+    if (k === n - 1) {
+        for (let p = 0; p < 6; p++) {
+            colors[p * 4] = 1.0;
+            colors[p * 4 + 1] = 1.0;
+            colors[p * 4 + 2] = 1.0;
+            colors[p * 4 + 3] = 1.0;
+        }
+    }
+    // Right face (Red) if on right
+    if (i === n - 1) {
+        for (let p = 6; p < 12; p++) {
+            colors[p * 4] = 1.0;
+            colors[p * 4 + 1] = 0.0;
+            colors[p * 4 + 2] = 0.0;
+            colors[p * 4 + 3] = 1.0;
+        }
+    }
+    // Back face (Yellow) if on back
+    if (k === 0) {
+        for (let p = 12; p < 18; p++) {
+            colors[p * 4] = 1.0;
+            colors[p * 4 + 1] = 1.0;
+            colors[p * 4 + 2] = 0.0;
+            colors[p * 4 + 3] = 1.0;
+        }
+    }
+    // Left face (Orange) if on left
+    if (i === 0) {
+        for (let p = 18; p < 24; p++) {
+            colors[p * 4] = 1.0;
+            colors[p * 4 + 1] = 0.5;
+            colors[p * 4 + 2] = 0.0;
+            colors[p * 4 + 3] = 1.0;
+        }
+    }
+    // Top face (Blue) if on top
+    if (j === n - 1) {
+        for (let p = 24; p < 30; p++) {
+            colors[p * 4] = 0.0;
+            colors[p * 4 + 1] = 0.0;
+            colors[p * 4 + 2] = 1.0;
+            colors[p * 4 + 3] = 1.0;
+        }
+    }
+    // Bottom face (Green) if on bottom
+    if (j === 0) {
+        for (let p = 30; p < 36; p++) {
+            colors[p * 4] = 0.0;
+            colors[p * 4 + 1] = 1.0;
+            colors[p * 4 + 2] = 0.0;
+            colors[p * 4 + 3] = 1.0;
+        }
+    }
     const textureCoordinates=[
         0.0,1.0,
         0.0,0.0,
@@ -291,9 +302,9 @@
             oldt = t;
             try {
             	ec.clearScreen();
-            	for(let i=0; i<2; i++)
-                for(let j=0; j<2; j++)
-                for(let k=0; k<2; k++)
+            	for(let i=0; i<n; i++)
+                for(let j=0; j<n; j++)
+                for(let k=0; k<n; k++)
                      if(rubikCells[i][j][k]) ec.drawShape(program, rubikCells[i][j][k]);
                 if(animation){
                   let delta_angle = animation.speed * dt;
@@ -318,10 +329,10 @@
         }
         
         function updateGrid(selected_cells) {
-          let newCells = Array(2).fill(0).map(() => Array(2).fill(0).map(() => Array(2).fill(null)));
-          for(let i=0; i<2; i++){
-            for(let j=0; j<2; j++){
-              for(let k=0; k<2; k++){
+          let newCells = Array(n).fill(0).map(() => Array(n).fill(0).map(() => Array(n).fill(null)));
+          for(let i=0; i<n; i++){
+            for(let j=0; j<n; j++){
+              for(let k=0; k<n; k++){
                 let cell = rubikCells[i][j][k];
                 if(cell && !selected_cells.includes(cell)){
                   newCells[i][j][k] = cell;
@@ -334,12 +345,12 @@
             let x = worldPos[0];
             let y = worldPos[1];
             let z = worldPos[2];
-            let ix = Math.round((x + 1.05) / 2.1);
-            let jy = Math.round((y + 1.05) / 2.1);
-            let kz = Math.round((z + 1.05) / 2.1);
-            ix = Math.max(0, Math.min(1, ix));
-            jy = Math.max(0, Math.min(1, jy));
-            kz = Math.max(0, Math.min(1, kz));
+            let ix = Math.round((x + offset) / step);
+            let jy = Math.round((y + offset) / step);
+            let kz = Math.round((z + offset) / step);
+            ix = Math.max(0, Math.min(n-1, ix));
+            jy = Math.max(0, Math.min(n-1, jy));
+            kz = Math.max(0, Math.min(n-1, kz));
             newCells[ix][jy][kz] = cell;
           }
           rubikCells = newCells;
@@ -349,9 +360,9 @@
           if(animating) return;
           animating = true;
           let selected = [];
-          for(let i=0; i<2; i++){
-            for(let j=0; j<2; j++){
-              for(let k=0; k<2; k++){
+          for(let i=0; i<n; i++){
+            for(let j=0; j<n; j++){
+              for(let k=0; k<n; k++){
                 if(matcher(i,j,k) && rubikCells[i][j][k]){
                   selected.push(rubikCells[i][j][k]);
                 }
@@ -389,7 +400,7 @@
             case 'front':
               axis = [0,0,1];
               cw_sign = -1;
-              matcher = (i,j,k) => k === 1;
+              matcher = (i,j,k) => k === n-1;
               break;
             case 'back':
               axis = [0,0,1];
@@ -399,7 +410,7 @@
             case 'right':
               axis = [1,0,0];
               cw_sign = -1;
-              matcher = (i,j,k) => i === 1;
+              matcher = (i,j,k) => i === n-1;
               break;
             case 'left':
               axis = [1,0,0];
@@ -409,7 +420,7 @@
             case 'top':
               axis = [0,1,0];
               cw_sign = -1;
-              matcher = (i,j,k) => j === 1;
+              matcher = (i,j,k) => j === n-1;
               break;
             case 'bottom':
               axis = [0,1,0];
@@ -429,15 +440,15 @@
                 const height = size;
                 ec = new EpicCanvas(width,height,"#canvas");
                 ec.aspectRatio = width/height
-                ec.fieldOfView = Math.PI/3;
+                ec.fieldOfView = Math.PI/3
 
                 // create objects
-                rubikCells = Array(2).fill(0).map(() => Array(2).fill(0).map(() => Array(2).fill(null)));
-                for(let i=0;i<2;i++){
-                	for(let j=0;j<2;j++){
-                	    for(let k=0;k<2;k++){
-                            let rubik = Rubik(ec);
-                            ec.translateModelMatrix(rubik, [i*2.1-1.05,j*2.1-1.05,k*2.1-1.05])
+                rubikCells = Array(n).fill(0).map(() => Array(n).fill(0).map(() => Array(n).fill(null)));
+                for(let i=0;i<n;i++){
+                	for(let j=0;j<n;j++){
+                	    for(let k=0;k<n;k++){
+                            let rubik = Rubik(ec, i, j, k, n);
+                            ec.translateModelMatrix(rubik, [i*step - offset, j*step - offset, k*step - offset])
                             rubikCells[i][j][k] = rubik;
                             rubik.shininess = 200
                         }
@@ -448,7 +459,7 @@
                 program = ec.makeProgram(vsPhong, fsPhong)
     
                 // setup camera
-                ec.lookAt([0,0,8], [0,0,0], [0,1,0]);
+                ec.lookAt([0,0,8/2*n], [0,0,0], [0,1,0]);
                 
                 // setup lighting
             //    ec.ambientColor = [0.2,0.2,0.2];
