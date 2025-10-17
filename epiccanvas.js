@@ -2117,3 +2117,11 @@ function scaleToUnitSize(shape){
     scale(shape, 1/max, 1/max, 1/max)
 }
 
+function setColor(shape, colorRGBA){
+    shape.colors = []
+    for(let i=0;i<shape.vertices.length;i+=4){
+    	shape.colors.push(...colorRGBA);
+    }
+}
+
+
