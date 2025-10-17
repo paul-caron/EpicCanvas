@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: black;
+        }
+        canvas {
+            
+        }
+        #log {
+        	z-index: 2;
+            position: absolute;
+            top:0;
+            left:0;
+            color:white;
+        }
+        #arrowUp {
+        	bottom: 14rem;
+            right: 8rem;
+            transform: rotate(180deg);
+        }
+        #arrowLeft {
+        	bottom: 11rem;
+            right: 11rem;
+            transform: rotate(90deg);
+        }
+        #arrowRight {
+        	bottom: 11rem;
+            right: 5rem;
+            transform: rotate(270deg);
+        }
+        #arrowDown {
+        	bottom: 8rem;
+            right: 8rem;
+        }
+        #controls button {
+        	font-size: 2rem;
+            position: absolute;
+            z-index: 2;
+            padding: 0.5rem;
+        }
+        #controls button::before {
+        	content: "V";
+        }
+        #faceControls {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            z-index: 2;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        #faceControls button {
+            font-size: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid white;
+            color: white;
+            cursor: pointer;
+            
+        }
+        #faceControls button:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+<body>
+	<div id="canvas"></div>
+	<div id="controls">
+         <button id="arrowUp" onclick="rotateUp();"></button>
+         <button id="arrowLeft" onclick="rotateLeft()"></button>
+         <button id="arrowRight" onclick="rotateRight()"></button>
+         <button id="arrowDown" onclick="rotateDown()"></button>
+     </div>
+     <div id="faceControls">
+         <button onclick="rotateFace('front', true)">F</button>
+         <button onclick="rotateFace('front', false)">F'</button>
+         <button onclick="rotateFace('back', true)">B</button>
+         <button onclick="rotateFace('back', false)">B'</button>
+         <button onclick="rotateFace('left', true)">L</button>
+         <button onclick="rotateFace('left', false)">L'</button>
+         <button onclick="rotateFace('right', true)">R</button>
+         <button onclick="rotateFace('right', false)">R'</button>
+         <button onclick="rotateFace('top', true)">U</button>
+         <button onclick="rotateFace('top', false)">U'</button>
+         <button onclick="rotateFace('bottom', true)">D</button>
+         <button onclick="rotateFace('bottom', false)">D'</button>
+     </div>
+    <!-- dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-29/epiccanvas.js" crossorigin='anonymous'></script>
+
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-29/shaders/vertexPhong.js" crossorigin='anonymous'></script>
+    <script src="https://cdn.jsdelivr.net/gh/paul-caron/EpicCanvas@v2.0.0-beta-29/shaders/fragmentPhong.js" crossorigin='anonymous'></script>
+
+    <script>
+    	
+    function Rubik(ec, initBuffers = true){
+    const vertices=[
+        -1,-1,1,1,
+        -1,1,1,1,
+        1,-1,1,1,
+        -1,1,1,1,
+        1,-1,1,1,
+        1,1,1,1,
+        1,-1,1,1,
+        1,1,1,1,
+        1,-1,-1,1,
+        1,1,1,1,
+        1,-1,-1,1,
+        1,1,-1,1,
+        1,-1,-1,1,
+        1,1,-1,1,
+        -1,-1,-1,1,
+        1,1,-1,1,
+        -1,-1,-1,1,
+        -1,1,-1,1,
+        -1,-1,-1,1,
+        -1,1,-1,1,
+        -1,-1,1,1,
+        -1,1,-1,1,
+        -1,-1,1,1,
+        -1,1,1,1,
+        -1,1,1,1,
+        -1,1,-1,1,
+        1,1,1,1,
+        -1,1,-1,1,
+        1,1,1,1,
+        1,1,-1,1,
+        -1,-1,1,1,
+        -1,-1,-1,1,
+        1,-1,1,1,
+        -1,-1,-1,1,
+        1,-1,1,1,
+        1,-1,-1,1
+    ]
+    const colors=[
+        // Front face (White)
+        1.0,1.0,1.0,1.0,
+        1.0,1.0,1.0,1.0,
+        1.0,1.0,1.0,1.0,
+        1.0,1.0,1.0,1.0,
+        1.0,1.0,1.0,1.0,
+        1.0,1.0,1.0,1.0,
+        
+        // Right face (Red)
+        1.0,0.0,0.0,1.0,
+        1.0,0.0,0.0,1.0,
+        1.0,0.0,0.0,1.0,
+        1.0,0.0,0.0,1.0,
+        1.0,0.0,0.0,1.0,
+        1.0,0.0,0.0,1.0,
+        
+        // Back face (Yellow)
+        1.0,1.0,0.0,1.0,
+        1.0,1.0,0.0,1.0,
+        1.0,1.0,0.0,1.0,
+        1.0,1.0,0.0,1.0,
+        1.0,1.0,0.0,1.0,
+        1.0,1.0,0.0,1.0,
+        
+        // Left face (Orange)
+        1.0,0.5,0.0,1.0,
+        1.0,0.5,0.0,1.0,
+        1.0,0.5,0.0,1.0,
+        1.0,0.5,0.0,1.0,
+        1.0,0.5,0.0,1.0,
+        1.0,0.5,0.0,1.0,
+        
+        // Top face (Blue)
+        0.0,0.0,1.0,1.0,
+        0.0,0.0,1.0,1.0,
+        0.0,0.0,1.0,1.0,
+        0.0,0.0,1.0,1.0,
+        0.0,0.0,1.0,1.0,
+        0.0,0.0,1.0,1.0,
+        
+        // Bottom face (Green)
+        0.0,1.0,0.0,1.0,
+        0.0,1.0,0.0,1.0,
+        0.0,1.0,0.0,1.0,
+        0.0,1.0,0.0,1.0,
+        0.0,1.0,0.0,1.0,
+        0.0,1.0,0.0,1.0
+    ]
+    const textureCoordinates=[
+        0.0,1.0,
+        0.0,0.0,
+        1.0,1.0,
+        0.0,0.0,
+        1.0,1.0,
+        1.0,0.0,
+        0.0,1.0,
+        0.0,0.0,
+        1.0,1.0,
+        0.0,0.0,
+        1.0,1.0,
+        1.0,0.0,
+        0.0,1.0,
+        0.0,0.0,
+        1.0,1.0,
+        0.0,0.0,
+        1.0,1.0,
+        1.0,0.0,
+        0.0,1.0,
+        0.0,0.0,
+        1.0,1.0,
+        0.0,0.0,
+        1.0,1.0,
+        1.0,0.0,
+        0.0,1.0,
+        0.0,0.0,
+        1.0,1.0,
+        0.0,0.0,
+        1.0,1.0,
+        1.0,0.0,
+        0.0,1.0,
+        0.0,0.0,
+        1.0,1.0,
+        0.0,0.0,
+        1.0,1.0,
+        1.0,0.0,
+    ]
+    const normals=[
+        0,0,1,0,
+        0,0,1,0,
+        0,0,1,0,
+        0,0,1,0,
+        0,0,1,0,
+        0,0,1,0,
+        
+        1,0,0,0,
+        1,0,0,0,
+        1,0,0,0,
+        1,0,0,0,
+        1,0,0,0,
+        1,0,0,0,
+        
+        0,0,-1,0,
+        0,0,-1,0,
+        0,0,-1,0,
+        0,0,-1,0,
+        0,0,-1,0,
+        0,0,-1,0,
+        
+        -1,0,0,0,
+        -1,0,0,0,
+        -1,0,0,0,
+        -1,0,0,0,
+        -1,0,0,0,
+        -1,0,0,0,
+        
+        0,1,0,0,
+        0,1,0,0,
+        0,1,0,0,
+        0,1,0,0,
+        0,1,0,0,
+        0,1,0,0,
+        
+        0,-1,0,0,
+        0,-1,0,0,
+        0,-1,0,0,
+        0,-1,0,0,
+        0,-1,0,0,
+        0,-1,0,0
+    ]
+    const mode=ec.gl.TRIANGLES
+    const shape={vertices,colors,textureCoordinates,mode,normals}
+    if(initBuffers)
+        ec.initBuffers(shape)
+    return shape
+}
+    
+    
+        //globals
+        let rubikCells = [], program, ec;
+        let oldt=0
+        let animating = false;
+        let animation = null;
+         
+
+        function render(t) {
+        	let dt = t-oldt;
+            oldt = t;
+            try {
+            	ec.clearScreen();
+            	for(let i=0; i<2; i++)
+                for(let j=0; j<2; j++)
+                for(let k=0; k<2; k++)
+                     if(rubikCells[i][j][k]) ec.drawShape(program, rubikCells[i][j][k]);
+                if(animation){
+                  let delta_angle = animation.speed * dt;
+                  if(Math.abs(delta_angle) > Math.abs(animation.remaining)){
+                    delta_angle = animation.remaining;
+                  }
+                  for(let cell of animation.cells){
+                    ec.rotateModelMatrix(cell, delta_angle, animation.axis);
+                  }
+                  animation.remaining -= delta_angle;
+                  if(Math.abs(animation.remaining) < 0.001){
+                    updateGrid(animation.cells);
+                    animation = null;
+                    animating = false;
+                  }
+                }
+                requestAnimationFrame(render);
+                ec.pointLightPosition= [Math.cos(t/3000)*5, Math.sin(t/3000)*5,12]
+            } catch(e) {
+                alert(e)
+            }
+        }
+        
+        function updateGrid(selected_cells) {
+          let newCells = Array(2).fill(0).map(() => Array(2).fill(0).map(() => Array(2).fill(null)));
+          for(let i=0; i<2; i++){
+            for(let j=0; j<2; j++){
+              for(let k=0; k<2; k++){
+                let cell = rubikCells[i][j][k];
+                if(cell && !selected_cells.includes(cell)){
+                  newCells[i][j][k] = cell;
+                }
+              }
+            }
+          }
+          for(let cell of selected_cells){
+            let worldPos = ec.getWorldPosition(cell);
+            let x = worldPos[0];
+            let y = worldPos[1];
+            let z = worldPos[2];
+            let ix = Math.round((x + 1.05) / 2.1);
+            let jy = Math.round((y + 1.05) / 2.1);
+            let kz = Math.round((z + 1.05) / 2.1);
+            ix = Math.max(0, Math.min(1, ix));
+            jy = Math.max(0, Math.min(1, jy));
+            kz = Math.max(0, Math.min(1, kz));
+            newCells[ix][jy][kz] = cell;
+          }
+          rubikCells = newCells;
+        }
+        
+        function doRotation(matcher, angle, axis) {
+          if(animating) return;
+          animating = true;
+          let selected = [];
+          for(let i=0; i<2; i++){
+            for(let j=0; j<2; j++){
+              for(let k=0; k<2; k++){
+                if(matcher(i,j,k) && rubikCells[i][j][k]){
+                  selected.push(rubikCells[i][j][k]);
+                }
+              }
+            }
+          }
+          const duration = 500;
+          animation = {
+            cells: selected,
+            axis: axis,
+            speed: angle / duration,
+            remaining: angle
+          };
+        }
+        
+       function rotateUp(){
+         doRotation((i,j,k)=>true, -Math.PI/2, [1,0,0]);
+       } 
+       
+       function rotateLeft(){
+         doRotation((i,j,k)=>true, -Math.PI/2, [0,1,0]);
+       } 
+       
+       function rotateRight(){
+         doRotation((i,j,k)=>true, Math.PI/2, [0,1,0]);
+       } 
+       
+       function rotateDown(){
+         doRotation((i,j,k)=>true, Math.PI/2, [1,0,0]);
+       } 
+
+        function rotateFace(face, isCW) {
+          let axis, matcher, cw_sign;
+          switch(face){
+            case 'front':
+              axis = [0,0,1];
+              cw_sign = -1;
+              matcher = (i,j,k) => k === 1;
+              break;
+            case 'back':
+              axis = [0,0,1];
+              cw_sign = 1;
+              matcher = (i,j,k) => k === 0;
+              break;
+            case 'right':
+              axis = [1,0,0];
+              cw_sign = -1;
+              matcher = (i,j,k) => i === 1;
+              break;
+            case 'left':
+              axis = [1,0,0];
+              cw_sign = 1;
+              matcher = (i,j,k) => i === 0;
+              break;
+            case 'top':
+              axis = [0,1,0];
+              cw_sign = -1;
+              matcher = (i,j,k) => j === 1;
+              break;
+            case 'bottom':
+              axis = [0,1,0];
+              cw_sign = 1;
+              matcher = (i,j,k) => j === 0;
+              break;
+          }
+          const angle = (isCW ? cw_sign : -cw_sign) * Math.PI / 2;
+          doRotation(matcher, angle, axis);
+        }
+
+        const main = async () => {
+            try {
+            	const size = innerWidth<innerHeight?innerWidth:innerHeight;
+                // create canvas
+                const width = size;
+                const height = size;
+                ec = new EpicCanvas(width,height,"#canvas");
+                ec.aspectRatio = width/height
+                ec.fieldOfView = Math.PI/3;
+
+                // create objects
+                rubikCells = Array(2).fill(0).map(() => Array(2).fill(0).map(() => Array(2).fill(null)));
+                for(let i=0;i<2;i++){
+                	for(let j=0;j<2;j++){
+                	    for(let k=0;k<2;k++){
+                            let rubik = Rubik(ec);
+                            ec.translateModelMatrix(rubik, [i*2.1-1.05,j*2.1-1.05,k*2.1-1.05])
+                            rubikCells[i][j][k] = rubik;
+                            rubik.shininess = 200
+                        }
+                    }
+                }
+                
+                // create shader program
+                program = ec.makeProgram(vsPhong, fsPhong)
+    
+                // setup camera
+                ec.lookAt([0,0,8], [0,0,0], [0,1,0]);
+                
+                // setup lighting
+            //    ec.ambientColor = [0.2,0.2,0.2];
+                ec.pointLightPosition = [12,16,16]
+                ec.pointLightColor = [0.8,0.8,0.8]
+              
+                requestAnimationFrame(render);
+            } catch(e) {
+                alert("error in main:"+e);
+            }
+
+            // Add keyboard listener for side rotations
+            document.addEventListener('keydown', (event) => {
+              if(animating) return;
+              const key = event.key;
+              let face, isCW;
+              if (key === 'F') { face = 'front'; isCW = true; }
+              else if (key === 'f') { face = 'front'; isCW = false; }
+              else if (key === 'B') { face = 'back'; isCW = true; }
+              else if (key === 'b') { face = 'back'; isCW = false; }
+              else if (key === 'R') { face = 'right'; isCW = true; }
+              else if (key === 'r') { face = 'right'; isCW = false; }
+              else if (key === 'L') { face = 'left'; isCW = true; }
+              else if (key === 'l') { face = 'left'; isCW = false; }
+              else if (key === 'U') { face = 'top'; isCW = true; }
+              else if (key === 'u') { face = 'top'; isCW = false; }
+              else if (key === 'D') { face = 'bottom'; isCW = true; }
+              else if (key === 'd') { face = 'bottom'; isCW = false; }
+              if (face) {
+                rotateFace(face, isCW);
+              }
+            });
+        }
+
+        onload = main;
+    </script>
+</body>
+</html>
