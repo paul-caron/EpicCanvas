@@ -73,7 +73,7 @@ Creates a new EpicCanvas and appends the canvas to the specified container.
 - **loadCubeMap([url1, url2, url3, url4, url5, url6], options?)**  
   Loads a cubemap from six image URLs.
 
-- **createEmptyCubeMap(width)**  
+- **createCubeMap(width)**  
   Creates a default blue cubemap.
 
 - **renderToCubeMapFace(cubemap, face, width, height, renderFunc, ...args)**  
