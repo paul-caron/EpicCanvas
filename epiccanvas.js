@@ -1842,6 +1842,36 @@ translateViewMatrix(translation) {
     this.updateCameraPosition()
 }
 
+moveCameraTo(worldPosition) {
+    const { viewMatrix } = this.matrices;
+    
+    // Create a new view matrix to preserve rotation
+    const newViewMatrix = mat4.create();
+    
+    // Copy the rotation part (3x3 upper-left) from the current view matrix
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            newViewMatrix[i * 4 + j] = viewMatrix[i * 4 + j];
+        }
+    }
+    
+    // Set the translation components to the new world position
+    // The view matrix translation is the negative of the camera's world position
+    // when using a look-at style matrix
+    const inverseTranslation = vec3.create();
+    vec3.negate(inverseTranslation, worldPosition);
+    newViewMatrix[12] = inverseTranslation[0];
+    newViewMatrix[13] = inverseTranslation[1];
+    newViewMatrix[14] = inverseTranslation[2];
+    newViewMatrix[15] = 1; // Ensure homogeneous coordinate is 1
+    
+    // Update the view matrix
+    mat4.copy(this.matrices.viewMatrix, newViewMatrix);
+    
+    // Update the stored camera position
+    this._cameraPosition = [...worldPosition];
+}
+/*
 scaleViewMatrix(scale) {
     const { viewMatrix } = this.matrices;
     
@@ -1855,7 +1885,7 @@ scaleViewMatrix(scale) {
     mat4.multiply(viewMatrix, scaleMatrix, viewMatrix)
     
     this.updateCameraPosition()
-}
+}*/
 
 rotateModelMatrix(shape, angleInRadians, axis) {
     const { modelMatrix, normalMatrix } = shape.matrices;
