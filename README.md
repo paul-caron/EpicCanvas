@@ -247,8 +247,6 @@ _Apply transformations through the view matrix for rendering._
 - **rotateViewMatrix(angle, [x, y, z])**  
   Rotates the view matrix (angle in radians, axis as array).
 
-- **scaleViewMatrix([x, y, z])**  
-  Scales the view matrix.
 
 ### Direct Vertex Modification Methods  
 _Modify the underlying vertex data directly (requires reloadBufferData after use)._
