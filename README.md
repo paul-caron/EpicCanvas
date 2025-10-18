@@ -287,6 +287,10 @@ _Modify the underlying vertex data directly (requires reloadBufferData after use
 
 This library uses [gl-matrix.js](https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js) for matrix math.
 
+```html
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js"></script>
+```
+
 ---
 
 ## Notes
