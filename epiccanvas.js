@@ -1842,6 +1842,20 @@ translateViewMatrix(translation) {
     this.updateCameraPosition()
 }
 
+
+moveCameraTo (worldPosition) {
+    // Get current forward vector to compute look-at point
+    const forward = this.getCameraForward();
+    const currentPos = this.cameraPosition;
+    // Compute look-at point: current position + forward
+                    
+    const target = vec3.create();
+    vec3.add(target, currentPos, forward);
+    // Use lookAt to set view matrix to new position, same target, same up
+    this.lookAt(worldPosition, target, [0, 1, 0]);
+    
+}
+/*
 moveCameraTo(worldPosition) {
     const { viewMatrix } = this.matrices;
     
@@ -1870,7 +1884,7 @@ moveCameraTo(worldPosition) {
     
     // Update the stored camera position
     this._cameraPosition = [...worldPosition];
-}
+}*/
 /*
 scaleViewMatrix(scale) {
     const { viewMatrix } = this.matrices;
