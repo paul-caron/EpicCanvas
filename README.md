@@ -155,6 +155,9 @@ Creates a new EpicCanvas and appends the canvas to the specified container.
 - **getCameraForward()**  
   Returns the normalized forward direction vector of the camera.
 
+- **moveCameraTo([x,y,z])**
+  Moves the camera to a specified world position, while retaining its orientation.
+
 ---
 
 ### Lighting Properties
